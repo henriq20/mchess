@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ES2015",
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"moduleResolution": "Node",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"declaration": true
+	},
+	"include": [
+		"src/**/*.ts"
+	],
+	"exclude": [
+		"./tests",
+		"./dist",
+		"jest.config.ts",
+		"node_modules"
+	]
+}
