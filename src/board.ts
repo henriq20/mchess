@@ -46,6 +46,24 @@ export default class ChessBoard {
 		return this._board[row][column];
 	}
 
+	remove(row: number, column: number): ChessPiece | null {
+		if (this._isOffBounds(row, column)) {
+			return null;
+		}
+
+		const removedPiece = this._board[row][column].piece;
+
+		if (!removedPiece) {
+			return null;
+		}
+
+		removedPiece.board = null;
+		removedPiece.square = null;
+		this._board[row][column].piece = null;
+
+		return removedPiece;
+	}
+
 	_isOffBounds(row: number, column: number): boolean {
 		return row < 0 || row > 7 || column < 0 || column > 7;
 	}

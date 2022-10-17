@@ -128,3 +128,43 @@ describe('get', () => {
         expect(board.get(0, 8)).toBe(null);
     });
 });
+
+describe('remove', () => {
+    it('should remove a piece from the board', () => {
+        const board = new ChessBoard();
+
+        const piece: ChessPiece = {
+            name: 'pawn',
+            color: 'white',
+            letter: 'p'
+        };
+
+        board.place(0, 0, piece);
+        board.place(0, 1, piece);
+        board.place(1, 0, piece);
+
+        const removedPiece = board.remove(0, 1);
+
+        expect(removedPiece?.square).toBe(null);
+        expect(removedPiece?.board).toBe(null);
+
+        expect(board.get(0, 0)).toBeTruthy();
+        expect(board.get(1, 0)).toBeTruthy();
+    });
+
+    it('should return null if the index was off bounds', () => {
+        const board = new ChessBoard();
+
+        expect(board.remove(-1, 0)).toBe(null);
+        expect(board.remove(0, -1)).toBe(null);
+        expect(board.remove(8, 0)).toBe(null);
+        expect(board.remove(0, 8)).toBe(null);
+    });
+
+    it('should return null if the piece does not exist', () => {
+        const board = new ChessBoard();
+
+        expect(board.remove(0, 0)).toBe(null);
+        expect(board.remove(0, 7)).toBe(null);
+    });
+});
