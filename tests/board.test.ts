@@ -168,3 +168,29 @@ describe('remove', () => {
         expect(board.remove(0, 7)).toBe(null);
     });
 });
+
+describe('clear', () => {
+    it('should remove all pieces from the board', () => {
+        const board = new ChessBoard();
+
+        const whitePawn: ChessPiece = {
+            name: 'pawn',
+            color: 'white',
+            letter: 'p'
+        };
+
+        const blackPawn: ChessPiece = {
+            name: 'pawn',
+            color: 'black',
+            letter: 'p'
+        };
+
+        board.place(0, 0, whitePawn);
+        board.place(0, 5, blackPawn);
+
+        const removedPieces = board.clear();
+
+        expect(board._board.every(row => row.every(s => !s.piece))).toBe(true);
+        expect(removedPieces).toStrictEqual([ whitePawn, blackPawn ]);
+    });
+});

@@ -7,10 +7,10 @@ export default class ChessBoard {
 
 	constructor() {
 		this.size = 8;
-		this._board = this.clear();
+		this._board = this.fill();
 	}
 
-	clear() {
+	fill() {
 		this._board = [];
 
 		for (let row = 0; row < this.size; row++) {
@@ -62,6 +62,21 @@ export default class ChessBoard {
 		this._board[row][column].piece = null;
 
 		return removedPiece;
+	}
+
+	clear(): ChessPiece[] {
+		const pieces = [];
+
+		for (let row = 0; row < this.size; row++) {
+			for (let column = 0; column < this.size; column++) {
+				const removedPiece = this.remove(row, column);
+				if (removedPiece) {
+					pieces.push(removedPiece);
+				}
+			}
+		}
+
+		return pieces;
 	}
 
 	_isOffBounds(row: number, column: number): boolean {
