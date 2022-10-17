@@ -1,5 +1,5 @@
 import ChessBoard from '../board.js';
-import Square from '../square';
+import Square from '../square.js';
 
 export type ChessPieceName = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
 
