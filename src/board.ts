@@ -25,7 +25,7 @@ export default class ChessBoard {
 		return this._board;
 	}
 
-	place(row: number, column: number, piece: ChessPiece) {
+	place(row: number, column: number, piece: ChessPiece): boolean {
 		if (this._isOffBounds(row, column)) {
 			return false;
 		}
@@ -38,7 +38,15 @@ export default class ChessBoard {
 		return true;
 	}
 
-	_isOffBounds(row: number, column: number) {
+	get(row: number, column: number): Square | null {
+		if (this._isOffBounds(row, column)) {
+			return null;
+		}
+
+		return this._board[row][column];
+	}
+
+	_isOffBounds(row: number, column: number): boolean {
 		return row < 0 || row > 7 || column < 0 || column > 7;
 	}
 }

@@ -95,3 +95,36 @@ describe('place', () => {
         expect(board._board.every(row => row.every(s => !s.piece))).toBe(true);
     });
 });
+
+describe('get', () => {
+    it('should get a piece', () => {
+        const board = new ChessBoard();
+
+        const whitePawn: ChessPiece = {
+            name: 'pawn',
+            color: 'white',
+            letter: 'p'
+        };
+
+        const blackPawn: ChessPiece = {
+            name: 'pawn',
+            color: 'black',
+            letter: 'p'
+        };
+
+        board.place(0, 0, whitePawn);
+        board.place(5, 5, blackPawn);
+
+        expect(board.get(0, 0)?.piece?.color).toBe('white');
+        expect(board.get(5, 5)?.piece?.color).toBe('black');
+    });
+
+    it('should return null if the specified index is off bounds', () => {
+        const board = new ChessBoard();
+
+        expect(board.get(-1, 0)).toBe(null);
+        expect(board.get(0, -1)).toBe(null);
+        expect(board.get(8, 0)).toBe(null);
+        expect(board.get(0, 8)).toBe(null);
+    });
+});
