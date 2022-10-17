@@ -1,4 +1,5 @@
 import Square from './square.js';
+import { ChessPiece } from './pieces/piece.js';
 
 export default class ChessBoard {
 	readonly size: number;
@@ -22,5 +23,22 @@ export default class ChessBoard {
 		}
 
 		return this._board;
+	}
+
+	place(row: number, column: number, piece: ChessPiece) {
+		if (this._isOffBounds(row, column)) {
+			return false;
+		}
+
+		piece.board = this;
+		piece.square = this._board[row][column];
+
+		this._board[row][column].piece = piece;
+
+		return true;
+	}
+
+	_isOffBounds(row: number, column: number) {
+		return row < 0 || row > 7 || column < 0 || column > 7;
 	}
 }
