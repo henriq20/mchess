@@ -10,6 +10,6 @@ export interface ChessPiece {
     color: ChessPieceColor;
     letter: string;
     moves?: number;
-    board?: ChessBoard;
-    square?: Square
+    board?: ChessBoard | null;
+    square?: Square | null;
 }
