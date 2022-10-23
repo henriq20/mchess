@@ -1,4 +1,5 @@
 export type ChessPosition = string;
+export type ArrayPosition = [ x: number, y: number ];
 
 export function toChessPosition(x: number, y: number) {
 	const rank = x + 1;

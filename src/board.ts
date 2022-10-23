@@ -1,5 +1,6 @@
 import Square from './square.js';
 import { ChessPiece } from './pieces/piece.js';
+import { toChessPosition } from './position.js';
 
 export default class ChessBoard {
 	readonly size: number;
@@ -13,13 +14,13 @@ export default class ChessBoard {
 	fill() {
 		this._board = [];
 
-		for (let row = 0; row < this.size; row++) {
-			const rank = String.fromCharCode('a'.charCodeAt(0) + row);
-			this._board[row] = [];
+		let row = 0;
+		while (row < 8) {
+			this._board.push(new Array(this.size).fill(undefined).map((value, column) => {
+				return new Square(toChessPosition(row, column), row, column);
+			}));
 
-			for (let column = 0; column < this.size; column++) {
-				this._board[row].push(new Square(rank + (column + 1).toString(), row, column));
-			}
+			row++;
 		}
 
 		return this._board;
