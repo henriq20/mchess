@@ -1,3 +1,5 @@
+export type ChessPosition = string;
+
 export function toChessPosition(x: number, y: number) {
 	const rank = x + 1;
 	const file = String.fromCharCode('a'.charCodeAt(0) + y);
@@ -5,9 +7,9 @@ export function toChessPosition(x: number, y: number) {
 	return file + rank;
 }
 
-export function toArrayPosition(chessPosition: string): [ x: number, y: number ] {
-	const rank = Number(chessPosition[1]);
-	const file = chessPosition[0];
+export function toArrayPosition(position: ChessPosition): [ x: number, y: number ] {
+	const rank = Number(position[1]);
+	const file = position[0];
 
 	return [ rank - 1, file.charCodeAt(0) - 'a'.charCodeAt(0) ];
 }
