@@ -1,4 +1,4 @@
-import { ChessPiece, ChessPieceName } from './pieces/piece';
+import ChessPiece, { ChessPieceName } from './pieces/piece';
 import { ChessPosition } from './position';
 
 export type ChessMove = {
@@ -22,4 +22,4 @@ export enum MoveType {
     EN_PASSANT = 4,
     CASTLING_KINGSIDE = 5,
     CASTLING_QUEENSIDE = 6
-};
+}

@@ -1,4 +1,4 @@
-import { ChessPiece } from './pieces/piece.js';
+import ChessPiece from './pieces/piece.js';
 
 export default class Square {
 	readonly name: string;

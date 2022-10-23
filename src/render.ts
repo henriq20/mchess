@@ -1,6 +1,6 @@
 import { pad } from './utils.js';
 import ChessBoard from './board.js';
-import { ChessPiece } from './pieces/piece.js';
+import ChessPiece from './pieces/piece.js';
 import consoleColors, { Color } from './colors.js';
 
 type RecursivePartial<T> = {

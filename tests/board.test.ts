@@ -1,6 +1,6 @@
 import Square from '../src/square';
 import ChessBoard from '../src/board';
-import { ChessPiece } from '../src/pieces/piece';
+import createPiece from '../src/factory';
 
 describe('constructor', () => {
     it('should create an empty board', () => {
@@ -64,33 +64,25 @@ describe('place', () => {
     it('should place a piece on the board', () => {
         const board = new ChessBoard();
 
-        const piece: ChessPiece = {
-            name: 'pawn',
-            color: 'white',
-            letter: 'p'
-        };
+        const pawn = createPiece('p');
 
-        const result = board.place(0, 0, piece);
+        const result = board.place(0, 0, pawn);
 
         expect(result).toBe(true);
-        expect(piece.board).toEqual(board);
-        expect(piece.square).toBeTruthy();
-        expect(piece.square?.name).toBe('a1');
+        expect(pawn.board).toEqual(board);
+        expect(pawn.square).toBeTruthy();
+        expect(pawn.square?.name).toBe('a1');
     });
 
     it('should return false when the piece was not added', () => {
         const board = new ChessBoard();
 
-        const piece: ChessPiece = {
-            name: 'pawn',
-            color: 'white',
-            letter: 'p'
-        };
+        const pawn = createPiece('p');
 
-        expect(board.place(8, 0, piece)).toBe(false);
-        expect(board.place(0, 8, piece)).toBe(false);
-        expect(board.place(-1, 0, piece)).toBe(false);
-        expect(board.place(0, -1, piece)).toBe(false);
+        expect(board.place(8, 0, pawn)).toBe(false);
+        expect(board.place(0, 8, pawn)).toBe(false);
+        expect(board.place(-1, 0, pawn)).toBe(false);
+        expect(board.place(0, -1, pawn)).toBe(false);
 
         expect(board._board.every(row => row.every(s => !s.piece))).toBe(true);
     });
@@ -100,17 +92,8 @@ describe('get', () => {
     it('should get a piece', () => {
         const board = new ChessBoard();
 
-        const whitePawn: ChessPiece = {
-            name: 'pawn',
-            color: 'white',
-            letter: 'p'
-        };
-
-        const blackPawn: ChessPiece = {
-            name: 'pawn',
-            color: 'black',
-            letter: 'p'
-        };
+        const whitePawn = createPiece('p');
+        const blackPawn = createPiece('P');
 
         board.place(0, 0, whitePawn);
         board.place(5, 5, blackPawn);
@@ -133,15 +116,11 @@ describe('remove', () => {
     it('should remove a piece from the board', () => {
         const board = new ChessBoard();
 
-        const piece: ChessPiece = {
-            name: 'pawn',
-            color: 'white',
-            letter: 'p'
-        };
+        const pawn = createPiece('p');
 
-        board.place(0, 0, piece);
-        board.place(0, 1, piece);
-        board.place(1, 0, piece);
+        board.place(0, 0, pawn);
+        board.place(0, 1, pawn);
+        board.place(1, 0, pawn);
 
         const removedPiece = board.remove(0, 1);
 
@@ -173,17 +152,8 @@ describe('clear', () => {
     it('should remove all pieces from the board', () => {
         const board = new ChessBoard();
 
-        const whitePawn: ChessPiece = {
-            name: 'pawn',
-            color: 'white',
-            letter: 'p'
-        };
-
-        const blackPawn: ChessPiece = {
-            name: 'pawn',
-            color: 'black',
-            letter: 'p'
-        };
+        const whitePawn = createPiece('p');
+        const blackPawn = createPiece('P');
 
         board.place(0, 0, whitePawn);
         board.place(0, 5, blackPawn);

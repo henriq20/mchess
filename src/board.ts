@@ -1,5 +1,5 @@
 import Square from './square.js';
-import { ChessPiece } from './pieces/piece.js';
+import ChessPiece from './pieces/piece.js';
 import { toChessPosition } from './position.js';
 
 export default class ChessBoard {
