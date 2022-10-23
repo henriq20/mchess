@@ -5,18 +5,18 @@ export type ChessPieceLetter =
     'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
 const piecesMap: { [key: string]: ChessPieceName } = {
-    'k': 'king',
-    'q': 'queen',
-    'r': 'rook',
-    'b': 'bishop',
-    'n': 'knight',
-    'p': 'pawn'
+	'k': 'king',
+	'q': 'queen',
+	'r': 'rook',
+	'b': 'bishop',
+	'n': 'knight',
+	'p': 'pawn'
 };
 
 export default function createPiece(letter: ChessPieceLetter): ChessPiece {
-    return {
-        letter,
-        name: piecesMap[letter.toLowerCase()] ?? 'pawn',
-        color: /[a-z]/.test(letter) ? 'white' : 'black'
-    }
+	return {
+		letter,
+		name: piecesMap[letter.toLowerCase()] ?? 'pawn',
+		color: /[a-z]/.test(letter) ? 'white' : 'black'
+	};
 }
