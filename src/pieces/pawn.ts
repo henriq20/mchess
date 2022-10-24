@@ -1,6 +1,21 @@
 import Square from '../square';
 import ChessPiece, { ChessPieceColor } from './piece';
 
+const offsets = {
+	white: [
+		[ 1,  0 ],
+		[ 2,  0 ],
+		[ 1, -1 ],
+		[ 1,  1 ]
+	],
+	black: [
+		[ -1,  0 ],
+		[ -2,  0 ],
+		[ -1, -1 ],
+		[ -1,  1 ]
+	],
+};
+
 export default class Pawn extends ChessPiece {
 	constructor(color: ChessPieceColor) {
 		super('pawn', color === 'white' ? 'p' : 'P', color);
@@ -11,32 +26,30 @@ export default class Pawn extends ChessPiece {
 			return [];
 		}
 
-		const moves = [];
-		const b = this.board;
 		const row = this.square.x;
 		const column = this.square.y;
+		const offset = offsets[this.color];
 
-		const squares = {
-			oneSquareForward: b.get(row + 1, column),
-			twoSquaresForward: b.get(row + 2, column),
-			diagonalLeft: b.get(row + 1, column - 1),
-			diagonalRight: b.get(row + 1, column + 1)
-		};
+		const oneSquareForward           = this.board.get(row + offset[0][0], column + offset[0][1]);
+		const twoSquaresForward          = this.board.get(row + offset[1][0], column + offset[1][1]);
+		const oneSquareDiagonallyToLeft  = this.board.get(row + offset[2][0], column + offset[2][1]);
+		const oneSquareDiagonallyToRight = this.board.get(row + offset[3][0], column + offset[3][1]);
 
-		if (squares.oneSquareForward && !squares.oneSquareForward.piece) {
-			moves.push(squares.oneSquareForward);
+		const moves = [];
 
-			if (squares.twoSquaresForward && !squares.twoSquaresForward.piece && this.moves === 0) {
-				moves.push(squares.twoSquaresForward);
+		if (oneSquareForward && !oneSquareForward.piece) {
+			moves.push(oneSquareForward);
+
+			if (twoSquaresForward && !twoSquaresForward.piece && this.moves === 0) {
+				moves.push(twoSquaresForward);
 			}
 		}
 
-		if (squares.diagonalLeft && squares.diagonalLeft.piece && squares.diagonalLeft.piece.color !== this.color) {
-			moves.push(squares.diagonalLeft);
+		if (oneSquareDiagonallyToLeft && oneSquareDiagonallyToLeft.piece?.color !== this.color) {
+			moves.push(oneSquareDiagonallyToLeft);
 		}
-
-		if (squares.diagonalRight && squares.diagonalRight.piece && squares.diagonalRight.piece.color !== this.color) {
-			moves.push(squares.diagonalRight);
+		if (oneSquareDiagonallyToRight && oneSquareDiagonallyToRight.piece?.color !== this.color) {
+			moves.push(oneSquareDiagonallyToRight);
 		}
 
 		return moves;
