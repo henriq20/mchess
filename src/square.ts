@@ -12,4 +12,8 @@ export default class Square {
 		this.y = y;
 		this.piece = piece ?? null;
 	}
+
+	hasPiece() {
+		return !!this.piece;
+	}
 }
