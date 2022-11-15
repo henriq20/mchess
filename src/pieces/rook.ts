@@ -28,7 +28,7 @@ export default class Rook extends ChessPiece {
 				continue;
 			}
 
-			if (square.piece?.color !== this.color) {
+			if (this.isEnemy(square)) {
 				moves.push(square);
 				break;
 			}
@@ -49,7 +49,7 @@ export default class Rook extends ChessPiece {
 				continue;
 			}
 
-			if (square.piece?.color !== this.color) {
+			if (this.isEnemy(square)) {
 				moves.push(square);
 				break;
 			}
@@ -70,7 +70,7 @@ export default class Rook extends ChessPiece {
 				continue;
 			}
 
-			if (square.piece?.color !== this.color) {
+			if (this.isEnemy(square)) {
 				moves.push(square);
 				break;
 			}
@@ -91,7 +91,7 @@ export default class Rook extends ChessPiece {
 				continue;
 			}
 
-			if (square.piece?.color !== this.color) {
+			if (this.isEnemy(square)) {
 				moves.push(square);
 				break;
 			}

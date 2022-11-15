@@ -29,5 +29,13 @@ export default abstract class ChessPiece {
 		return !!this.possibleMoves().find(s => s.name === to.name);
 	}
 
+	isEnemy(square: Square): boolean {
+		if (!this.board) {
+			return false;
+		}
+
+		return square.hasPiece() && square.piece?.color !== this.color;
+	}
+
     abstract possibleMoves(): Square[];
 }
