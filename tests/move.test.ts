@@ -1,108 +1,120 @@
 import move from '../src/move';
-import ChessBoard from '../src/board';
-import createPiece from '../src/factory';
+import Chess from '../src/chess';
+import { ChessPosition } from '../src/position';
 
 it('should move a piece', () => {
-    const board = new ChessBoard();
-    const pawn = createPiece('p');
+    const chess = new Chess();
 
-    board.place(1, 3, pawn);
-
-    move(board, {
-        from: [ 1, 3 ],
-        to: [ 2, 3 ]
+    move(chess, {
+        from: 'e2',
+        to: 'e4'
     });
 
-    expect(board.get(1, 3)?.piece).toBe(null);
-    expect(board.get(2, 3)?.piece?.name).toBe('pawn');
+    expect(chess.piece('e2')).toBe(null);
+    expect(chess.piece('e4')?.name).toBe('pawn');
+});
+
+it('should return the correct result', () => {
+    const chess = new Chess();
+
+    const result = move(chess, {
+        from: 'e2',
+        to: 'e4'
+    });
+
+    expect(result).toBeTruthy();
+    expect(result).toMatchObject({
+        from: 'e2',
+        to: 'e4',
+        piece: chess.piece('e4')
+    });
+});
+
+it('should increase the number of movements', () => {
+    const chess = new Chess();
+
+    move(chess, {
+        from: 'e2',
+        to: 'e4'
+    });
+
+    expect(chess.piece('e4')?.moves).toBe(1);
 });
 
 it('should capture a piece', () => {
-    const board = new ChessBoard();
+    const chess = new Chess();
 
-    const whitePawn = createPiece('p');
-    const blackPawn = createPiece('P');
+    chess.place('P', 'e3');
 
-    board.place(1, 3, whitePawn);
-    board.place(2, 2, blackPawn);
-
-    move(board, {
-        from: [ 1, 3 ],
-        to: [ 2, 2 ]
+    move(chess, {
+        from: 'd2',
+        to: 'e3'
     });
 
-    expect(board.get(1, 3)?.piece).toBe(null);
-    expect(board.get(2, 2)?.piece?.color).toBe('white');
+    expect(chess.black.size).toBe(16);
+    expect(chess.piece('d2')).toBe(null);
+    expect(chess.piece('e3')?.color).toBe('white');
 });
 
-it('should return the result of a move', () => {
-    const board = new ChessBoard();
-    const pawn = createPiece('p');
+it('should return the correct result after a capture', () => {
+    const chess = new Chess();
 
-    board.place(1, 3, pawn);
+    chess.place('P', 'e3');
 
-    const result = move(board, {
-        from: [ 1, 3 ],
-        to: [ 2, 3 ]
+    const result = move(chess, {
+        from: 'd2',
+        to: 'e3'
     });
 
-    if (!result) {
-        fail();
-    }
-
-    expect(result.from).toBe('d2');
-    expect(result.to).toBe('d3');
-    expect(result.piece.name).toBe('pawn');
-    expect(result.capturedPiece).toBeFalsy();
-});
-
-it('should return the result of a capture', () => {
-    const board = new ChessBoard();
-
-    const whitePawn = createPiece('p');
-    const blackPawn = createPiece('P');
-
-    board.place(1, 3, whitePawn);
-    board.place(2, 2, blackPawn);
-
-    const result = move(board, {
-        from: [ 1, 3 ],
-        to: [ 2, 2 ]
+    expect(result).toBeTruthy();
+    expect(result).toMatchObject({
+        from: 'd2',
+        to: 'e3',
+        piece: chess.piece('e3'),
+        capturedPiece: 'pawn'
     });
-
-    if (!result) {
-        fail();
-    }
-
-    expect(result.from).toBe('d2');
-    expect(result.to).toBe('c3');
-    expect(result.piece.name).toBe('pawn');
-    expect(result.capturedPiece).toBe('pawn');
 });
 
 it('should return false when the `from` square does not have a piece', () => {
-    const board = new ChessBoard();
+    const chess = new Chess();
 
-    expect(move(board, { from: [ 0, 0 ], to: [ 1, 0 ] })).toBe(false);
+    const result = move(chess, {
+        from: 'e3',
+        to: 'e4'
+    });
+
+    expect(result).toBe(false);
 });
 
 it('should return false when the `from` square does not exist', () => {
-    const board = new ChessBoard();
+    const chess = new Chess();
 
-    expect(move(board, { from: [ -1, -1 ], to: [ 1, 0 ] })).toBe(false);
+    const result = move(chess, {
+        from: 'e0' as ChessPosition,
+        to: 'e4'
+    });
+
+    expect(result).toBe(false);
 });
 
 it('should return false when the `to` square does not exist', () => {
-    const board = new ChessBoard();
+    const chess = new Chess();
 
-    expect(move(board, { from: [ 0, 0 ], to: [ -1, -1 ] })).toBe(false);
+    const result = move(chess, {
+        from: 'e2',
+        to: 'e0' as ChessPosition
+    });
+
+    expect(result).toBe(false);
 });
 
 it('should return false when a piece cannot move to the target square', () => {
-    const board = new ChessBoard();
-    const pawn = createPiece('p');
+    const chess = new Chess();
 
-    board.place(1, 3, pawn);
+    const result = move(chess, {
+        from: 'e2',
+        to: 'e5'
+    });
 
-    expect(move(board, { from: [ 1, 3 ], to: [ 4, 3 ] })).toBe(false);
+    expect(result).toBe(false);
 });

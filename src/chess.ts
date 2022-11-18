@@ -1,11 +1,12 @@
 import Square from './square';
 import ChessBoard from './board';
+import King from './pieces/king';
 import createPiece from './factory';
 import ChessPiece from './pieces/piece';
 import { toArrayPosition } from './position';
 import { ChessPieceLetter } from './factory';
 import { ArrayPosition, ChessPosition } from './position';
-import King from './pieces/king';
+import makeMove, { ChessMove, ChessMoveResult } from './move';
 
 export type SetupFn = (place: (pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition) => ChessPiece | false) => void;
 
@@ -15,11 +16,13 @@ export default class Chess {
     black: Map<ChessPosition, ChessPiece>;
     whiteKing?: King;
     blackKing?: King;
+    history: ChessMoveResult[];
 
     constructor(setupFn?: SetupFn) {
         this.board = new ChessBoard();
         this.white = new Map();
         this.black = new Map();
+        this.history = [];
         this.setup(setupFn);
     }
 
@@ -60,7 +63,7 @@ export default class Chess {
         const result = this.board.place(row, column, piece);
 
         if (result) {
-            this[piece.color].set(piece.square?.name || '--', piece);
+            this[piece.color].set(piece.square?.name || 'a1', piece);
 
             if (piece instanceof King) {
                 if (piece.color === 'white') {
@@ -102,5 +105,11 @@ export default class Chess {
     square(position: ChessPosition | ArrayPosition): Square | null {
         const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
         return this.board.get(row, column);
+    }
+
+    move(move: ChessMove): ChessMoveResult | false {
+        const result = makeMove(this, move);
+
+        return result;
     }
 }

@@ -5,6 +5,7 @@ import Knight from '../src/pieces/knight';
 import Pawn from '../src/pieces/pawn';
 import Queen from '../src/pieces/queen';
 import Rook from '../src/pieces/rook';
+import { ChessPosition } from '../src/position';
 
 describe('place', () => {
     it('should place a piece on the specified position', () => {
@@ -29,7 +30,7 @@ describe('place', () => {
     it('should return false when the piece was not added', () => {
         const chess = new Chess(() => {});
 
-        const piece = chess.place('p', 'a9');
+        const piece = chess.place('p', 'a9' as ChessPosition);
 
         expect(piece).toBe(false);
     });
@@ -126,5 +127,33 @@ describe('takeOut', () => {
 
         expect(chess.white.size).toBe(0);
         expect(piece).toBeInstanceOf(Pawn);
+    });
+});
+
+describe('move', () => {
+    it('should move a piece', () => {
+        const chess = new Chess();
+
+        chess.move({
+            from: 'a2',
+            to: 'a4'
+        });
+
+        expect(chess.piece('a4')?.moves).toBe(1);
+        expect(chess.piece('a4')).toBeInstanceOf(Pawn);
+        expect(chess.square('a2')?.hasPiece()).toBe(false);
+    });
+
+    it('should return false when piece cannot move', () => {
+        const chess = new Chess();
+
+        const result = chess.move({
+            from: 'a2',
+            to: 'a5'
+        });
+
+        expect(result).toBe(false);
+        expect(chess.piece('a5')).toBe(null);
+        expect(chess.piece('a2')?.moves).toBe(0);
     });
 });
