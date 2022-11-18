@@ -1,21 +1,21 @@
 import ChessBoard from './board';
-import { ChessPieceLetter } from './factory';
-import ChessPiece from './pieces/piece';
-import { ArrayPosition, ChessPosition } from './position';
 import createPiece from './factory';
+import ChessPiece from './pieces/piece';
 import { toArrayPosition } from './position';
+import { ChessPieceLetter } from './factory';
+import { ArrayPosition, ChessPosition } from './position';
 
 export type SetupFn = (place: (pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition) => ChessPiece | false) => void;
 
 export default class Chess {
     board: ChessBoard;
-    white: ChessPiece[];
-    black: ChessPiece[];
+    white: Map<ChessPosition, ChessPiece>;
+    black: Map<ChessPosition, ChessPiece>;
 
     constructor(setupFn?: SetupFn) {
         this.board = new ChessBoard();
-        this.white = [];
-        this.black = [];
+        this.white = new Map();
+        this.black = new Map();
         this.setup(setupFn);
     }
 
@@ -26,7 +26,6 @@ export default class Chess {
 
         // Place pawns
         for (let column = 0; column < this.board.size; column++) {
-
             this.place('p', [ 1, column ]);
             this.place('P', [ 6, column ]);
         }
@@ -57,11 +56,31 @@ export default class Chess {
         const result = this.board.place(row, column, piece);
 
         if (result) {
-            this[piece.color].push(piece);
+            this[piece.color].set(piece.square?.name || '--', piece);
 
             return piece;
         }
 
         return false;
+    }
+
+    takeOut(position: ChessPosition | ArrayPosition): ChessPiece | null {
+        const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
+
+        const square = this.board.get(row, column);
+
+        if (!square || !square.hasPiece()) {
+            return null;
+        }
+
+        const piece = this.board.remove(row, column);
+
+        if (!piece) {
+            return null;
+        }
+
+        this[piece.color].delete(square.name || '--');
+
+        return piece;
     }
 }

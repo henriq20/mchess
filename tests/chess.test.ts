@@ -40,10 +40,10 @@ describe('place', () => {
         chess.place('p', 'a2');
         chess.place('P', 'a7');
 
-        expect(chess.white).toHaveLength(1);
-        expect(chess.black).toHaveLength(1);
-        expect(chess.white[0].color).toBe('white');
-        expect(chess.black[0].color).toBe('black');
+        expect(chess.white.size).toBe(1);
+        expect(chess.black.size).toBe(1);
+        expect(chess.white.get('a2')?.color).toBe('white');
+        expect(chess.black.get('a7')?.color).toBe('black');
     });
 
     it('should add a piece by passing row and column', () => {
@@ -51,7 +51,7 @@ describe('place', () => {
 
         chess.place('p', [ 0, 0 ]);
 
-        expect(chess.white).toHaveLength(1);
+        expect(chess.white.size).toBe(1);
         expect(chess.board.get(0, 0)?.piece).toBeInstanceOf(Pawn);
     });
 });
@@ -60,8 +60,8 @@ describe('setup', () => {
     it('should place the initial pieces on the board', () => {
         const chess = new Chess();
 
-        expect(chess.white).toHaveLength(16);
-        expect(chess.black).toHaveLength(16);
+        expect(chess.white.size).toBe(16);
+        expect(chess.black.size).toBe(16);
 
         for (let column = 0; column < chess.board.size; column++) {
             const white = chess.board.get(1, column);
@@ -98,10 +98,23 @@ describe('setup', () => {
             place('P', 'a7');
         });
 
-        expect(chess.white).toHaveLength(1);
-        expect(chess.black).toHaveLength(1);
+        expect(chess.white.size).toBe(1);
+        expect(chess.black.size).toBe(1);
 
-        expect(chess.white[0].color).toBe('white');
-        expect(chess.black[0].color).toBe('black');
+        expect(chess.white.get('a2')?.color).toBe('white');
+        expect(chess.black.get('a7')?.color).toBe('black');
+    });
+});
+
+describe('takeOut', () => {
+    it('should remove a piece from the board', () => {
+        const chess = new Chess(() => {});
+
+        chess.place('p', 'a1');
+
+        const piece = chess.takeOut('a1');
+
+        expect(chess.white.size).toBe(0);
+        expect(piece).toBeInstanceOf(Pawn);
     });
 });
