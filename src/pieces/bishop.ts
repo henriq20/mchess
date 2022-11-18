@@ -1,3 +1,4 @@
+import { Direction } from '../board';
 import Square from '../square';
 import ChessPiece, { ChessPieceColor } from './piece';
 
@@ -11,93 +12,30 @@ export default class Bishop extends ChessPiece {
 			return [];
 		}
 
-		const moves = [];
-		const currentRow = this.square.x;
-		const currentColumn = this.square.y;
+		const moves: Square[] = [];
 
-		// Diagonal left up
-		for (let row = currentRow + 1; row < this.board.size; row++) {
-			const square = this.board.get(row, currentColumn - (row - currentColumn));
-
-			if (!square) {
-				break;
-			}
-
+		const validate = (square: Square) => {
 			if (!square.hasPiece()) {
 				moves.push(square);
-				continue;
+				return false;
 			}
 
-			if (this.isEnemy(square)) {
+			if (square.piece?.color !== this.color) {
 				moves.push(square);
-				break;
+				return true;
 			}
 
-			break;
-		}
+			return true;
+		};
 
-		// Diagonal right up
-		for (let row = currentRow + 1; row < this.board.size; row++) {
-			const square = this.board.get(row, currentColumn + (row - currentColumn));
+		const directions: Direction[] = [
+			'diagonalBottomLeft',
+			'diagonalBottomRight',
+			'diagonalTopLeft',
+			'diagonalTopRight'
+		];
 
-			if (!square) {
-				break;
-			}
-
-			if (!square.hasPiece()) {
-				moves.push(square);
-				continue;
-			}
-
-			if (this.isEnemy(square)) {
-				moves.push(square);
-				break;
-			}
-
-			break;
-		}
-
-		// Diagonal bottom left
-		for (let row = currentRow - 1; row >= 0; row--) {
-			const square = this.board.get(row, currentColumn - (row - currentColumn));
-
-			if (!square) {
-				break;
-			}
-
-			if (!square.hasPiece()) {
-				moves.push(square);
-				continue;
-			}
-
-			if (this.isEnemy(square)) {
-				moves.push(square);
-				break;
-			}
-
-			break;
-		}
-
-		// Diagonal bottom right
-		for (let row = currentRow - 1; row >= 0; row--) {
-			const square = this.board.get(row, currentColumn + (row - currentColumn));
-
-			if (!square) {
-				break;
-			}
-
-			if (!square.hasPiece()) {
-				moves.push(square);
-				continue;
-			}
-
-			if (this.isEnemy(square)) {
-				moves.push(square);
-				break;
-			}
-
-			break;
-		}
+		this.board.traverse(this.square, directions, validate.bind(this));
 
 		return moves;
 	}
