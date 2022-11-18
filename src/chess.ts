@@ -1,3 +1,4 @@
+import Square from './square';
 import ChessBoard from './board';
 import createPiece from './factory';
 import ChessPiece from './pieces/piece';
@@ -65,15 +66,13 @@ export default class Chess {
     }
 
     takeOut(position: ChessPosition | ArrayPosition): ChessPiece | null {
-        const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
-
-        const square = this.board.get(row, column);
+        const square = this.square(position);
 
         if (!square || !square.hasPiece()) {
             return null;
         }
 
-        const piece = this.board.remove(row, column);
+        const piece = this.board.remove(square.x, square.y);
 
         if (!piece) {
             return null;
@@ -82,5 +81,14 @@ export default class Chess {
         this[piece.color].delete(square.name);
 
         return piece;
+    }
+
+    piece(position: ChessPosition | ArrayPosition): ChessPiece | null {
+        return this.square(position)?.piece || null;
+    }
+
+    square(position: ChessPosition | ArrayPosition): Square | null {
+        const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
+        return this.board.get(row, column);
     }
 }
