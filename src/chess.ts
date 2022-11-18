@@ -5,6 +5,7 @@ import ChessPiece from './pieces/piece';
 import { toArrayPosition } from './position';
 import { ChessPieceLetter } from './factory';
 import { ArrayPosition, ChessPosition } from './position';
+import King from './pieces/king';
 
 export type SetupFn = (place: (pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition) => ChessPiece | false) => void;
 
@@ -12,6 +13,8 @@ export default class Chess {
     board: ChessBoard;
     white: Map<ChessPosition, ChessPiece>;
     black: Map<ChessPosition, ChessPiece>;
+    whiteKing?: King;
+    blackKing?: King;
 
     constructor(setupFn?: SetupFn) {
         this.board = new ChessBoard();
@@ -58,6 +61,15 @@ export default class Chess {
 
         if (result) {
             this[piece.color].set(piece.square?.name || '--', piece);
+
+            if (piece instanceof King) {
+                if (piece.color === 'white') {
+                    this.whiteKing = piece;
+                    return piece;
+                }
+
+                this.blackKing = piece;
+            }
 
             return piece;
         }

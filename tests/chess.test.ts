@@ -54,6 +54,16 @@ describe('place', () => {
         expect(chess.white.size).toBe(1);
         expect(chess.board.get(0, 0)?.piece).toBeInstanceOf(Pawn);
     });
+
+    it('should set the white or black king', () => {
+        const chess = new Chess(() => {});
+
+        chess.place('k', [ 0, 0 ]);
+        chess.place('K', [ 1, 0 ]);
+
+        expect(chess.whiteKing).toBeInstanceOf(King);
+        expect(chess.blackKing).toBeInstanceOf(King);
+    });
 });
 
 describe('setup', () => {
