@@ -1,6 +1,7 @@
 import Square from '../src/square';
-import ChessBoard from '../src/board';
+import ChessBoard, { Direction } from '../src/board';
 import createPiece from '../src/factory';
+import { ChessPosition, toArrayPosition } from '../src/position';
 
 describe('constructor', () => {
     it('should create an empty board', () => {
@@ -162,5 +163,51 @@ describe('clear', () => {
 
         expect(board._board.every(row => row.every(s => !s.piece))).toBe(true);
         expect(removedPieces).toStrictEqual([ whitePawn, blackPawn ]);
+    });
+});
+
+describe('traverse', () => {
+    const cases: [ from: ChessPosition, direction: Direction, expected: ChessPosition[] ][] = [
+        [ 'e5', 'top', [ 'e6', 'e7', 'e8' ] ],
+        [ 'e5', 'bottom', [ 'e4', 'e3', 'e2', 'e1' ] ],
+        [ 'e5', 'left', [ 'd5', 'c5', 'b5', 'a5' ] ],
+        [ 'e5', 'right', [ 'f5', 'g5', 'h5' ] ],
+
+        [ 'a8', 'top', [] ],
+        [ 'a1', 'bottom', [] ],
+        [ 'a1', 'left', [] ],
+        [ 'h8', 'right', [] ],
+
+        [ 'e5', 'diagonalBottomLeft', [ 'd4', 'c3', 'b2', 'a1' ] ],
+        [ 'e5', 'diagonalBottomRight', [ 'f4', 'g3', 'h2' ] ],
+        [ 'e5', 'diagonalTopLeft', [ 'd6', 'c7', 'b8' ] ],
+        [ 'e5', 'diagonalTopRight', [ 'f6', 'g7', 'h8' ] ],
+
+        [ 'a1', 'diagonalTopRight', [ 'b2', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8' ] ],
+        [ 'h1', 'diagonalTopLeft', [ 'g2', 'f3', 'e4', 'd5', 'c6', 'b7', 'a8' ] ],
+        [ 'h8', 'diagonalBottomLeft', [ 'g7', 'f6', 'e5', 'd4', 'c3', 'b2', 'a1' ] ],
+        [ 'a8', 'diagonalBottomRight', [ 'b7', 'c6', 'd5', 'e4', 'f3', 'g2', 'h1'] ],
+
+        [ 'a1', 'diagonalTopLeft', [] ],
+        [ 'a1', 'diagonalBottomLeft', [] ],
+        [ 'h1', 'diagonalTopRight', [] ],
+        [ 'h1', 'diagonalBottomRight', [] ],
+    ]
+    it.each(cases)('should traverse the board in the specified direction', (from, direction, expected) => {
+        const board = new ChessBoard();
+        const squares: Square[] = [];
+
+        const fromSquare = board.get(...toArrayPosition(from));
+
+        if (!fromSquare) {
+            return fail();
+        }
+
+        board.traverse(fromSquare, [ direction ], (square) => {
+            squares.push(square);
+            return false;
+        });
+
+        expect(squares.map(s => s.name)).toStrictEqual(expected);
     });
 });
