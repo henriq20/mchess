@@ -79,7 +79,7 @@ export default class Chess {
             return null;
         }
 
-        this[piece.color].delete(square.name || '--');
+        this[piece.color].delete(square.name);
 
         return piece;
     }
