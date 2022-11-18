@@ -12,7 +12,8 @@ export default class Chess {
 
     constructor() {
         this.board = new ChessBoard();
-        this.white = this.black = [];
+        this.white = [];
+        this.black = [];
     }
 
     place(pieceName: ChessPieceLetter, position: ChessPosition): ChessPiece | false {
@@ -21,6 +22,12 @@ export default class Chess {
 
         const result = this.board.place(row, column, piece);
 
-        return result ? piece : false;
+        if (result) {
+            this[piece.color].push(piece);
+
+            return piece;
+        }
+
+        return false;
     }
 }

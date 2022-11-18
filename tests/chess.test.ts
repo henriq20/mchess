@@ -28,4 +28,16 @@ describe('place', () => {
 
         expect(piece).toBe(false);
     });
+
+    it('should add the piece to the pieces array', () => {
+        const chess = new Chess();
+
+        chess.place('p', 'a2');
+        chess.place('P', 'a7');
+
+        expect(chess.white.length).toBe(1);
+        expect(chess.black.length).toBe(1);
+        expect(chess.white[0].color).toBe('white');
+        expect(chess.black[0].color).toBe('black');
+    });
 });
