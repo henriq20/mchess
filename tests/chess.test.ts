@@ -156,4 +156,27 @@ describe('move', () => {
         expect(chess.piece('a5')).toBe(null);
         expect(chess.piece('a2')?.moves).toBe(0);
     });
+
+    it('should add the move to the history', () => {
+        const chess = new Chess();
+
+        const result = chess.move({
+            from: 'a2',
+            to: 'a4'
+        });
+
+        expect(chess.history).toHaveLength(1);
+        expect(chess.history[0]).toBe(result);
+    });
+
+    it('should not add the move to the history when the move is invalid', () => {
+        const chess = new Chess();
+
+        chess.move({
+            from: 'a3',
+            to: 'a4'
+        });
+
+        expect(chess.history).toHaveLength(0);
+    });
 });

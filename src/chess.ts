@@ -110,6 +110,10 @@ export default class Chess {
     move(move: ChessMove): ChessMoveResult | false {
         const result = makeMove(this, move);
 
+        if (result) {
+            this.history.push(result);
+        }
+
         return result;
     }
 }
