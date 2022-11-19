@@ -180,3 +180,21 @@ describe('move', () => {
         expect(chess.history).toHaveLength(0);
     });
 });
+
+describe('isCheck', () => {
+    it('should return false when none of the kings are in check', () => {
+        const chess = new Chess();
+
+        expect(chess.isCheck()).toBe(false);
+    });
+
+    it('should return true when the king is in check', () => {
+        const chess = new Chess(place => {
+            place('K', 'a8');
+            place('k', 'a1');
+            place('b', 'c6');
+        });
+
+        expect(chess.isCheck()).toBe(true);
+    });
+});

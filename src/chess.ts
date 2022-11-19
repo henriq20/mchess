@@ -116,4 +116,23 @@ export default class Chess {
 
         return result;
     }
+
+    isCheck(): boolean {
+        const isWhiteMoving = this.history.at(-1)?.piece.color === 'black' || true;
+        const pieces = isWhiteMoving ? this.white : this.black;
+        const king = isWhiteMoving ? this.blackKing : this.whiteKing;
+
+        for (const [ _, piece ] of pieces) {
+            if (piece instanceof King) {
+                continue;
+            }
+
+            if (piece.possibleMoves().some(square => square.name === king?.square?.name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
