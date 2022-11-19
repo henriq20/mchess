@@ -10,11 +10,11 @@ export type ChessPosition =
 
 export type ArrayPosition = [ x: number, y: number ];
 
-export function toChessPosition(x: number, y: number) {
+export function toChessPosition(x: number, y: number): ChessPosition {
 	const rank = x + 1;
 	const file = String.fromCharCode('a'.charCodeAt(0) + y);
 
-	return file + rank;
+	return (file + rank) as ChessPosition;
 }
 
 export function toArrayPosition(position: ChessPosition): [ x: number, y: number ] {
