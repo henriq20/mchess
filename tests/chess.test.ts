@@ -3,6 +3,7 @@ import Bishop from '../src/pieces/bishop';
 import King from '../src/pieces/king';
 import Knight from '../src/pieces/knight';
 import Pawn from '../src/pieces/pawn';
+import ChessPiece from '../src/pieces/piece';
 import Queen from '../src/pieces/queen';
 import Rook from '../src/pieces/rook';
 import { ChessPosition } from '../src/position';
@@ -27,12 +28,20 @@ describe('place', () => {
         expect(piece).toBeInstanceOf(Pawn);
     });
 
-    it('should return false when the piece was not added', () => {
+    it('should set the piece square', () => {
+        const chess = new Chess(() => {});
+
+        const piece = chess.place('p', 'a1');
+
+        expect((piece as ChessPiece).square).toBe('a1');
+    });
+
+    it('should return null when the piece was not added', () => {
         const chess = new Chess(() => {});
 
         const piece = chess.place('p', 'a9' as ChessPosition);
 
-        expect(piece).toBe(false);
+        expect(piece).toBe(null);
     });
 
     it('should add the piece to the pieces array', () => {

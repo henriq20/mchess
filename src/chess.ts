@@ -8,131 +8,133 @@ import { ChessPieceLetter } from './factory';
 import { ArrayPosition, ChessPosition } from './position';
 import makeMove, { ChessMove, ChessMoveResult } from './move';
 
-export type SetupFn = (place: (pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition) => ChessPiece | false) => void;
+export type SetupFn = (place: (pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition) => ChessPiece | null) => void;
 
 export default class Chess {
-    board: ChessBoard;
-    white: Map<ChessPosition, ChessPiece>;
-    black: Map<ChessPosition, ChessPiece>;
-    whiteKing?: King;
-    blackKing?: King;
-    history: ChessMoveResult[];
+	board: ChessBoard;
+	white: Map<ChessPosition, ChessPiece>;
+	black: Map<ChessPosition, ChessPiece>;
+	whiteKing?: King;
+	blackKing?: King;
+	history: ChessMoveResult[];
 
-    constructor(setupFn?: SetupFn) {
-        this.board = new ChessBoard();
-        this.white = new Map();
-        this.black = new Map();
-        this.history = [];
-        this.setup(setupFn);
-    }
+	constructor(setupFn?: SetupFn) {
+		this.board = new ChessBoard();
+		this.white = new Map();
+		this.black = new Map();
+		this.history = [];
+		this.setup(setupFn);
+	}
 
-    setup(fn?: SetupFn) {
-        if (typeof fn === 'function') {
-            return fn(this.place.bind(this));
-        }
+	setup(fn?: SetupFn) {
+		if (typeof fn === 'function') {
+			return fn(this.place.bind(this));
+		}
 
-        // Place pawns
-        for (let column = 0; column < this.board.size; column++) {
-            this.place('p', [ 1, column ]);
-            this.place('P', [ 6, column ]);
-        }
+		// Place pawns
+		for (let column = 0; column < this.board.size; column++) {
+			this.place('p', [ 1, column ]);
+			this.place('P', [ 6, column ]);
+		}
 
-        this.place('r', [ 0, 0 ]);
-        this.place('n', [ 0, 1 ]);
-        this.place('b', [ 0, 2 ]);
-        this.place('q', [ 0, 3 ]);
-        this.place('k', [ 0, 4 ]);
-        this.place('b', [ 0, 5 ]);
-        this.place('n', [ 0, 6 ]);
-        this.place('r', [ 0, 7 ]);
+		this.place('r', [ 0, 0 ]);
+		this.place('n', [ 0, 1 ]);
+		this.place('b', [ 0, 2 ]);
+		this.place('q', [ 0, 3 ]);
+		this.place('k', [ 0, 4 ]);
+		this.place('b', [ 0, 5 ]);
+		this.place('n', [ 0, 6 ]);
+		this.place('r', [ 0, 7 ]);
 
-        this.place('R', [ 7, 0 ]);
-        this.place('N', [ 7, 1 ]);
-        this.place('B', [ 7, 2 ]);
-        this.place('Q', [ 7, 3 ]);
-        this.place('K', [ 7, 4 ]);
-        this.place('B', [ 7, 5 ]);
-        this.place('N', [ 7, 6 ]);
-        this.place('R', [ 7, 7 ]);
-    }
+		this.place('R', [ 7, 0 ]);
+		this.place('N', [ 7, 1 ]);
+		this.place('B', [ 7, 2 ]);
+		this.place('Q', [ 7, 3 ]);
+		this.place('K', [ 7, 4 ]);
+		this.place('B', [ 7, 5 ]);
+		this.place('N', [ 7, 6 ]);
+		this.place('R', [ 7, 7 ]);
+	}
 
-    place(pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition): ChessPiece | false {
-        const piece = createPiece(pieceName);
-        const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
+	place(pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition): ChessPiece | null {
+		const piece = createPiece(pieceName);
+		const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
 
-        const result = this.board.place(row, column, piece);
+		const result = this.board.place(row, column, piece);
 
-        if (result) {
-            this[piece.color].set(piece.square?.name || 'a1', piece);
+		if (result) {
+			piece.square = this.board.get(row, column)?.name;
+			piece.chess = this;
 
-            if (piece instanceof King) {
-                if (piece.color === 'white') {
-                    this.whiteKing = piece;
-                    return piece;
-                }
+			this[piece.color].set(piece.square as ChessPosition, piece);
 
-                this.blackKing = piece;
-            }
+			if (piece instanceof King) {
+				if (piece.color === 'white') {
+					this.whiteKing = piece;
+					return piece;
+				}
 
-            return piece;
-        }
+				this.blackKing = piece;
+			}
 
-        return false;
-    }
+			return piece;
+		}
 
-    takeOut(position: ChessPosition | ArrayPosition): ChessPiece | null {
-        const square = this.square(position);
+		return null;
+	}
 
-        if (!square || !square.hasPiece()) {
-            return null;
-        }
+	takeOut(position: ChessPosition | ArrayPosition): ChessPiece | null {
+		const square = this.square(position);
 
-        const piece = this.board.remove(square.x, square.y);
+		if (!square || !square.hasPiece()) {
+			return null;
+		}
 
-        if (!piece) {
-            return null;
-        }
+		const piece = this.board.remove(square.x, square.y);
 
-        this[piece.color].delete(square.name);
+		if (!piece) {
+			return null;
+		}
 
-        return piece;
-    }
+		this[piece.color].delete(square.name);
 
-    piece(position: ChessPosition | ArrayPosition): ChessPiece | null {
-        return this.square(position)?.piece || null;
-    }
+		return piece;
+	}
 
-    square(position: ChessPosition | ArrayPosition): Square | null {
-        const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
-        return this.board.get(row, column);
-    }
+	piece(position: ChessPosition | ArrayPosition): ChessPiece | null {
+		return this.square(position)?.piece || null;
+	}
 
-    move(move: ChessMove): ChessMoveResult | false {
-        const result = makeMove(this, move);
+	square(position: ChessPosition | ArrayPosition): Square | null {
+		const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
+		return this.board.get(row, column);
+	}
 
-        if (result) {
-            this.history.push(result);
-        }
+	move(move: ChessMove): ChessMoveResult | false {
+		const result = makeMove(this, move);
 
-        return result;
-    }
+		if (result) {
+			this.history.push(result);
+		}
 
-    isCheck(): boolean {
-        const isWhiteMoving = this.history.at(-1)?.piece.color === 'black' || true;
-        const pieces = isWhiteMoving ? this.white : this.black;
-        const king = isWhiteMoving ? this.blackKing : this.whiteKing;
+		return result;
+	}
 
-        for (const [ _, piece ] of pieces) {
-            if (piece instanceof King) {
-                continue;
-            }
+	isCheck(): boolean {
+		const isWhiteMoving = this.history.at(-1)?.piece.color === 'black' || true;
+		const pieces = isWhiteMoving ? this.white : this.black;
+		const king = isWhiteMoving ? this.blackKing : this.whiteKing;
 
-            if (piece.possibleMoves().some(square => square.name === king?.square?.name)) {
-                return true;
-            }
-        }
+		for (const [ _, piece ] of pieces) {
+			if (piece instanceof King) {
+				continue;
+			}
 
-        return false;
-    }
+			if (piece.possibleMoves().some(square => square.name === king?.square)) {
+				return true;
+			}
+		}
 
+		return false;
+	}
 }

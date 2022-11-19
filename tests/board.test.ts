@@ -2,6 +2,7 @@ import Square from '../src/square';
 import ChessBoard, { Direction } from '../src/board';
 import createPiece from '../src/factory';
 import { ChessPosition, toArrayPosition } from '../src/position';
+import Pawn from '../src/pieces/pawn';
 
 describe('constructor', () => {
     it('should create an empty board', () => {
@@ -70,9 +71,7 @@ describe('place', () => {
         const result = board.place(0, 0, pawn);
 
         expect(result).toBe(true);
-        expect(pawn.board).toEqual(board);
-        expect(pawn.square).toBeTruthy();
-        expect(pawn.square?.name).toBe('a1');
+        expect(board.get(0, 0)?.piece).toBeInstanceOf(Pawn);
     });
 
     it('should return false when the piece was not added', () => {
@@ -125,9 +124,8 @@ describe('remove', () => {
 
         const removedPiece = board.remove(0, 1);
 
-        expect(removedPiece?.square).toBe(null);
-        expect(removedPiece?.board).toBe(null);
-
+        expect(removedPiece).toBeInstanceOf(Pawn);
+        expect(board.get(0, 1)?.piece).toBe(null);
         expect(board.get(0, 0)).toBeTruthy();
         expect(board.get(1, 0)).toBeTruthy();
     });

@@ -40,9 +40,6 @@ export default class ChessBoard {
 			return false;
 		}
 
-		piece.board = this;
-		piece.square = this._board[row][column];
-
 		this._board[row][column].piece = piece;
 
 		return true;
@@ -67,8 +64,6 @@ export default class ChessBoard {
 			return null;
 		}
 
-		removedPiece.board = null;
-		removedPiece.square = null;
 		this._board[row][column].piece = null;
 
 		return removedPiece;
