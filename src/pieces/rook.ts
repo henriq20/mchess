@@ -7,7 +7,13 @@ export default class Rook extends ChessPiece {
 	}
 
 	possibleMoves(): Square[] {
-		if (!this.board || !this.square) {
+		if (!this.chess || !this.square) {
+			return [];
+		}
+
+		const square = this.chess.square(this.square);
+
+		if (!square) {
 			return [];
 		}
 
@@ -27,7 +33,7 @@ export default class Rook extends ChessPiece {
 			return true;
 		};
 
-		this.board.traverse(this.square, [ 'top', 'left', 'bottom', 'right' ], validate.bind(this));
+		this.chess.board.traverse(square, [ 'top', 'left', 'bottom', 'right' ], validate.bind(this));
 
 		return moves;
 	}

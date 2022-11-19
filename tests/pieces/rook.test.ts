@@ -1,16 +1,14 @@
-import Rook from '../../src/pieces/rook';
-import ChessBoard from '../../src/board';
+import Chess from '../../src/chess';
 
 it('should move horizontally and vertically', () => {
-    const board = new ChessBoard();
-    const rook = new Rook('white');
+    const chess = new Chess(() => {});
 
-    board.place(4, 4, rook); // e5
+    const piece = chess.place('r', 'e5');
 
-    const possibleMoves = rook.possibleMoves();
+    const possibleMoves = piece?.possibleMoves();
 
     expect(possibleMoves).toHaveLength(14);
-    expect(possibleMoves.map(s => s.name)).toEqual(expect.arrayContaining([
+    expect(possibleMoves?.map(s => s.name)).toEqual(expect.arrayContaining([
         'd5', 'c5', 'b5', 'a5', // left
         'e6', 'e7', 'e8', // top
         'f5', 'g5', 'h5', // right

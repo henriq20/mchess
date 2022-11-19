@@ -1,16 +1,14 @@
-import Queen from '../../src/pieces/queen';
-import ChessBoard from '../../src/board';
+import Chess from '../../src/chess';
 
 it('should move in all directions', () => {
-    const board = new ChessBoard();
-    const queen = new Queen('white');
+    const chess = new Chess(() => {});
 
-    board.place(4, 4, queen); // e5
+    const piece = chess.place('q', 'e5');
 
-    const possibleMoves = queen.possibleMoves();
+    const possibleMoves = piece?.possibleMoves();
 
     expect(possibleMoves).toHaveLength(27);
-    expect(possibleMoves.map(s => s.name)).toEqual(expect.arrayContaining([
+    expect(possibleMoves?.map(s => s.name)).toEqual(expect.arrayContaining([
         'a1', 'b2', 'c3', 'd4',
         'f4', 'g3', 'h2',
         'd6', 'c7', 'b8',

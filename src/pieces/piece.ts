@@ -1,5 +1,6 @@
+import Chess from '../chess.js';
 import Square from '../square.js';
-import ChessBoard from '../board.js';
+import { ChessPosition } from '../position.js';
 import { ChessPieceLetter } from '../factory.js';
 
 export type ChessPieceName = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
@@ -11,8 +12,8 @@ export default abstract class ChessPiece {
 	color: ChessPieceColor;
 	letter: ChessPieceLetter;
 	moves: number;
-	board?: ChessBoard | null;
-	square?: Square | null;
+	chess?: Chess | null;
+	square?: ChessPosition | null;
 
 	constructor(name: ChessPieceName, letter: ChessPieceLetter, color: ChessPieceColor) {
 		this.name = name;
@@ -22,7 +23,7 @@ export default abstract class ChessPiece {
 	}
 
 	canMove(to: Square): boolean {
-		if (!this.board || !this.square) {
+		if (!this.chess || !this.square) {
 			return false;
 		}
 
@@ -30,7 +31,7 @@ export default abstract class ChessPiece {
 	}
 
 	isEnemy(square: Square): boolean {
-		if (!this.board) {
+		if (!this.chess) {
 			return false;
 		}
 

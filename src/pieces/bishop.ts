@@ -8,7 +8,13 @@ export default class Bishop extends ChessPiece {
 	}
 
 	possibleMoves(): Square[] {
-		if (!this.board || !this.square) {
+		if (!this.chess || !this.square) {
+			return [];
+		}
+
+		const square = this.chess.square(this.square);
+
+		if (!square) {
 			return [];
 		}
 
@@ -35,7 +41,7 @@ export default class Bishop extends ChessPiece {
 			'diagonalTopRight'
 		];
 
-		this.board.traverse(this.square, directions, validate.bind(this));
+		this.chess.board.traverse(square, directions, validate.bind(this));
 
 		return moves;
 	}

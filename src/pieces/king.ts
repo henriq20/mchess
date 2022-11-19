@@ -18,16 +18,22 @@ export default class King extends ChessPiece {
 	}
 
 	possibleMoves(): Square[] {
-		if (!this.board || !this.square) {
+		if (!this.chess || !this.square) {
 			return [];
 		}
 
-		const row = this.square.x;
-		const column = this.square.y;
+		const square = this.chess.square(this.square);
+
+		if (!square) {
+			return [];
+		}
+
+		const row = square.x;
+		const column = square.y;
 		const moves = [];
 
 		for (const offset of offsets) {
-			const square = this.board.get(row + offset[0], column + offset[1]);
+			const square = this.chess.square([ row + offset[0], column + offset[1] ]);
 
 			if (square && (!square.piece || square.piece.color !== this.color)) {
 				moves.push(square);

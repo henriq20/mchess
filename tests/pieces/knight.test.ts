@@ -1,16 +1,14 @@
-import Knight from '../../src/pieces/knight';
-import ChessBoard from '../../src/board';
+import Chess from '../../src/chess';
 
 it('should move in L shape', () => {
-    const board = new ChessBoard();
-    const knight = new Knight('white');
+    const chess = new Chess(() => {});
 
-    board.place(4, 4, knight); // e5
+    const piece = chess.place('n', 'e5');
 
-    const possibleMoves = knight.possibleMoves();
+    const possibleMoves = piece?.possibleMoves();
 
     expect(possibleMoves).toHaveLength(8);
-    expect(possibleMoves.map(s => s.name)).toEqual(expect.arrayContaining([
+    expect(possibleMoves?.map(s => s.name)).toEqual(expect.arrayContaining([
         'd3', 'c4', 'c6', 'd7', 'f3', 'g4', 'f7', 'g6'
     ]));
 });
