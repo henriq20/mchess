@@ -1,6 +1,7 @@
-import move from '../src/move';
+import move, { ChessMoveResult } from '../src/move';
 import Chess from '../src/chess';
 import { ChessPosition } from '../src/position';
+import Pawn from '../src/pieces/pawn';
 
 it('should move a piece', () => {
     const chess = new Chess();
@@ -117,4 +118,47 @@ it('should return false when a piece cannot move to the target square', () => {
     });
 
     expect(result).toBe(false);
+});
+
+it('should undo a movement', () => {
+    const chess = new Chess();
+
+    const move = chess.move({
+        from: 'e2',
+        to: 'e4'
+    }) as ChessMoveResult;
+
+    move.undo();
+
+    expect(chess.piece('e4')).toBe(null);
+    expect(chess.piece('e2')).toBeInstanceOf(Pawn);
+});
+
+it('should decrease the number of movements after undoing the move', () => {
+    const chess = new Chess();
+
+    const move = chess.move({
+        from: 'e2',
+        to: 'e4'
+    }) as ChessMoveResult;
+
+    move.undo();
+
+    expect(chess.piece('e2')?.moves).toBe(0);
+});
+
+it('should undo a capture', () => {
+    const chess = new Chess();
+
+    chess.place('P', 'f3');
+
+    const move = chess.move({
+        from: 'e2',
+        to: 'f3'
+    }) as ChessMoveResult;
+
+    move.undo();
+
+    expect(chess.piece('f3')?.color).toBe('black');
+    expect(chess.piece('e2')?.color).toBe('white');
 });

@@ -12,7 +12,8 @@ export type ChessMoveResult = {
     to: ChessPosition,
     piece: ChessPiece,
     capturedPiece?: ChessPieceName,
-    promotedTo?: ChessPieceName
+    promotedTo?: ChessPieceName,
+	undo: () => void
 };
 
 export default function move(chess: Chess, move: ChessMove): ChessMoveResult | false {
@@ -30,16 +31,28 @@ export default function move(chess: Chess, move: ChessMove): ChessMoveResult | f
 		capturedPiece = to.piece.name;
 	}
 
-	chess.takeOut([ to.x, to.y ]);
+	const captured = chess.takeOut([ to.x, to.y ]);
 	chess.takeOut([ from.x, from.y ]);
 	chess.board.place(to.x, to.y, piece);
 
 	piece.moves++;
 
+	const undo = () => {
+		chess.takeOut([ to.x, to.y ]);
+		chess.board.place(from.x, from.y, piece);
+
+		if (captured) {
+			chess.board.place(to.x, to.y, captured);
+		}
+
+		piece.moves--;
+	};
+
 	return {
 		from: from.name,
 		to: to.name,
 		piece,
-		capturedPiece
+		capturedPiece,
+		undo
 	};
 }

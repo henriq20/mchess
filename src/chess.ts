@@ -120,6 +120,17 @@ export default class Chess {
 		return result;
 	}
 
+	undo(): ChessMoveResult | null {
+		const move = this.history.pop();
+
+		if (move) {
+			move.undo();
+			return move;
+		}
+
+		return null;
+	}
+
 	isCheck(): boolean {
 		const isWhiteMoving = this.history.at(-1)?.piece.color === 'black' || true;
 		const pieces = isWhiteMoving ? this.white : this.black;

@@ -207,3 +207,32 @@ describe('isCheck', () => {
         expect(chess.isCheck()).toBe(true);
     });
 });
+
+describe.only('undo', () => {
+    it('should remove the move from the history', () => {
+        const chess = new Chess();
+
+        chess.move({
+            from: 'e2',
+            to: 'e4'
+        });
+
+        chess.undo();
+
+        expect(chess.history).toHaveLength(0);
+    });
+
+    it('should move the moving piece back', () => {
+        const chess = new Chess();
+
+        chess.move({
+            from: 'e2',
+            to: 'e4'
+        });
+
+        chess.undo();
+
+        expect(chess.piece('e4')).toBe(null);
+        expect(chess.piece('e2')).toBeInstanceOf(Pawn);
+    });
+});
