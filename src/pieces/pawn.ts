@@ -1,5 +1,5 @@
-import Square from '../square';
-import ChessPiece, { ChessPieceColor } from './piece';
+import Square from '../square.js';
+import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = {
 	white: [
@@ -51,10 +51,10 @@ export default class Pawn extends ChessPiece {
 			}
 		}
 
-		if (oneSquareDiagonallyToLeft && oneSquareDiagonallyToLeft.piece?.color !== this.color) {
+		if (oneSquareDiagonallyToLeft?.hasPiece() && oneSquareDiagonallyToLeft.piece?.color !== this.color) {
 			moves.push(oneSquareDiagonallyToLeft);
 		}
-		if (oneSquareDiagonallyToRight && oneSquareDiagonallyToRight.piece?.color !== this.color) {
+		if (oneSquareDiagonallyToRight?.hasPiece() && oneSquareDiagonallyToRight.piece?.color !== this.color) {
 			moves.push(oneSquareDiagonallyToRight);
 		}
 
