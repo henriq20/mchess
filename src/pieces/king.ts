@@ -1,5 +1,5 @@
-import Square from '../square';
-import ChessPiece, { ChessPieceColor } from './piece';
+import Square from '../square.js';
+import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = [
 	[  1,  0 ], // One square forward

@@ -1,5 +1,5 @@
-import Square from '../square';
-import ChessPiece, { ChessPieceColor } from './piece';
+import Square from '../square.js';
+import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = [
 	[  2, -1 ], // Two squares forward and one to the left
@@ -25,14 +25,14 @@ export default class Knight extends ChessPiece {
 			return [];
 		}
 
-		const square = this.chess.square(this.square);
+		const currentSquare = this.chess.square(this.square);
 
-		if (!square) {
+		if (!currentSquare) {
 			return [];
 		}
 
-		const row = square.x;
-		const column = square.y;
+		const row = currentSquare.x;
+		const column = currentSquare.y;
 		const moves = [];
 
 		for (const offset of offsets) {

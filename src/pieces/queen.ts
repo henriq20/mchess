@@ -1,6 +1,6 @@
-import Square from '../square';
+import Square from '../square.js';
 import { Direction } from '../board';
-import ChessPiece, { ChessPieceColor } from './piece';
+import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Queen extends ChessPiece {
 	constructor(color: ChessPieceColor) {
