@@ -1,6 +1,6 @@
-import Chess from './chess';
-import { ArrayPosition, ChessPosition } from './position';
-import ChessPiece, { ChessPieceName } from './pieces/piece';
+import Chess from './chess.js';
+import { ArrayPosition, ChessPosition } from './position.js';
+import ChessPiece, { ChessPieceName } from './pieces/piece.js';
 
 export type ChessMove = {
     from: ArrayPosition | ChessPosition,
@@ -11,41 +11,37 @@ export type ChessMoveResult = {
     from: ChessPosition,
     to: ChessPosition,
     piece: ChessPiece,
-    capturedPiece?: ChessPieceName,
+    capturedPiece: ChessPiece | null,
     promotedTo?: ChessPieceName,
 	undo: () => void
 };
 
-export default function move(chess: Chess, move: ChessMove): ChessMoveResult | false {
+export default function makeMove(chess: Chess, move: ChessMove): ChessMoveResult | false {
 	const from = chess.square(move.from);
 	const to = chess.square(move.to);
 	const piece = from?.piece;
 
-	if (!from || !piece || !to || !piece.canMove(to)) {
+	if (!from || !piece || !to) {
 		return false;
 	}
 
-	let capturedPiece;
-
-	if (to.piece) {
-		capturedPiece = to.piece.name;
-	}
-
-	const captured = chess.takeOut([ to.x, to.y ]);
+	const capturedPiece = chess.takeOut([ to.x, to.y ]);
 	chess.takeOut([ from.x, from.y ]);
-	chess.board.place(to.x, to.y, piece);
+	chess.place(piece, [ to.x, to.y ]);
 
 	piece.moves++;
+	piece.square = to.name;
 
 	const undo = () => {
 		chess.takeOut([ to.x, to.y ]);
-		chess.board.place(from.x, from.y, piece);
+		chess.place(piece, [ from.x, from.y ]);
 
-		if (captured) {
-			chess.board.place(to.x, to.y, captured);
+		if (capturedPiece) {
+			chess.place(capturedPiece, [ to.x, to.y ]);
 		}
 
 		piece.moves--;
+		piece.square = from.name;
 	};
 
 	return {

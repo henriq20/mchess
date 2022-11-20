@@ -60,7 +60,7 @@ it('should capture a piece', () => {
 it('should return the correct result after a capture', () => {
     const chess = new Chess();
 
-    chess.place('P', 'e3');
+    const capturedPiece = chess.place('P', 'e3');
 
     const result = move(chess, {
         from: 'd2',
@@ -72,7 +72,7 @@ it('should return the correct result after a capture', () => {
         from: 'd2',
         to: 'e3',
         piece: chess.piece('e3'),
-        capturedPiece: 'pawn'
+        capturedPiece
     });
 });
 
@@ -104,17 +104,6 @@ it('should return false when the `to` square does not exist', () => {
     const result = move(chess, {
         from: 'e2',
         to: 'e0' as ChessPosition
-    });
-
-    expect(result).toBe(false);
-});
-
-it('should return false when a piece cannot move to the target square', () => {
-    const chess = new Chess();
-
-    const result = move(chess, {
-        from: 'e2',
-        to: 'e5'
     });
 
     expect(result).toBe(false);
