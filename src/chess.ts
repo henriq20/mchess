@@ -1,17 +1,18 @@
-import Square from './square';
-import ChessBoard from './board';
-import King from './pieces/king';
-import createPiece from './factory';
-import ChessPiece from './pieces/piece';
-import { toArrayPosition } from './position';
-import { ChessPieceLetter } from './factory';
-import { ArrayPosition, ChessPosition } from './position';
-import makeMove, { ChessMove, ChessMoveResult } from './move';
+import Square from './square.js';
+import ChessBoard from './board.js';
+import King from './pieces/king.js';
+import createPiece from './factory.js';
+import { toArrayPosition } from './position.js';
+import { ChessPieceLetter } from './factory.js';
+import { ArrayPosition, ChessPosition } from './position.js';
+import ChessPiece, { ChessPieceColor } from './pieces/piece.js';
+import makeMove, { ChessMove, ChessMoveResult } from './move.js';
 
 export type SetupFn = (place: (pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition) => ChessPiece | null) => void;
 
 export default class Chess {
 	board: ChessBoard;
+	turn: ChessPieceColor;
 	white: Map<ChessPosition, ChessPiece>;
 	black: Map<ChessPosition, ChessPiece>;
 	whiteKing?: King;
@@ -23,6 +24,7 @@ export default class Chess {
 		this.white = new Map();
 		this.black = new Map();
 		this.history = [];
+		this.turn = 'white';
 		this.setup(setupFn);
 	}
 
@@ -56,8 +58,8 @@ export default class Chess {
 		this.place('R', [ 7, 7 ]);
 	}
 
-	place(pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition): ChessPiece | null {
-		const piece = createPiece(pieceName);
+	place(piece: ChessPieceLetter | ChessPiece, position: ChessPosition | ArrayPosition): ChessPiece | null {
+		piece = typeof piece === 'string' ? createPiece(piece) : piece;
 		const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
 
 		const result = this.board.place(row, column, piece);
@@ -111,10 +113,17 @@ export default class Chess {
 	}
 
 	move(move: ChessMove): ChessMoveResult | false {
+		const movingPiece = this.piece(move.from);
+
+		if (!movingPiece || !movingPiece.canMove(this.square(move.to) as Square)) {
+			return false;
+		}
+
 		const result = makeMove(this, move);
 
 		if (result) {
 			this.history.push(result);
+			this._changeTurn();
 		}
 
 		return result;
@@ -125,23 +134,59 @@ export default class Chess {
 
 		if (move) {
 			move.undo();
+			this._changeTurn();
 			return move;
 		}
 
 		return null;
 	}
 
-	isCheck(): boolean {
-		const isWhiteMoving = this.history.at(-1)?.piece.color === 'black' || true;
-		const pieces = isWhiteMoving ? this.white : this.black;
-		const king = isWhiteMoving ? this.blackKing : this.whiteKing;
+	enemies(): Map<ChessPosition, ChessPiece> {
+		if (!this.history.length) {
+			return this.black;
+		}
 
-		for (const [ _, piece ] of pieces) {
-			if (piece instanceof King) {
+		return this.history.at(-1)?.piece.color === 'black' ? this.black : this.white;
+	}
+
+	isCheck(): boolean {
+		if (this.turn === 'white') {
+			return !!this.whiteKing && this._isKingAttacked(this.whiteKing);
+		}
+
+		return !!this.blackKing && this._isKingAttacked(this.blackKing);
+	}
+
+	moves(square?: ChessPosition): ChessPosition[] {
+		if (square) {
+			const piece = this.square(square)?.piece;
+
+			return !piece ? [] : piece.possibleMoves().map(s => s.name).filter(s => !piece.wouldBeInCheck(s));
+		}
+
+		const pieces = [ ...this[this.turn].values() ];
+
+		const moves = pieces.map(piece => {
+			return piece.possibleMoves().map(s => s.name).filter(s => !piece.wouldBeInCheck(s));
+		}).flat();
+
+		return moves;
+	}
+
+	_changeTurn() {
+		this.turn = this.turn === 'white' ? 'black' : 'white';
+		return this.turn;
+	}
+
+	_isKingAttacked(king: King): boolean {
+		const enemies = this[king.color === 'white' ? 'black' : 'white'];
+
+		for (const [ _, enemy ] of enemies) {
+			if (enemy instanceof King) {
 				continue;
 			}
 
-			if (piece.possibleMoves().some(square => square.name === king?.square)) {
+			if (enemy.possibleMoves().some(s => s.piece === king)) {
 				return true;
 			}
 		}

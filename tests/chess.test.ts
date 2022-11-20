@@ -1,9 +1,10 @@
 import Chess from '../src/chess';
+import { ChessPieceLetter } from '../src/factory';
 import Bishop from '../src/pieces/bishop';
 import King from '../src/pieces/king';
 import Knight from '../src/pieces/knight';
 import Pawn from '../src/pieces/pawn';
-import ChessPiece from '../src/pieces/piece';
+import ChessPiece, { ChessPieceName } from '../src/pieces/piece';
 import Queen from '../src/pieces/queen';
 import Rook from '../src/pieces/rook';
 import { ChessPosition } from '../src/position';
@@ -197,18 +198,33 @@ describe('isCheck', () => {
         expect(chess.isCheck()).toBe(false);
     });
 
-    it('should return true when the king is in check', () => {
+    it('should return true when the black king is in check', () => {
         const chess = new Chess(place => {
             place('K', 'a8');
             place('k', 'a1');
-            place('b', 'c6');
+            place('b', 'b5');
+        });
+
+        chess.move({
+            from: 'b5',
+            to: 'c6'
+        });
+
+        expect(chess.isCheck()).toBe(true);
+    });
+
+    it('should return true when the white king is in check', () => {
+        const chess = new Chess(place => {
+            place('k', 'a8');
+            place('K', 'a1');
+            place('B', 'c6');
         });
 
         expect(chess.isCheck()).toBe(true);
     });
 });
 
-describe.only('undo', () => {
+describe('undo', () => {
     it('should remove the move from the history', () => {
         const chess = new Chess();
 
@@ -234,5 +250,86 @@ describe.only('undo', () => {
 
         expect(chess.piece('e4')).toBe(null);
         expect(chess.piece('e2')).toBeInstanceOf(Pawn);
+    });
+});
+
+describe('enemies', () => {
+    it('should get the white pieces when it is the black pieces\' turn', () => {
+        const chess = new Chess();
+
+        chess.move({
+            from: 'e2',
+            to: 'e4'
+        });
+
+        const enemies = chess.enemies();
+
+        for (const [ _, enemy ] of enemies) {
+            expect(enemy.color).toBe('white');
+        }
+    });
+
+    it('should get the black pieces when it is the white pieces\' turn', () => {
+        const chess = new Chess();
+
+        const enemies = chess.enemies();
+
+        for (const [ _, enemy ] of enemies) {
+            expect(enemy.color).toBe('black');
+        }
+    });
+});
+
+describe('moves', () => {
+    it('should get the possible moves of a piece', () => {
+        const chess = new Chess();
+
+        expect(chess.moves('e2')).toStrictEqual([ 'e3', 'e4' ]);
+        expect(chess.moves('e7')).toStrictEqual([ 'e6', 'e5' ]);
+    });
+
+    it('should return an empty array when the square does not have a piece', () => {
+        const chess = new Chess();
+
+        expect(chess.moves('e3')).toHaveLength(0);
+    });
+
+    it('should return an empty array when the square does not exist', () => {
+        const chess = new Chess();
+
+        expect(chess.moves('e0' as ChessPosition)).toHaveLength(0);
+    });
+
+    it('should return all the possible moves if square is not provided', () => {
+        const chess = new Chess();
+
+        const moves = chess.moves();
+
+        expect(moves).toHaveLength(20);
+        expect(moves).toEqual(expect.arrayContaining([
+            'a3', 'a4',
+            'b3', 'b4',
+            'c3', 'c4',
+            'd3', 'd4',
+            'f3', 'f4',
+            'g3', 'g4',
+            'h3', 'h4'
+        ]));
+    });
+
+    it('should not be a possible move if it would put the king in check', () => {
+        const chess = new Chess(place => {
+            place('r', 'd2');
+            place('k', 'd1');
+            place('K', 'h8');
+            place('Q', 'd8');
+        });
+
+        const moves = chess.moves('d2');
+
+        expect(moves).toHaveLength(6);
+        expect(moves).toEqual(expect.arrayContaining([
+            'd3', 'd4', 'd5', 'd6', 'd7', 'd8'
+        ]));
     });
 });
