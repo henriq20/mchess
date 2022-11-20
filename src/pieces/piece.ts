@@ -1,5 +1,6 @@
 import Chess from '../chess.js';
 import Square from '../square.js';
+import makeMove from '../move.js';
 import { ChessPosition } from '../position.js';
 import { ChessPieceLetter } from '../factory.js';
 
@@ -36,6 +37,25 @@ export default abstract class ChessPiece {
 		}
 
 		return square.hasPiece() && square.piece?.color !== this.color;
+	}
+
+	wouldBeInCheck(to: ChessPosition) {
+		const move = makeMove(this.chess as Chess, {
+			from: this.square as ChessPosition,
+			to
+		});
+
+		if (!move) {
+			return false;
+		}
+
+		if (this.chess?.isCheck()) {
+			move.undo();
+			return true;
+		}
+
+		move.undo();
+		return false;
 	}
 
     abstract possibleMoves(): Square[];
