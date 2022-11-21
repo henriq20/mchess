@@ -1,4 +1,4 @@
-import { toArrayPosition, toChessPosition } from '../src/position';
+import { ChessPosition, toArrayPosition, toChessPosition } from '../src/position';
 
 it.each([
     [ [0, 0], 'a1' ],
@@ -55,5 +55,5 @@ it.each([
     [ 'g7', [6, 6] ],
     [ 'h8', [7, 7] ]
 ])('should convert %p back to %p', (chessPosition, [ x, y ]) => {
-    expect(toArrayPosition(chessPosition)).toStrictEqual([ x, y ]);
+    expect(toArrayPosition(chessPosition as ChessPosition)).toStrictEqual([ x, y ]);
 });
