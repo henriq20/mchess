@@ -4,9 +4,8 @@ import ChessBoard from './board.js';
 import King from './pieces/king.js';
 import createPiece from './factory.js';
 import { toArrayPosition } from './position.js';
-import { ChessPieceLetter } from './factory.js';
 import { ArrayPosition, ChessPosition } from './position.js';
-import ChessPiece, { ChessPieceColor } from './pieces/piece.js';
+import ChessPiece, { ChessPieceColor, ChessPieceLetter } from './pieces/piece.js';
 import makeMove, { ChessMove, ChessMoveResult } from './move.js';
 
 const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';

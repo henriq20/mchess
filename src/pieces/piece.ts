@@ -2,11 +2,14 @@ import Chess from '../chess.js';
 import Square from '../square.js';
 import makeMove from '../move.js';
 import { ChessPosition } from '../position.js';
-import { ChessPieceLetter } from '../factory.js';
 
 export type ChessPieceName = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
 
 export type ChessPieceColor = 'black' | 'white';
+
+export type ChessPieceLetter =
+    'k' | 'q' | 'r' | 'b' | 'n' | 'p' |
+    'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
 export default abstract class ChessPiece {
 	name: ChessPieceName;
