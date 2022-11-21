@@ -23,12 +23,14 @@ export default abstract class ChessPiece {
 		this.moves = 0;
 	}
 
-	canMove(to: Square): boolean {
+	canMove(to: Square | ChessPosition): boolean {
 		if (!this.chess || !this.square) {
 			return false;
 		}
 
-		return !!this.possibleMoves().find(s => s.name === to.name);
+		const square = typeof to === 'string' ? to : to.name;
+
+		return !!this.possibleMoves().find(s => s.name === square);
 	}
 
 	isEnemy(square: Square): boolean {

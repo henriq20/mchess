@@ -96,7 +96,7 @@ export default class Chess {
 	move(move: ChessMove): ChessMoveResult | false {
 		const movingPiece = this.piece(move.from);
 
-		if (!movingPiece || !movingPiece.canMove(this.square(move.to) as Square)) {
+		if (!movingPiece || !movingPiece.canMove(move.to)) {
 			return false;
 		}
 
