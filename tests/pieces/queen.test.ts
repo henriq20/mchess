@@ -1,7 +1,7 @@
 import Chess from '../../src/chess';
 
 it('should move in all directions', () => {
-    const chess = new Chess(() => {});
+    const chess = new Chess('');
 
     const piece = chess.place('q', 'e5');
 

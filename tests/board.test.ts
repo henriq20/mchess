@@ -92,8 +92,8 @@ describe('get', () => {
     it('should get a piece', () => {
         const board = new ChessBoard();
 
-        const whitePawn = createPiece('p');
-        const blackPawn = createPiece('P');
+        const whitePawn = createPiece('P');
+        const blackPawn = createPiece('p');
 
         board.place(0, 0, whitePawn);
         board.place(5, 5, blackPawn);
@@ -151,8 +151,8 @@ describe('clear', () => {
     it('should remove all pieces from the board', () => {
         const board = new ChessBoard();
 
-        const whitePawn = createPiece('p');
-        const blackPawn = createPiece('P');
+        const whitePawn = createPiece('P');
+        const blackPawn = createPiece('p');
 
         board.place(0, 0, whitePawn);
         board.place(0, 5, blackPawn);

@@ -39,19 +39,19 @@ it('should show where each piece is on the board', () => {
     const board = new ChessBoard();
     const d = new ChessBoardRenderer(board);
 
-    board.place(0, 0, createPiece('p'));
-    board.place(1, 1, createPiece('n'));
-    board.place(2, 2, createPiece('q'));
-    board.place(3, 3, createPiece('b'));
-    board.place(7, 7, createPiece('K'));
-    board.place(7, 6, createPiece('Q'));
-    board.place(7, 5, createPiece('P'));
+    board.place(0, 0, createPiece('P'));
+    board.place(1, 1, createPiece('N'));
+    board.place(2, 2, createPiece('Q'));
+    board.place(3, 3, createPiece('B'));
+    board.place(7, 7, createPiece('k'));
+    board.place(7, 6, createPiece('q'));
+    board.place(7, 5, createPiece('p'));
 
     const str = d.render();
 
     expect(str).toEqual(
         '  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n' +
-        '8 │   │   │   │   │   │ P │ Q │ K │\n' +
+        '8 │   │   │   │   │   │ p │ q │ k │\n' +
         '  ├───┼───┼───┼───┼───┼───┼───┼───┤\n' +
         '7 │   │   │   │   │   │   │   │   │\n' +
         '  ├───┼───┼───┼───┼───┼───┼───┼───┤\n' +
@@ -59,13 +59,13 @@ it('should show where each piece is on the board', () => {
         '  ├───┼───┼───┼───┼───┼───┼───┼───┤\n' +
         '5 │   │   │   │   │   │   │   │   │\n' +
         '  ├───┼───┼───┼───┼───┼───┼───┼───┤\n' +
-        '4 │   │   │   │ b │   │   │   │   │\n' +
+        '4 │   │   │   │ B │   │   │   │   │\n' +
         '  ├───┼───┼───┼───┼───┼───┼───┼───┤\n' +
-        '3 │   │   │ q │   │   │   │   │   │\n' +
+        '3 │   │   │ Q │   │   │   │   │   │\n' +
         '  ├───┼───┼───┼───┼───┼───┼───┼───┤\n' +
-        '2 │   │ n │   │   │   │   │   │   │\n' +
+        '2 │   │ N │   │   │   │   │   │   │\n' +
         '  ├───┼───┼───┼───┼───┼───┼───┼───┤\n' +
-        '1 │ p │   │   │   │   │   │   │   │\n' +
+        '1 │ P │   │   │   │   │   │   │   │\n' +
         '  └───┴───┴───┴───┴───┴───┴───┴───┘\n' +
         '    a   b   c   d   e   f   g   h'
     )
@@ -83,13 +83,13 @@ it('should modify how each piece is displayed', () => {
         }
     });
 
-    board.place(0, 0, createPiece('p'));
-    board.place(1, 1, createPiece('n'));
-    board.place(2, 2, createPiece('q'));
-    board.place(3, 3, createPiece('b'));
-    board.place(7, 7, createPiece('K'));
-    board.place(7, 6, createPiece('Q'));
-    board.place(7, 5, createPiece('P'));
+    board.place(0, 0, createPiece('P'));
+    board.place(1, 1, createPiece('N'));
+    board.place(2, 2, createPiece('Q'));
+    board.place(3, 3, createPiece('B'));
+    board.place(7, 7, createPiece('k'));
+    board.place(7, 6, createPiece('q'));
+    board.place(7, 5, createPiece('p'));
 
     const str = d.render();
 
@@ -118,7 +118,7 @@ it('should modify how each piece is displayed', () => {
 it('should modify how each rank is displayed', () => {
     const board = new ChessBoard();
     const d = new ChessBoardRenderer(board, {
-        rank: rank => '0'
+        rank: () => '0'
     });
 
     const str = d.render();

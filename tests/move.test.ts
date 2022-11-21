@@ -45,7 +45,7 @@ it('should increase the number of movements', () => {
 it('should capture a piece', () => {
     const chess = new Chess();
 
-    chess.place('P', 'e3');
+    chess.place('p', 'e3');
 
     move(chess, {
         from: 'd2',
@@ -60,7 +60,7 @@ it('should capture a piece', () => {
 it('should return the correct result after a capture', () => {
     const chess = new Chess();
 
-    const capturedPiece = chess.place('P', 'e3');
+    const capturedPiece = chess.place('p', 'e3');
 
     const result = move(chess, {
         from: 'd2',
@@ -139,7 +139,7 @@ it('should decrease the number of movements after undoing the move', () => {
 it('should undo a capture', () => {
     const chess = new Chess();
 
-    chess.place('P', 'f3');
+    chess.place('p', 'f3');
 
     const move = chess.move({
         from: 'e2',

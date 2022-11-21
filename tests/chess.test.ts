@@ -1,44 +1,43 @@
 import Chess from '../src/chess';
-import { ChessPieceLetter } from '../src/factory';
 import Bishop from '../src/pieces/bishop';
 import King from '../src/pieces/king';
 import Knight from '../src/pieces/knight';
 import Pawn from '../src/pieces/pawn';
-import ChessPiece, { ChessPieceName } from '../src/pieces/piece';
+import ChessPiece from '../src/pieces/piece';
 import Queen from '../src/pieces/queen';
 import Rook from '../src/pieces/rook';
 import { ChessPosition } from '../src/position';
 
 describe('place', () => {
     it('should place a piece on the specified position', () => {
-        const chess = new Chess(() => {});
+        const chess = new Chess();
 
-        chess.place('p', 'a1');
+        chess.place('p', 'a3');
 
-        const square = chess.board.get(0, 0);
+        const square = chess.board.get(2, 0);
 
         expect(square?.hasPiece()).toBe(true);
         expect(square?.piece?.name).toBe('pawn');
     });
 
     it('should return the piece created', () => {
-        const chess = new Chess(() => {});
+        const chess = new Chess();
 
-        const piece = chess.place('p', 'a1');
+        const piece = chess.place('p', 'a3');
 
         expect(piece).toBeInstanceOf(Pawn);
     });
 
     it('should set the piece square', () => {
-        const chess = new Chess(() => {});
+        const chess = new Chess();
 
-        const piece = chess.place('p', 'a1');
+        const piece = chess.place('p', 'a3');
 
-        expect((piece as ChessPiece).square).toBe('a1');
+        expect((piece as ChessPiece).square).toBe('a3');
     });
 
     it('should return null when the piece was not added', () => {
-        const chess = new Chess(() => {});
+        const chess = new Chess();
 
         const piece = chess.place('p', 'a9' as ChessPosition);
 
@@ -46,31 +45,28 @@ describe('place', () => {
     });
 
     it('should add the piece to the pieces array', () => {
-        const chess = new Chess(() => {});
+        const chess = new Chess();
 
-        chess.place('p', 'a2');
-        chess.place('P', 'a7');
+        chess.place('p', 'a3');
+        chess.place('P', 'a4');
 
-        expect(chess.white.size).toBe(1);
-        expect(chess.black.size).toBe(1);
-        expect(chess.white.get('a2')?.color).toBe('white');
-        expect(chess.black.get('a7')?.color).toBe('black');
+        expect(chess.white.size).toBe(17);
+        expect(chess.black.size).toBe(17);
+        expect(chess.black.get('a3')?.color).toBe('black');
+        expect(chess.white.get('a4')?.color).toBe('white');
     });
 
     it('should add a piece by passing row and column', () => {
-        const chess = new Chess(() => {});
+        const chess = new Chess();
 
-        chess.place('p', [ 0, 0 ]);
+        chess.place('P', [ 2, 0 ]);
 
-        expect(chess.white.size).toBe(1);
-        expect(chess.board.get(0, 0)?.piece).toBeInstanceOf(Pawn);
+        expect(chess.white.size).toBe(17);
+        expect(chess.board.get(2, 0)?.piece).toBeInstanceOf(Pawn);
     });
 
     it('should set the white or black king', () => {
-        const chess = new Chess(() => {});
-
-        chess.place('k', [ 0, 0 ]);
-        chess.place('K', [ 1, 0 ]);
+        const chess = new Chess();
 
         expect(chess.whiteKing).toBeInstanceOf(King);
         expect(chess.blackKing).toBeInstanceOf(King);
@@ -112,30 +108,15 @@ describe('setup', () => {
         expect(chess.board.get(7, 6)?.piece).toBeInstanceOf(Knight);
         expect(chess.board.get(7, 7)?.piece).toBeInstanceOf(Rook);
     });
-
-    it('should work with a custom function', () => {
-        const chess = new Chess(place => {
-            place('p', 'a2');
-            place('P', 'a7');
-        });
-
-        expect(chess.white.size).toBe(1);
-        expect(chess.black.size).toBe(1);
-
-        expect(chess.white.get('a2')?.color).toBe('white');
-        expect(chess.black.get('a7')?.color).toBe('black');
-    });
 });
 
 describe('takeOut', () => {
     it('should remove a piece from the board', () => {
-        const chess = new Chess(() => {});
+        const chess = new Chess();
 
-        chess.place('p', 'a1');
+        const piece = chess.takeOut('e2');
 
-        const piece = chess.takeOut('a1');
-
-        expect(chess.white.size).toBe(0);
+        expect(chess.white.size).toBe(15);
         expect(piece).toBeInstanceOf(Pawn);
     });
 });
@@ -199,11 +180,7 @@ describe('isCheck', () => {
     });
 
     it('should return true when the black king is in check', () => {
-        const chess = new Chess(place => {
-            place('K', 'a8');
-            place('k', 'a1');
-            place('b', 'b5');
-        });
+        const chess = new Chess('k7/8/8/1B6/8/8/8/K7 w - - 0 1');
 
         chess.move({
             from: 'b5',
@@ -214,11 +191,7 @@ describe('isCheck', () => {
     });
 
     it('should return true when the white king is in check', () => {
-        const chess = new Chess(place => {
-            place('k', 'a8');
-            place('K', 'a1');
-            place('B', 'c6');
-        });
+        const chess = new Chess('K7/8/2b5/8/8/8/8/k7 w - - 0 1');
 
         expect(chess.isCheck()).toBe(true);
     });
@@ -318,12 +291,7 @@ describe('moves', () => {
     });
 
     it('should not be a possible move if it would put the king in check', () => {
-        const chess = new Chess(place => {
-            place('r', 'd2');
-            place('k', 'd1');
-            place('K', 'h8');
-            place('Q', 'd8');
-        });
+        const chess = new Chess('3q3k/8/8/8/8/8/3R4/3K4 w - - 0 1');
 
         const moves = chess.moves('d2');
 

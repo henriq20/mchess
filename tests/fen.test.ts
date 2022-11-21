@@ -126,6 +126,13 @@ const cases = [
                 [ 'P', [ 7, 1 ] ],
             ]
         }
+    },
+    {
+        fen: '',
+        expected: {
+            turn: 'white',
+            pieces: []
+        }
     }
 ]
 
