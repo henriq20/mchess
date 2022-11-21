@@ -66,7 +66,7 @@ export default class Chess {
 		return null;
 	}
 
-	takeOut(position: ChessPosition | ArrayPosition): ChessPiece | null {
+	takeOut(position: ChessPosition): ChessPiece | null {
 		const square = this.square(position);
 
 		if (!square || !square.hasPiece()) {
@@ -88,9 +88,8 @@ export default class Chess {
 		return this.white.get(position) ?? this.black.get(position) ?? null;
 	}
 
-	square(position: ChessPosition | ArrayPosition): Square | null {
-		const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
-		return this.board.get(row, column);
+	square(position: ChessPosition): Square | null {
+		return this.board.get(...toArrayPosition(position));
 	}
 
 	move(move: ChessMove): ChessMoveResult | false {

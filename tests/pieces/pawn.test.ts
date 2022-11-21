@@ -12,8 +12,8 @@ it('should be able to move one square forward', () => {
     const whitePawn = chess.place('P', 'a1');
     const blackPawn = chess.place('p', 'a8');
 
-    expect(whitePawn?.canMove(chess.square('a2') as Square)).toBe(true);
-    expect(blackPawn?.canMove(chess.square('a7') as Square)).toBe(true);
+    expect(whitePawn?.canMove('a2')).toBe(true);
+    expect(blackPawn?.canMove('a7')).toBe(true);
 });
 
 it('should be able to move two squares forward', () => {
@@ -27,19 +27,19 @@ it('should not be able to move two squares forward when it has already moved onc
 
     pawn.moves++;
 
-    expect(pawn.canMove(chess.square('a3') as Square)).toBe(false);
+    expect(pawn.canMove('a3')).toBe(false);
 });
 
 it('should be able to capture a piece diagonally to the left', () => {
-    const whitePawn = chess.place('P', [ 1, 3 ]);
-    chess.place('p', [ 2, 2 ]);
+    const whitePawn = chess.place('P', 'd2');
+    chess.place('p', 'c3');
 
-    expect(whitePawn?.canMove(chess.square([ 2, 2 ]) as Square)).toBe(true);
+    expect(whitePawn?.canMove('c3')).toBe(true);
 });
 
 it('should be able to capture a piece diagonally to the right', () => {
-    const whitePawn = chess.place('P', [ 1, 3 ]);
-    chess.place('p', [ 2, 4 ]);
+    const whitePawn = chess.place('P', 'd2');
+    chess.place('p', 'e3');
 
-    expect(whitePawn?.canMove(chess.square([ 2, 4 ]) as Square)).toBe(true);
+    expect(whitePawn?.canMove('e3')).toBe(true);
 });

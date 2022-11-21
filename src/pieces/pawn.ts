@@ -36,10 +36,10 @@ export default class Pawn extends ChessPiece {
 		const column = square.y;
 		const offset = offsets[this.color];
 
-		const oneSquareForward           = this.chess.square([ row + offset[0][0], column + offset[0][1] ]);
-		const twoSquaresForward          = this.chess.square([ row + offset[1][0], column + offset[1][1] ]);
-		const oneSquareDiagonallyToLeft  = this.chess.square([ row + offset[2][0], column + offset[2][1] ]);
-		const oneSquareDiagonallyToRight = this.chess.square([ row + offset[3][0], column + offset[3][1] ]);
+		const oneSquareForward           = this.chess.board.get(row + offset[0][0], column + offset[0][1]);
+		const twoSquaresForward          = this.chess.board.get(row + offset[1][0], column + offset[1][1]);
+		const oneSquareDiagonallyToLeft  = this.chess.board.get(row + offset[2][0], column + offset[2][1]);
+		const oneSquareDiagonallyToRight = this.chess.board.get(row + offset[3][0], column + offset[3][1]);
 
 		const moves = [];
 
