@@ -1,3 +1,4 @@
+import parseFEN from './fen.js';
 import Square from './square.js';
 import ChessBoard from './board.js';
 import King from './pieces/king.js';
@@ -8,7 +9,7 @@ import { ArrayPosition, ChessPosition } from './position.js';
 import ChessPiece, { ChessPieceColor } from './pieces/piece.js';
 import makeMove, { ChessMove, ChessMoveResult } from './move.js';
 
-export type SetupFn = (place: (pieceName: ChessPieceLetter, position: ChessPosition | ArrayPosition) => ChessPiece | null) => void;
+const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 export default class Chess {
 	board: ChessBoard;
@@ -19,43 +20,23 @@ export default class Chess {
 	blackKing?: King;
 	history: ChessMoveResult[];
 
-	constructor(setupFn?: SetupFn) {
+	constructor(fen?: string) {
 		this.board = new ChessBoard();
 		this.white = new Map();
 		this.black = new Map();
 		this.history = [];
 		this.turn = 'white';
-		this.setup(setupFn);
+		this.setup(fen ?? DEFAULT_POSITION);
 	}
 
-	setup(fn?: SetupFn) {
-		if (typeof fn === 'function') {
-			return fn(this.place.bind(this));
+	setup(fen: string) {
+		const result = parseFEN(fen);
+
+		for (const [ letter, position ] of result.pieces) {
+			this.place(letter, position);
 		}
 
-		// Place pawns
-		for (let column = 0; column < this.board.size; column++) {
-			this.place('p', [ 1, column ]);
-			this.place('P', [ 6, column ]);
-		}
-
-		this.place('r', [ 0, 0 ]);
-		this.place('n', [ 0, 1 ]);
-		this.place('b', [ 0, 2 ]);
-		this.place('q', [ 0, 3 ]);
-		this.place('k', [ 0, 4 ]);
-		this.place('b', [ 0, 5 ]);
-		this.place('n', [ 0, 6 ]);
-		this.place('r', [ 0, 7 ]);
-
-		this.place('R', [ 7, 0 ]);
-		this.place('N', [ 7, 1 ]);
-		this.place('B', [ 7, 2 ]);
-		this.place('Q', [ 7, 3 ]);
-		this.place('K', [ 7, 4 ]);
-		this.place('B', [ 7, 5 ]);
-		this.place('N', [ 7, 6 ]);
-		this.place('R', [ 7, 7 ]);
+		this.turn = result.turn;
 	}
 
 	place(piece: ChessPieceLetter | ChessPiece, position: ChessPosition | ArrayPosition): ChessPiece | null {
@@ -150,11 +131,9 @@ export default class Chess {
 	}
 
 	isCheck(): boolean {
-		if (this.turn === 'white') {
-			return !!this.whiteKing && this._isKingAttacked(this.whiteKing);
-		}
+		const king = this.turn === 'white' ? this.whiteKing : this.blackKing;
 
-		return !!this.blackKing && this._isKingAttacked(this.blackKing);
+		return !!king && this._isKingAttacked(king);
 	}
 
 	moves(square?: ChessPosition): ChessPosition[] {
