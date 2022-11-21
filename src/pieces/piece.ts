@@ -33,14 +33,6 @@ export default abstract class ChessPiece {
 		return this.possibleMoves().some(s => s.name === square);
 	}
 
-	isEnemy(square: Square): boolean {
-		if (!this.chess) {
-			return false;
-		}
-
-		return square.hasPiece() && square.piece?.color !== this.color;
-	}
-
 	wouldBeInCheck(to: ChessPosition) {
 		const move = makeMove(this.chess as Chess, {
 			from: this.square as ChessPosition,
