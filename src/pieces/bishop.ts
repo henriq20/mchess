@@ -4,7 +4,7 @@ import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Bishop extends ChessPiece {
 	constructor(color: ChessPieceColor) {
-		super('bishop', color === 'white' ? 'b' : 'B', color);
+		super('bishop', color === 'white' ? 'B' : 'b', color);
 	}
 
 	possibleMoves(): Square[] {

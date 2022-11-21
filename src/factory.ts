@@ -11,7 +11,7 @@ export type ChessPieceLetter =
     'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
 export default function createPiece(letter: ChessPieceLetter): ChessPiece {
-	const color: ChessPieceColor = /[a-z]/.test(letter) ? 'white' : 'black';
+	const color: ChessPieceColor = /[a-z]/.test(letter) ? 'black' : 'white';
 
 	switch (letter) {
 	case 'r':

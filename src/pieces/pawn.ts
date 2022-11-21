@@ -18,7 +18,7 @@ const offsets = {
 
 export default class Pawn extends ChessPiece {
 	constructor(color: ChessPieceColor) {
-		super('pawn', color === 'white' ? 'p' : 'P', color);
+		super('pawn', color === 'white' ? 'P' : 'p', color);
 	}
 
 	possibleMoves(): Square[] {
