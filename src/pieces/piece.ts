@@ -30,7 +30,7 @@ export default abstract class ChessPiece {
 
 		const square = typeof to === 'string' ? to : to.name;
 
-		return !!this.possibleMoves().find(s => s.name === square);
+		return this.possibleMoves().some(s => s.name === square);
 	}
 
 	isEnemy(square: Square): boolean {
