@@ -84,8 +84,8 @@ export default class Chess {
 		return piece;
 	}
 
-	piece(position: ChessPosition | ArrayPosition): ChessPiece | null {
-		return this.square(position)?.piece || null;
+	piece(position: ChessPosition): ChessPiece | null {
+		return this.white.get(position) ?? this.black.get(position) ?? null;
 	}
 
 	square(position: ChessPosition | ArrayPosition): Square | null {
