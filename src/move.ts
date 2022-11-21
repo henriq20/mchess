@@ -1,10 +1,10 @@
 import Chess from './chess.js';
-import { ArrayPosition, ChessPosition } from './position.js';
+import { ChessPosition } from './position.js';
 import ChessPiece, { ChessPieceName } from './pieces/piece.js';
 
 export type ChessMove = {
-    from: ArrayPosition | ChessPosition,
-    to: ArrayPosition | ChessPosition
+    from:  ChessPosition,
+    to:  ChessPosition
 };
 
 export type ChessMoveResult = {
