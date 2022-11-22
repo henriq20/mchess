@@ -1,5 +1,4 @@
 import Chess from '../chess.js';
-import Square from '../square.js';
 import makeMove from '../move.js';
 import { ChessPosition } from '../position.js';
 
