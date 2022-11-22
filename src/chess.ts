@@ -159,11 +159,11 @@ export default class Chess {
 		const enemies = this[king.color === 'white' ? 'black' : 'white'];
 
 		for (const [ _, enemy ] of enemies) {
-			if (enemy instanceof King) {
+			if (enemy.name === 'king') {
 				continue;
 			}
 
-			if (enemy.possibleMoves().includes(king.square)) {
+			if (enemy.canMove(king.square)) {
 				return true;
 			}
 		}
