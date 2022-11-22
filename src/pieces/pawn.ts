@@ -32,8 +32,7 @@ export default class Pawn extends ChessPiece {
 			return [];
 		}
 
-		const row = square.x;
-		const column = square.y;
+		const [ row, column ] = square.position;
 		const offset = offsets[this.color];
 
 		const oneSquareForward           = this.chess.board.get(row + offset[0][0], column + offset[0][1]);
@@ -41,21 +40,29 @@ export default class Pawn extends ChessPiece {
 		const oneSquareDiagonallyToLeft  = this.chess.board.get(row + offset[2][0], column + offset[2][1]);
 		const oneSquareDiagonallyToRight = this.chess.board.get(row + offset[3][0], column + offset[3][1]);
 
-		const moves = [];
+		const isQuiet = (square: Square | null) => {
+			return square && square.empty;
+		};
 
-		if (oneSquareForward && !oneSquareForward.piece) {
-			moves.push(oneSquareForward);
+		const isCapture = (square: Square | null) => {
+			return square && (!square.empty && square.piece?.color !== this.color);
+		};
 
-			if (twoSquaresForward && !twoSquaresForward.piece && this.moves === 0) {
-				moves.push(twoSquaresForward);
+		const moves: Square[] = [];
+
+		if (isQuiet(oneSquareForward)) {
+			moves.push(oneSquareForward as Square);
+
+			if (isQuiet(twoSquaresForward) && this.moves === 0) {
+				moves.push(twoSquaresForward as Square);
 			}
 		}
 
-		if (oneSquareDiagonallyToLeft?.hasPiece() && oneSquareDiagonallyToLeft.piece?.color !== this.color) {
-			moves.push(oneSquareDiagonallyToLeft);
+		if (isCapture(oneSquareDiagonallyToLeft)) {
+			moves.push(oneSquareDiagonallyToLeft as Square);
 		}
-		if (oneSquareDiagonallyToRight?.hasPiece() && oneSquareDiagonallyToRight.piece?.color !== this.color) {
-			moves.push(oneSquareDiagonallyToRight);
+		if (isCapture(oneSquareDiagonallyToRight)) {
+			moves.push(oneSquareDiagonallyToRight as Square);
 		}
 
 		return moves;

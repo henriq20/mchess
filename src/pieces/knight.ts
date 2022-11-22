@@ -25,14 +25,13 @@ export default class Knight extends ChessPiece {
 			return [];
 		}
 
-		const currentSquare = this.chess.square(this.square);
+		const square = this.chess.square(this.square);
 
-		if (!currentSquare) {
+		if (!square) {
 			return [];
 		}
 
-		const row = currentSquare.x;
-		const column = currentSquare.y;
+		const [ row, column ] = square.position;
 		const moves = [];
 
 		for (const offset of offsets) {

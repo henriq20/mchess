@@ -20,7 +20,7 @@ export default class Rook extends ChessPiece {
 		const moves: Square[] = [];
 
 		const validate = (square: Square) => {
-			if (!square.hasPiece()) {
+			if (square.empty) {
 				moves.push(square);
 				return false;
 			}

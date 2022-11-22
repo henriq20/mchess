@@ -21,7 +21,8 @@ export default class Bishop extends ChessPiece {
 		const moves: Square[] = [];
 
 		const validate = (square: Square) => {
-			if (!square.hasPiece()) {
+			if (square.empty) {
+
 				moves.push(square);
 				return false;
 			}
@@ -35,10 +36,10 @@ export default class Bishop extends ChessPiece {
 		};
 
 		const directions: Direction[] = [
-			'diagonalBottomLeft',
-			'diagonalBottomRight',
-			'diagonalTopLeft',
-			'diagonalTopRight'
+			'topLeft',
+			'topRight',
+			'bottomLeft',
+			'bottomRight'
 		];
 
 		this.chess.board.traverse(square, directions, validate.bind(this));

@@ -21,7 +21,7 @@ export default class Queen extends ChessPiece {
 		const moves: Square[] = [];
 
 		const validate = (square: Square) => {
-			if (!square.hasPiece()) {
+			if (square.empty) {
 				moves.push(square);
 				return false;
 			}
@@ -35,10 +35,10 @@ export default class Queen extends ChessPiece {
 		};
 
 		const directions: Direction[] = [
-			'diagonalBottomLeft',
-			'diagonalBottomRight',
-			'diagonalTopLeft',
-			'diagonalTopRight',
+			'bottomLeft',
+			'bottomRight',
+			'topLeft',
+			'topRight',
 			'top',
 			'left',
 			'bottom',

@@ -28,8 +28,7 @@ export default class King extends ChessPiece {
 			return [];
 		}
 
-		const row = square.x;
-		const column = square.y;
+		const [ row, column ] = square.position;
 		const moves = [];
 
 		for (const offset of offsets) {
