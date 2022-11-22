@@ -1,4 +1,4 @@
-import { ChessPosition } from '../position.js';
+import { ChessPosition, toArrayPosition } from '../position.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = [
@@ -18,11 +18,11 @@ export default class King extends ChessPiece {
 	}
 
 	possibleMoves(): ChessPosition[] {
-		if (!this.chess || !this.square) {
+		if (!this.board || !this.square) {
 			return [];
 		}
 
-		const square = this.chess.square(this.square);
+		const square = this.board.get(...toArrayPosition(this.square));
 
 		if (!square) {
 			return [];
@@ -32,7 +32,7 @@ export default class King extends ChessPiece {
 		const moves: ChessPosition[] = [];
 
 		for (const offset of offsets) {
-			const square = this.chess.board.get(row + offset[0], column + offset[1]);
+			const square = this.board.get(row + offset[0], column + offset[1]);
 
 			if (square && (!square.piece || square.piece.color !== this.color)) {
 				moves.push(square.name);

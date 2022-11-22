@@ -1,5 +1,5 @@
-import Chess from '../chess.js';
 import makeMove from '../move.js';
+import ChessBoard from '../board.js';
 import { ChessPosition } from '../position.js';
 
 export type ChessPieceName = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
@@ -15,8 +15,8 @@ export default abstract class ChessPiece {
 	color: ChessPieceColor;
 	letter: ChessPieceLetter;
 	moves: number;
-	chess?: Chess | null;
-	square?: ChessPosition | null;
+	board?: ChessBoard;
+	square?: ChessPosition;
 
 	constructor(name: ChessPieceName, letter: ChessPieceLetter, color: ChessPieceColor) {
 		this.name = name;
@@ -26,30 +26,11 @@ export default abstract class ChessPiece {
 	}
 
 	canMove(to: ChessPosition): boolean {
-		if (!this.chess || !this.square) {
+		if (!this.board || !this.square) {
 			return false;
 		}
 
 		return this.possibleMoves().includes(to);
-	}
-
-	wouldBeInCheck(to: ChessPosition) {
-		const move = makeMove(this.chess as Chess, {
-			from: this.square as ChessPosition,
-			to
-		});
-
-		if (!move) {
-			return false;
-		}
-
-		if (this.chess?.isCheck()) {
-			move.undo();
-			return true;
-		}
-
-		move.undo();
-		return false;
 	}
 
     abstract possibleMoves(): ChessPosition[];

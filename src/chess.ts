@@ -46,7 +46,7 @@ export default class Chess {
 
 		if (result) {
 			piece.square = this.board.get(row, column)?.name;
-			piece.chess = this;
+			piece.board = this.board;
 
 			this[piece.color].set(piece.square as ChessPosition, piece);
 
@@ -131,16 +131,23 @@ export default class Chess {
 	}
 
 	moves(square?: ChessPosition): ChessPosition[] {
+		const wouldNotBeInCheck = (from: ChessPosition) => (to: ChessPosition) => {
+			return !this._wouldBeInCheck({
+				from,
+				to
+			});
+		}
+
 		if (square) {
 			const piece = this.square(square)?.piece;
 
-			return !piece ? [] : piece.possibleMoves().filter(s => !piece.wouldBeInCheck(s));
+			return !piece ? [] : piece.possibleMoves().filter(wouldNotBeInCheck(piece.square as ChessPosition));
 		}
 
 		const pieces = [ ...this[this.turn].values() ];
 
 		const moves = pieces.map(piece => {
-			return piece.possibleMoves().filter(s => !piece.wouldBeInCheck(s));
+			return piece.possibleMoves().filter(wouldNotBeInCheck(piece.square as ChessPosition));
 		}).flat();
 
 		return moves;
@@ -172,6 +179,22 @@ export default class Chess {
 			}
 		}
 
+		return false;
+	}
+
+	_wouldBeInCheck(move: ChessMove) {
+		const result = makeMove(this, move);
+
+		if (!result) {
+			return false;
+		}
+
+		if (this.isCheck()) {
+			result.undo();
+			return true;
+		}
+
+		result.undo();
 		return false;
 	}
 }
