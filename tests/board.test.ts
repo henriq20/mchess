@@ -57,7 +57,7 @@ describe('constructor', () => {
         for (let i = 0; i < squares.length; i++) {
             const row = squares[i];
 
-            expect(board._board[i].map(s => [ s.x, s.y ])).toStrictEqual(row);
+            expect(board._board[i].map(s => s.position)).toStrictEqual(row);
         }
     });
 });
@@ -176,20 +176,20 @@ describe('traverse', () => {
         [ 'a1', 'left', [] ],
         [ 'h8', 'right', [] ],
 
-        [ 'e5', 'diagonalBottomLeft', [ 'd4', 'c3', 'b2', 'a1' ] ],
-        [ 'e5', 'diagonalBottomRight', [ 'f4', 'g3', 'h2' ] ],
-        [ 'e5', 'diagonalTopLeft', [ 'd6', 'c7', 'b8' ] ],
-        [ 'e5', 'diagonalTopRight', [ 'f6', 'g7', 'h8' ] ],
+        [ 'e5', 'bottomLeft', [ 'd4', 'c3', 'b2', 'a1' ] ],
+        [ 'e5', 'bottomRight', [ 'f4', 'g3', 'h2' ] ],
+        [ 'e5', 'topLeft', [ 'd6', 'c7', 'b8' ] ],
+        [ 'e5', 'topRight', [ 'f6', 'g7', 'h8' ] ],
 
-        [ 'a1', 'diagonalTopRight', [ 'b2', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8' ] ],
-        [ 'h1', 'diagonalTopLeft', [ 'g2', 'f3', 'e4', 'd5', 'c6', 'b7', 'a8' ] ],
-        [ 'h8', 'diagonalBottomLeft', [ 'g7', 'f6', 'e5', 'd4', 'c3', 'b2', 'a1' ] ],
-        [ 'a8', 'diagonalBottomRight', [ 'b7', 'c6', 'd5', 'e4', 'f3', 'g2', 'h1'] ],
+        [ 'a1', 'topRight', [ 'b2', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8' ] ],
+        [ 'h1', 'topLeft', [ 'g2', 'f3', 'e4', 'd5', 'c6', 'b7', 'a8' ] ],
+        [ 'h8', 'bottomLeft', [ 'g7', 'f6', 'e5', 'd4', 'c3', 'b2', 'a1' ] ],
+        [ 'a8', 'bottomRight', [ 'b7', 'c6', 'd5', 'e4', 'f3', 'g2', 'h1'] ],
 
-        [ 'a1', 'diagonalTopLeft', [] ],
-        [ 'a1', 'diagonalBottomLeft', [] ],
-        [ 'h1', 'diagonalTopRight', [] ],
-        [ 'h1', 'diagonalBottomRight', [] ],
+        [ 'a1', 'topLeft', [] ],
+        [ 'a1', 'bottomLeft', [] ],
+        [ 'h1', 'topRight', [] ],
+        [ 'h1', 'bottomRight', [] ],
     ]
     it.each(cases)('should traverse the board in the specified direction', (from, direction, expected) => {
         const board = new ChessBoard();

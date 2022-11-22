@@ -6,10 +6,21 @@ export type Direction = 'left'
 	| 'right'
 	| 'top'
 	| 'bottom'
-	| 'diagonalBottomLeft'
-	| 'diagonalBottomRight'
-	| 'diagonalTopLeft'
-	| 'diagonalTopRight';
+	| 'topLeft'
+	| 'topRight'
+	| 'bottomLeft'
+	| 'bottomRight';
+
+const TRAVERSAL_OFFSETS = {
+	top: [ 1, 0 ],
+	bottom: [ -1, 0 ],
+	left: [ 0, -1 ],
+	right: [ 0, 1 ],
+	topLeft: [ 1, -1 ],
+	topRight: [ 1, 1 ],
+	bottomLeft: [ -1, -1 ],
+	bottomRight: [ -1, 1 ]
+};
 
 export default class ChessBoard {
 	readonly size: number;
@@ -26,7 +37,7 @@ export default class ChessBoard {
 		let row = 0;
 		while (row < 8) {
 			this._board.push(new Array(this.size).fill(undefined).map((value, column) => {
-				return new Square(toChessPosition(row, column), row, column);
+				return new Square(toChessPosition(row, column), [ row, column ]);
 			}));
 
 			row++;
@@ -84,72 +95,22 @@ export default class ChessBoard {
 		return pieces;
 	}
 
-	traverse(from: Square, directions: Direction[], callback: (square: Square) => boolean) {
+	traverse(from: Square, directions: Direction[], fn: (square: Square) => boolean) {
 		for (const direction of directions) {
-			this._traverse(from, direction, callback);
+			this._traverse(from, direction, fn);
 		}
 	}
 
 	_traverse(from: Square, direction: Direction, fn: (square: Square) => boolean) {
-		const row = from.x, column = from.y;
+		const [ x, y ] = TRAVERSAL_OFFSETS[direction];
+		let [ row, column ] = from.position;
 
-		switch (direction) {
-		case 'top':
-		case 'bottom':
-		case 'left':
-		case 'right': {
-			const directions = {
-				left: column,
-				bottom: row,
-				top: this.size - row,
-				right: this.size - column
-			};
+		while (!this._isOffBounds(row += x, column += y)) {
+			const square = this.get(row, column);
 
-			const isColumnDirection = direction === 'left' || direction === 'right';
-			const invertDirection = [ 'left', 'bottom' ].includes(direction) ? -1 : 1;
-
-			for (let i = 1; i <= directions[direction]; i++) {
-				const currentColumn = !isColumnDirection ? column : column + i * invertDirection;
-				const currentRow = isColumnDirection ? row : row + i * invertDirection;
-
-				const square = this.get(currentRow, currentColumn);
-
-				if (!square || fn(square)) {
-					break;
-				}
+			if (!square || fn(square)) {
+				break;
 			}
-			break;
-		}
-
-		case 'diagonalTopLeft':
-		case 'diagonalTopRight':
-		case 'diagonalBottomRight':
-		case 'diagonalBottomLeft': {
-			const directions = {
-				diagonalTopLeft: column,
-				diagonalBottomLeft: column,
-				diagonalTopRight: this.size - column,
-				diagonalBottomRight: this.size - column
-			};
-
-			const rowDirection = direction === 'diagonalTopRight' || direction === 'diagonalTopLeft' ? 1 : -1;
-			const columnDirection = direction === 'diagonalTopRight' || direction === 'diagonalBottomRight' ? 1 : -1;
-
-			for (let i = 1; i <= directions[direction]; i++) {
-				const currentRow = row + i * rowDirection;
-				const currentColumn = column + i * columnDirection;
-
-				const square = this.get(currentRow, currentColumn);
-
-				if (!square || fn(square)) {
-					break;
-				}
-			}
-			break;
-		}
-
-		default:
-			break;
 		}
 	}
 
