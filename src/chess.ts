@@ -5,8 +5,8 @@ import King from './pieces/king.js';
 import createPiece from './factory.js';
 import { toArrayPosition } from './position.js';
 import { ArrayPosition, ChessPosition } from './position.js';
-import ChessPiece, { ChessPieceColor, ChessPieceLetter } from './pieces/piece.js';
 import makeMove, { ChessMove, ChessMoveResult } from './move.js';
+import ChessPiece, { ChessPieceColor, ChessPieceLetter } from './pieces/piece.js';
 
 const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -121,11 +121,7 @@ export default class Chess {
 	}
 
 	enemies(): Map<ChessPosition, ChessPiece> {
-		if (!this.history.length) {
-			return this.black;
-		}
-
-		return this.history.at(-1)?.piece.color === 'black' ? this.black : this.white;
+		return this.turn === 'white' ? this.black : this.white;
 	}
 
 	isCheck(): boolean {
