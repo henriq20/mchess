@@ -16,7 +16,7 @@ describe('place', () => {
 
         const square = chess.board.get(2, 0);
 
-        expect(square?.hasPiece()).toBe(true);
+        expect(square?.empty).toBe(false);
         expect(square?.piece?.name).toBe('pawn');
     });
 
@@ -132,7 +132,7 @@ describe('move', () => {
 
         expect(chess.piece('a4')?.moves).toBe(1);
         expect(chess.piece('a4')).toBeInstanceOf(Pawn);
-        expect(chess.square('a2')?.hasPiece()).toBe(false);
+        expect(chess.square('a2')?.empty).toBe(true);
     });
 
     it('should return false when piece cannot move', () => {

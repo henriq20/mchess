@@ -27,17 +27,17 @@ export default function makeMove(chess: Chess, move: ChessMove): ChessMoveResult
 
 	const capturedPiece = chess.takeOut(to.name);
 	chess.takeOut(from.name);
-	chess.place(piece, [ to.x, to.y ]);
+	chess.place(piece, to.position);
 
 	piece.moves++;
 	piece.square = to.name;
 
 	const undo = () => {
 		chess.takeOut(to.name);
-		chess.place(piece, [ from.x, from.y ]);
+		chess.place(piece, from.position);
 
 		if (capturedPiece) {
-			chess.place(capturedPiece, [ to.x, to.y ]);
+			chess.place(capturedPiece, to.position);
 		}
 
 		piece.moves--;

@@ -68,11 +68,11 @@ export default class Chess {
 	takeOut(position: ChessPosition): ChessPiece | null {
 		const square = this.square(position);
 
-		if (!square || !square.hasPiece()) {
+		if (!square || square.empty) {
 			return null;
 		}
 
-		const piece = this.board.remove(square.x, square.y);
+		const piece = this.board.remove(...toArrayPosition(square.name));
 
 		if (!piece) {
 			return null;
