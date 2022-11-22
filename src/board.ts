@@ -80,19 +80,8 @@ export default class ChessBoard {
 		return removedPiece;
 	}
 
-	clear(): ChessPiece[] {
-		const pieces = [];
-
-		for (let row = 0; row < this.size; row++) {
-			for (let column = 0; column < this.size; column++) {
-				const removedPiece = this.remove(row, column);
-				if (removedPiece) {
-					pieces.push(removedPiece);
-				}
-			}
-		}
-
-		return pieces;
+	clear() {
+		this._board = this.fill();
 	}
 
 	traverse(from: Square, directions: Direction[], fn: (square: Square) => boolean) {

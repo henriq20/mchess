@@ -157,10 +157,9 @@ describe('clear', () => {
         board.place(0, 0, whitePawn);
         board.place(0, 5, blackPawn);
 
-        const removedPieces = board.clear();
+        board.clear();
 
         expect(board._board.every(row => row.every(s => !s.piece))).toBe(true);
-        expect(removedPieces).toStrictEqual([ whitePawn, blackPawn ]);
     });
 });
 
@@ -190,7 +189,8 @@ describe('traverse', () => {
         [ 'a1', 'bottomLeft', [] ],
         [ 'h1', 'topRight', [] ],
         [ 'h1', 'bottomRight', [] ],
-    ]
+    ];
+
     it.each(cases)('should traverse the board in the specified direction', (from, direction, expected) => {
         const board = new ChessBoard();
         const squares: Square[] = [];
