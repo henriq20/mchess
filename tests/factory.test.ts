@@ -1,4 +1,5 @@
-import createPiece, { ChessPieceLetter } from '../src/factory';
+import createPiece from '../src/factory';
+import { ChessPieceLetter } from '../src/pieces/piece';
 
 it.each([
     // White pieces
