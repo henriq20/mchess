@@ -26,14 +26,12 @@ export default abstract class ChessPiece {
 		this.moves = 0;
 	}
 
-	canMove(to: Square | ChessPosition): boolean {
+	canMove(to: ChessPosition): boolean {
 		if (!this.chess || !this.square) {
 			return false;
 		}
 
-		const square = typeof to === 'string' ? to : to.name;
-
-		return this.possibleMoves().some(s => s.name === square);
+		return this.possibleMoves().includes(to);
 	}
 
 	wouldBeInCheck(to: ChessPosition) {
@@ -55,5 +53,5 @@ export default abstract class ChessPiece {
 		return false;
 	}
 
-    abstract possibleMoves(): Square[];
+    abstract possibleMoves(): ChessPosition[];
 }

@@ -8,7 +8,7 @@ it('should move in all directions', () => {
     const possibleMoves = piece?.possibleMoves();
 
     expect(possibleMoves).toHaveLength(27);
-    expect(possibleMoves?.map(s => s.name)).toEqual(expect.arrayContaining([
+    expect(possibleMoves).toEqual(expect.arrayContaining([
         'a1', 'b2', 'c3', 'd4',
         'f4', 'g3', 'h2',
         'd6', 'c7', 'b8',

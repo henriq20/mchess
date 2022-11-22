@@ -1,4 +1,5 @@
 import Square from '../square.js';
+import { ChessPosition } from '../position.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Rook extends ChessPiece {
@@ -6,7 +7,7 @@ export default class Rook extends ChessPiece {
 		super('rook', color === 'white' ? 'R' : 'r', color);
 	}
 
-	possibleMoves(): Square[] {
+	possibleMoves(): ChessPosition[] {
 		if (!this.chess || !this.square) {
 			return [];
 		}
@@ -17,16 +18,16 @@ export default class Rook extends ChessPiece {
 			return [];
 		}
 
-		const moves: Square[] = [];
+		const moves: ChessPosition[] = [];
 
 		const validate = (square: Square) => {
 			if (square.empty) {
-				moves.push(square);
+				moves.push(square.name);
 				return false;
 			}
 
 			if (square.piece?.color !== this.color) {
-				moves.push(square);
+				moves.push(square.name);
 				return true;
 			}
 

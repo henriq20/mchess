@@ -1,4 +1,5 @@
 import Square from '../square.js';
+import { ChessPosition } from '../position.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = {
@@ -21,7 +22,7 @@ export default class Pawn extends ChessPiece {
 		super('pawn', color === 'white' ? 'P' : 'p', color);
 	}
 
-	possibleMoves(): Square[] {
+	possibleMoves(): ChessPosition[] {
 		if (!this.chess || !this.square) {
 			return [];
 		}
@@ -48,21 +49,21 @@ export default class Pawn extends ChessPiece {
 			return square && (!square.empty && square.piece?.color !== this.color);
 		};
 
-		const moves: Square[] = [];
+		const moves: ChessPosition[] = [];
 
 		if (isQuiet(oneSquareForward)) {
-			moves.push(oneSquareForward as Square);
+			moves.push((oneSquareForward as Square).name);
 
 			if (isQuiet(twoSquaresForward) && this.moves === 0) {
-				moves.push(twoSquaresForward as Square);
+				moves.push((twoSquaresForward as Square).name);
 			}
 		}
 
 		if (isCapture(oneSquareDiagonallyToLeft)) {
-			moves.push(oneSquareDiagonallyToLeft as Square);
+			moves.push((oneSquareDiagonallyToLeft as Square).name);
 		}
 		if (isCapture(oneSquareDiagonallyToRight)) {
-			moves.push(oneSquareDiagonallyToRight as Square);
+			moves.push((oneSquareDiagonallyToRight as Square).name);
 		}
 
 		return moves;

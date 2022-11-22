@@ -1,3 +1,4 @@
+import { ChessPosition } from '../position.js';
 import Square from '../square.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 
@@ -20,7 +21,7 @@ export default class Knight extends ChessPiece {
 		super('knight', color === 'white' ? 'N' : 'n', color);
 	}
 
-	possibleMoves(): Square[] {
+	possibleMoves(): ChessPosition[] {
 		if (!this.chess || !this.square) {
 			return [];
 		}
@@ -32,13 +33,13 @@ export default class Knight extends ChessPiece {
 		}
 
 		const [ row, column ] = square.position;
-		const moves = [];
+		const moves: ChessPosition[] = [];
 
 		for (const offset of offsets) {
 			const square = this.chess.board.get(row + offset[0], column + offset[1]);
 
 			if (square && (!square.piece || square.piece.color !== this.color)) {
-				moves.push(square);
+				moves.push(square.name);
 			}
 		}
 

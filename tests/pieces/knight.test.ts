@@ -8,7 +8,7 @@ it('should move in L shape', () => {
     const possibleMoves = piece?.possibleMoves();
 
     expect(possibleMoves).toHaveLength(8);
-    expect(possibleMoves?.map(s => s.name)).toEqual(expect.arrayContaining([
+    expect(possibleMoves).toEqual(expect.arrayContaining([
         'd3', 'c4', 'c6', 'd7', 'f3', 'g4', 'f7', 'g6'
     ]));
 });

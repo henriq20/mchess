@@ -138,13 +138,13 @@ export default class Chess {
 		if (square) {
 			const piece = this.square(square)?.piece;
 
-			return !piece ? [] : piece.possibleMoves().map(s => s.name).filter(s => !piece.wouldBeInCheck(s));
+			return !piece ? [] : piece.possibleMoves().filter(s => !piece.wouldBeInCheck(s));
 		}
 
 		const pieces = [ ...this[this.turn].values() ];
 
 		const moves = pieces.map(piece => {
-			return piece.possibleMoves().map(s => s.name).filter(s => !piece.wouldBeInCheck(s));
+			return piece.possibleMoves().filter(s => !piece.wouldBeInCheck(s));
 		}).flat();
 
 		return moves;
@@ -163,7 +163,7 @@ export default class Chess {
 				continue;
 			}
 
-			if (enemy.possibleMoves().some(s => s.piece === king)) {
+			if (enemy.possibleMoves().includes(king.square)) {
 				return true;
 			}
 		}

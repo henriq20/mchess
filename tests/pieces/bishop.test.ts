@@ -8,7 +8,7 @@ it('should move diagonally', () => {
     const possibleMoves = piece?.possibleMoves();
 
     expect(possibleMoves).toHaveLength(13);
-    expect(possibleMoves?.map(s => s.name)).toEqual(expect.arrayContaining([
+    expect(possibleMoves).toEqual(expect.arrayContaining([
         'd6', 'c7', 'b8',
         'f4', 'g3', 'h2',
         'd4', 'c3', 'b2', 'a1',
