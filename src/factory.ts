@@ -10,27 +10,27 @@ export default function createPiece(letter: ChessPieceLetter): ChessPiece {
 	const color: ChessPieceColor = /[a-z]/.test(letter) ? 'black' : 'white';
 
 	switch (letter) {
-	case 'r':
-	case 'R':
-		return new Rook(color);
+		case 'r':
+		case 'R':
+			return new Rook(color);
 
-	case 'k':
-	case 'K':
-		return new King(color);
+		case 'k':
+		case 'K':
+			return new King(color);
 
-	case 'q':
-	case 'Q':
-		return new Queen(color);
+		case 'q':
+		case 'Q':
+			return new Queen(color);
 
-	case 'n':
-	case 'N':
-		return new Knight(color);
+		case 'n':
+		case 'N':
+			return new Knight(color);
 
-	case 'b':
-	case 'B':
-		return new Bishop(color);
+		case 'b':
+		case 'B':
+			return new Bishop(color);
 
-	default:
-		return new Pawn(color);
+		default:
+			return new Pawn(color);
 	}
 }
