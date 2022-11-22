@@ -156,6 +156,10 @@ export default class Chess {
 	}
 
 	_isKingAttacked(king: King): boolean {
+		if (!king.square) {
+			return false;
+		}
+
 		const enemies = this[king.color === 'white' ? 'black' : 'white'];
 
 		for (const [ _, enemy ] of enemies) {
