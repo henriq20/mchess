@@ -50,7 +50,7 @@ export default class Chess {
 
 			this[piece.color].set(piece.square as ChessPosition, piece);
 
-			if (piece instanceof King) {
+			if (piece.name === 'king') {
 				if (piece.color === 'white') {
 					this.whiteKing = piece;
 					return piece;
