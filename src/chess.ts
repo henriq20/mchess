@@ -146,6 +146,10 @@ export default class Chess {
 		return moves;
 	}
 
+	clear() {
+		this.board.clear();
+	}
+
 	_changeTurn() {
 		this.turn = this.turn === 'white' ? 'black' : 'white';
 		return this.turn;
