@@ -221,6 +221,30 @@ describe('isCheckmate', () => {
     });
 });
 
+describe('isStalemate', () => {
+    it.each([
+        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        'k7/8/8/1B6/8/8/8/K7 w - - 0 1',
+        'K7/8/2b5/8/8/8/8/k7 w - - 0 1'
+    ])('should return false when it is not checkmate', (fen) => {
+        const chess = new Chess(fen);
+
+        expect(chess.isStalemate()).toBe(false);
+    });
+
+    it.each([
+        'K7/8/8/8/8/8/5Q2/7k b - - 0 1',
+        '8/p7/4k3/1p6/2p5/2bn4/3r4/1K6 w - - 6 39',
+        '4QQ2/R7/8/6k1/8/6K1/7P/8 b - - 6 66',
+        '3Q4/1k6/5RN1/3p4/3P4/Q1K5/8/8 b - - 4 64',
+        '1Q6/8/5Q2/7k/2P5/1P2N3/5K2/8 b - - 2 56'
+    ])('should return true when it is stalemate', (fen) => {
+        const chess = new Chess(fen);
+
+        expect(chess.isStalemate()).toBe(true);
+    });
+});
+
 describe('undo', () => {
     it('should remove the move from the history', () => {
         const chess = new Chess();

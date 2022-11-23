@@ -140,6 +140,16 @@ export default class Chess {
 		return this.isCheck() && !this.moves(king.square).length;
 	}
 
+	isStalemate() {
+		const king = this.turn === 'white' ? this.whiteKing : this.blackKing;
+
+		if (!king?.square) {
+			return false;
+		}
+
+		return !this.isCheck() && !this.moves().length;
+	}
+
 	moves(square?: ChessPosition): ChessPosition[] {
 		const wouldNotBeInCheck = (from: ChessPosition) => (to: ChessPosition) => {
 			return !this._wouldBeInCheck({
