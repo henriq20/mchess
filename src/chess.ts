@@ -136,7 +136,7 @@ export default class Chess {
 				from,
 				to
 			});
-		}
+		};
 
 		if (square) {
 			const piece = this.square(square)?.piece;
@@ -167,9 +167,9 @@ export default class Chess {
 			return false;
 		}
 
-		const enemies = this[king.color === 'white' ? 'black' : 'white'];
+		const enemies = this[king.color === 'white' ? 'black' : 'white'].values();
 
-		for (const [ _, enemy ] of enemies) {
+		for (const enemy of enemies) {
 			if (enemy.name === 'king') {
 				continue;
 			}

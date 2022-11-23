@@ -4,7 +4,7 @@ import ChessPiece from './pieces/piece.js';
 import consoleColors, { Color } from './colors.js';
 
 type RecursivePartial<T> = {
-	[P in keyof T]?: T[P] extends (...params: any[]) => string
+	[P in keyof T]?: T[P] extends Function
 		? T[P]
 		: T[P] extends object
 			? RecursivePartial<T[P]>

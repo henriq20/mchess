@@ -1,4 +1,3 @@
-import makeMove from '../move.js';
 import ChessBoard from '../board.js';
 import { ChessPosition } from '../position.js';
 
