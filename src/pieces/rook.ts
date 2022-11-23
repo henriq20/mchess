@@ -1,6 +1,6 @@
-import Square from '../square.js';
+import Square from '../board/square.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
-import { ChessPosition, toArrayPosition } from '../position.js';
+import { ChessPosition, toArrayPosition } from '../board/position.js';
 
 export default class Rook extends ChessPiece {
 	constructor(color: ChessPieceColor) {
@@ -34,7 +34,7 @@ export default class Rook extends ChessPiece {
 			return true;
 		};
 
-		this.board.traverse(square, [ 'top', 'left', 'bottom', 'right' ], validate.bind(this));
+		this.board.traverse(square, ['top', 'left', 'bottom', 'right'], validate.bind(this));
 
 		return moves;
 	}

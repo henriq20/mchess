@@ -1,6 +1,6 @@
 import move, { ChessMoveResult } from '../src/move';
 import Chess from '../src/chess';
-import { ChessPosition } from '../src/position';
+import { ChessPosition } from '../src/board/position';
 import Pawn from '../src/pieces/pawn';
 
 it('should move a piece', () => {

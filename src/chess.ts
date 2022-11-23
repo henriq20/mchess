@@ -1,10 +1,10 @@
 import parseFEN from './fen.js';
-import Square from './square.js';
-import ChessBoard from './board.js';
+import Square from './board/square.js';
+import ChessBoard from './board/board.js';
 import King from './pieces/king.js';
 import createPiece from './factory.js';
-import { toArrayPosition } from './position.js';
-import { ArrayPosition, ChessPosition } from './position.js';
+import { toArrayPosition } from './board/position.js';
+import { ArrayPosition, ChessPosition } from './board/position.js';
 import makeMove, { ChessMove, ChessMoveResult } from './move.js';
 import ChessPiece, { ChessPieceColor, ChessPieceLetter } from './pieces/piece.js';
 
@@ -31,7 +31,7 @@ export default class Chess {
 	setup(fen: string) {
 		const result = parseFEN(fen);
 
-		for (const [ letter, position ] of result.pieces) {
+		for (const [letter, position] of result.pieces) {
 			this.place(letter, position);
 		}
 
@@ -40,7 +40,7 @@ export default class Chess {
 
 	place(piece: ChessPieceLetter | ChessPiece, position: ChessPosition | ArrayPosition): ChessPiece | null {
 		piece = typeof piece === 'string' ? createPiece(piece) : piece;
-		const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
+		const [row, column] = typeof position === 'string' ? toArrayPosition(position) : position;
 
 		const result = this.board.place(row, column, piece);
 
@@ -144,7 +144,7 @@ export default class Chess {
 			return !piece ? [] : piece.possibleMoves().filter(wouldNotBeInCheck(piece.square as ChessPosition));
 		}
 
-		const pieces = [ ...this[this.turn].values() ];
+		const pieces = [...this[this.turn].values()];
 
 		const moves = pieces.map(piece => {
 			return piece.possibleMoves().filter(wouldNotBeInCheck(piece.square as ChessPosition));

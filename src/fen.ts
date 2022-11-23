@@ -1,13 +1,13 @@
-import { ArrayPosition } from './position';
+import { ArrayPosition } from './board/position';
 import { ChessPieceColor, ChessPieceLetter } from './pieces/piece';
 
 export type FENResult = {
-    pieces: Array<[ChessPieceLetter, ArrayPosition]>
-    turn: ChessPieceColor
+	pieces: Array<[ChessPieceLetter, ArrayPosition]>
+	turn: ChessPieceColor
 };
 
 export default function parseFEN(fen: string): FENResult {
-	const [ placement, turn ] = fen.split(/\s+/);
+	const [placement, turn] = fen.split(/\s+/);
 
 	const pieces: Array<[ChessPieceLetter, ArrayPosition]> = [];
 
@@ -25,7 +25,7 @@ export default function parseFEN(fen: string): FENResult {
 			continue;
 		}
 
-		pieces.push([ char as ChessPieceLetter, [ row, column++ ] ]);
+		pieces.push([char as ChessPieceLetter, [row, column++]]);
 	}
 
 	return {

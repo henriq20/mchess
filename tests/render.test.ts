@@ -1,4 +1,4 @@
-import ChessBoard from '../src/board';
+import ChessBoard from '../src/board/board';
 import createPiece from '../src/factory';
 import ChessBoardRenderer from '../src/render';
 

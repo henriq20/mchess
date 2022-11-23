@@ -1,4 +1,4 @@
-import ChessPiece from './pieces/piece.js';
+import ChessPiece from '../pieces/piece.js';
 import { ArrayPosition, ChessPosition } from './position.js';
 
 export default class Square {

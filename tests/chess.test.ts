@@ -6,7 +6,7 @@ import Pawn from '../src/pieces/pawn';
 import ChessPiece from '../src/pieces/piece';
 import Queen from '../src/pieces/queen';
 import Rook from '../src/pieces/rook';
-import { ChessPosition } from '../src/position';
+import { ChessPosition } from '../src/board/position';
 
 describe('place', () => {
     it('should place a piece on the specified position', () => {

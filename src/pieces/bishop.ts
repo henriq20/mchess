@@ -1,7 +1,7 @@
-import Square from '../square.js';
-import { Direction } from '../board';
+import Square from '../board/square.js';
+import { Direction } from '../board/board';
 import ChessPiece, { ChessPieceColor } from './piece.js';
-import { ChessPosition, toArrayPosition } from '../position';
+import { ChessPosition, toArrayPosition } from '../board/position';
 
 export default class Bishop extends ChessPiece {
 	constructor(color: ChessPieceColor) {

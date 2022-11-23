@@ -1,18 +1,18 @@
 import Chess from './chess.js';
-import { ChessPosition } from './position.js';
+import { ChessPosition } from './board/position.js';
 import ChessPiece, { ChessPieceName } from './pieces/piece.js';
 
 export type ChessMove = {
-    from:  ChessPosition,
-    to:  ChessPosition
+	from: ChessPosition,
+	to: ChessPosition
 };
 
 export type ChessMoveResult = {
-    from: ChessPosition,
-    to: ChessPosition,
-    piece: ChessPiece,
-    capturedPiece: ChessPiece | null,
-    promotedTo?: ChessPieceName,
+	from: ChessPosition,
+	to: ChessPosition,
+	piece: ChessPiece,
+	capturedPiece: ChessPiece | null,
+	promotedTo?: ChessPieceName,
 	undo: () => void
 };
 

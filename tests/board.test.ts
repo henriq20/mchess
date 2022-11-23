@@ -1,7 +1,7 @@
-import Square from '../src/square';
-import ChessBoard, { Direction } from '../src/board';
+import Square from '../src/board/square';
+import ChessBoard, { Direction } from '../src/board/board';
 import createPiece from '../src/factory';
-import { ChessPosition, toArrayPosition } from '../src/position';
+import { ChessPosition, toArrayPosition } from '../src/board/position';
 import Pawn from '../src/pieces/pawn';
 
 describe('constructor', () => {

@@ -1,5 +1,5 @@
 import Square from './square.js';
-import ChessPiece from './pieces/piece.js';
+import ChessPiece from '../pieces/piece.js';
 import { toChessPosition } from './position.js';
 
 export type Direction = 'left'
@@ -12,14 +12,14 @@ export type Direction = 'left'
 	| 'bottomRight';
 
 const TRAVERSAL_OFFSETS = {
-	top: [ 1, 0 ],
-	bottom: [ -1, 0 ],
-	left: [ 0, -1 ],
-	right: [ 0, 1 ],
-	topLeft: [ 1, -1 ],
-	topRight: [ 1, 1 ],
-	bottomLeft: [ -1, -1 ],
-	bottomRight: [ -1, 1 ]
+	top: [1, 0],
+	bottom: [-1, 0],
+	left: [0, -1],
+	right: [0, 1],
+	topLeft: [1, -1],
+	topRight: [1, 1],
+	bottomLeft: [-1, -1],
+	bottomRight: [-1, 1]
 };
 
 export default class ChessBoard {
@@ -37,7 +37,7 @@ export default class ChessBoard {
 		let row = 0;
 		while (row < 8) {
 			this._board.push(new Array(this.size).fill(undefined).map((value, column) => {
-				return new Square(toChessPosition(row, column), [ row, column ]);
+				return new Square(toChessPosition(row, column), [row, column]);
 			}));
 
 			row++;
@@ -91,8 +91,8 @@ export default class ChessBoard {
 	}
 
 	_traverse(from: Square, direction: Direction, fn: (square: Square) => boolean) {
-		const [ x, y ] = TRAVERSAL_OFFSETS[direction];
-		let [ row, column ] = from.position;
+		const [x, y] = TRAVERSAL_OFFSETS[direction];
+		let [row, column] = from.position;
 
 		while (!this._isOffBounds(row += x, column += y)) {
 			const square = this.get(row, column);

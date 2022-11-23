@@ -1,4 +1,4 @@
-import { ChessPosition, toArrayPosition, toChessPosition } from '../src/position';
+import { ChessPosition, toArrayPosition, toChessPosition } from '../src/board/position';
 
 it.each([
     [ [0, 0], 'a1' ],

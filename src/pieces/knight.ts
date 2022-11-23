@@ -1,18 +1,18 @@
 import ChessPiece, { ChessPieceColor } from './piece.js';
-import { ChessPosition, toArrayPosition } from '../position.js';
+import { ChessPosition, toArrayPosition } from '../board/position.js';
 
 const offsets = [
-	[  2, -1 ], // Two squares forward and one to the left
-	[  1, -2 ], // One square forward and two to the left
+	[2, -1], // Two squares forward and one to the left
+	[1, -2], // One square forward and two to the left
 
-	[  2,  1 ], // Two squares forward and one to the right
-	[  1,  2 ], // One square forward and two to the right
+	[2, 1], // Two squares forward and one to the right
+	[1, 2], // One square forward and two to the right
 
-	[ -2, -1 ], // Two squares backward and one to the left
-	[ -1, -2 ], // One square backward and two to the left
+	[-2, -1], // Two squares backward and one to the left
+	[-1, -2], // One square backward and two to the left
 
-	[ -2,  1 ], // Two squares backward and one to the right
-	[ -1,  2 ]  // One square backward and two to the right
+	[-2, 1], // Two squares backward and one to the right
+	[-1, 2]  // One square backward and two to the right
 ];
 
 export default class Knight extends ChessPiece {
@@ -31,7 +31,7 @@ export default class Knight extends ChessPiece {
 			return [];
 		}
 
-		const [ row, column ] = square.position;
+		const [row, column] = square.position;
 		const moves: ChessPosition[] = [];
 
 		for (const offset of offsets) {

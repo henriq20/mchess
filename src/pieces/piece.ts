@@ -1,13 +1,13 @@
-import ChessBoard from '../board.js';
-import { ChessPosition } from '../position.js';
+import ChessBoard from '../board/board.js';
+import { ChessPosition } from '../board/position.js';
 
 export type ChessPieceName = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
 
 export type ChessPieceColor = 'black' | 'white';
 
 export type ChessPieceLetter =
-    'k' | 'q' | 'r' | 'b' | 'n' | 'p' |
-    'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
+	'k' | 'q' | 'r' | 'b' | 'n' | 'p' |
+	'K' | 'Q' | 'R' | 'B' | 'N' | 'P';
 
 export default abstract class ChessPiece {
 	name: ChessPieceName;
@@ -32,5 +32,5 @@ export default abstract class ChessPiece {
 		return this.possibleMoves().includes(to);
 	}
 
-    abstract possibleMoves(): ChessPosition[];
+	abstract possibleMoves(): ChessPosition[];
 }

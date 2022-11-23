@@ -1,19 +1,19 @@
-import Square from '../square.js';
-import { ChessPosition, toArrayPosition } from '../position.js';
+import Square from '../board/square.js';
+import { ChessPosition, toArrayPosition } from '../board/position.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = {
 	white: [
-		[ 1,  0 ],
-		[ 2,  0 ],
-		[ 1, -1 ],
-		[ 1,  1 ]
+		[1, 0],
+		[2, 0],
+		[1, -1],
+		[1, 1]
 	],
 	black: [
-		[ -1,  0 ],
-		[ -2,  0 ],
-		[ -1, -1 ],
-		[ -1,  1 ]
+		[-1, 0],
+		[-2, 0],
+		[-1, -1],
+		[-1, 1]
 	],
 };
 
@@ -33,12 +33,12 @@ export default class Pawn extends ChessPiece {
 			return [];
 		}
 
-		const [ row, column ] = square.position;
+		const [row, column] = square.position;
 		const offset = offsets[this.color];
 
-		const oneSquareForward           = this.board.get(row + offset[0][0], column + offset[0][1]);
-		const twoSquaresForward          = this.board.get(row + offset[1][0], column + offset[1][1]);
-		const oneSquareDiagonallyToLeft  = this.board.get(row + offset[2][0], column + offset[2][1]);
+		const oneSquareForward = this.board.get(row + offset[0][0], column + offset[0][1]);
+		const twoSquaresForward = this.board.get(row + offset[1][0], column + offset[1][1]);
+		const oneSquareDiagonallyToLeft = this.board.get(row + offset[2][0], column + offset[2][1]);
 		const oneSquareDiagonallyToRight = this.board.get(row + offset[3][0], column + offset[3][1]);
 
 		const isQuiet = (square: Square | null) => {
