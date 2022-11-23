@@ -9,6 +9,7 @@
 	"scripts": {
 		"test": "jest",
 		"build": "rimraf dist && rollup -c",
+		"watch": "rimraf dist && rollup -c -w",
 		"format": "eslint src/** --fix"
 	},
 	"keywords": [],
