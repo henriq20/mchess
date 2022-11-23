@@ -180,10 +180,6 @@ export default class Chess {
 		const enemies = this[king.color === 'white' ? 'black' : 'white'].values();
 
 		for (const enemy of enemies) {
-			if (enemy.name === 'king') {
-				continue;
-			}
-
 			if (enemy.canMove(king.square)) {
 				return true;
 			}
