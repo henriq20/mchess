@@ -34,7 +34,7 @@ export default class Rook extends ChessPiece {
 			return true;
 		};
 
-		this.board.traverse(square, ['top', 'left', 'bottom', 'right'], validate.bind(this));
+		this.board.traverse(square, [ 'top', 'left', 'bottom', 'right' ], validate.bind(this));
 
 		return moves;
 	}

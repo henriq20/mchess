@@ -135,7 +135,7 @@ export default class ChessBoardRenderer {
 
 	_renderFiles() {
 		const { colors, squareWidth, file } = this.options;
-		const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+		const files = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' ];
 
 		return files.map(f => this._applyColor(colors.file, file.call(this.board, f)))
 			.join(' '.repeat(squareWidth));

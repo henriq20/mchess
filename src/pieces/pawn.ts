@@ -4,16 +4,16 @@ import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = {
 	white: [
-		[1, 0],
-		[2, 0],
-		[1, -1],
-		[1, 1]
+		[ 1, 0 ],
+		[ 2, 0 ],
+		[ 1, -1 ],
+		[ 1, 1 ]
 	],
 	black: [
-		[-1, 0],
-		[-2, 0],
-		[-1, -1],
-		[-1, 1]
+		[ -1, 0 ],
+		[ -2, 0 ],
+		[ -1, -1 ],
+		[ -1, 1 ]
 	],
 };
 
@@ -33,7 +33,7 @@ export default class Pawn extends ChessPiece {
 			return [];
 		}
 
-		const [row, column] = square.position;
+		const [ row, column ] = square.position;
 		const offset = offsets[this.color];
 
 		const oneSquareForward = this.board.get(row + offset[0][0], column + offset[0][1]);
