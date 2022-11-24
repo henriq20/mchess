@@ -1,6 +1,6 @@
 import Square from './square.js';
 import ChessPiece from '../pieces/piece.js';
-import { toChessPosition } from './position.js';
+import { ArrayPosition, toChessPosition } from './position.js';
 
 export type Direction = 'left'
 	| 'right'
@@ -62,6 +62,10 @@ export default class ChessBoard {
 		}
 
 		return this._board[row][column];
+	}
+
+	at(from: ArrayPosition, offset: ArrayPosition) {
+		return this.get(from[0] + offset[0], from[1] + offset[1]);
 	}
 
 	remove(row: number, column: number): ChessPiece | null {
