@@ -1,19 +1,24 @@
+import Chess from '../chess.js';
 import Square from '../board/square.js';
-import { ChessPosition, toArrayPosition } from '../board/position.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
+import { ArrayPosition, ChessPosition, toArrayPosition } from '../board/position.js';
 
-const offsets = {
+const offsets: { [ key: string ]: ArrayPosition[] } = {
 	white: [
 		[ 1, 0 ],
 		[ 2, 0 ],
 		[ 1, -1 ],
-		[ 1, 1 ]
+		[ 1, 1 ],
+		[ 0, -1 ],
+		[ 0, 1 ]
 	],
 	black: [
 		[ -1, 0 ],
 		[ -2, 0 ],
 		[ -1, -1 ],
-		[ -1, 1 ]
+		[ -1, 1 ],
+		[ 0, -1 ],
+		[ 0, 1 ]
 	],
 };
 
@@ -22,7 +27,7 @@ export default class Pawn extends ChessPiece {
 		super('pawn', color === 'white' ? 'P' : 'p', color);
 	}
 
-	possibleMoves(): ChessPosition[] {
+	possibleMoves(chess: Chess): ChessPosition[] {
 		if (!this.board || !this.square) {
 			return [];
 		}
@@ -33,13 +38,15 @@ export default class Pawn extends ChessPiece {
 			return [];
 		}
 
-		const [ row, column ] = square.position;
+		const position = toArrayPosition(this.square);
 		const offset = offsets[this.color];
 
-		const oneSquareForward = this.board.get(row + offset[0][0], column + offset[0][1]);
-		const twoSquaresForward = this.board.get(row + offset[1][0], column + offset[1][1]);
-		const oneSquareDiagonallyToLeft = this.board.get(row + offset[2][0], column + offset[2][1]);
-		const oneSquareDiagonallyToRight = this.board.get(row + offset[3][0], column + offset[3][1]);
+		const oneSquareForward = this.board.at(position, offset[0]);
+		const twoSquaresForward = this.board.at(position, offset[1]);
+		const oneSquareDiagonallyToLeft = this.board.at(position, offset[2]);
+		const oneSquareDiagonallyToRight = this.board.at(position, offset[3]);
+		const leftSquare = this.board.at(position, offset[4]);
+		const rightSquare = this.board.at(position, offset[5]);
 
 		const isQuiet = (square: Square | null) => {
 			return square && square.empty;
@@ -47,6 +54,16 @@ export default class Pawn extends ChessPiece {
 
 		const isCapture = (square: Square | null) => {
 			return square && (!square.empty && square.piece?.color !== this.color);
+		};
+
+		const isEnPassant = (square: Square | null) => {
+			const lastMove = chess.history.at(-1);
+
+			return lastMove &&
+				   lastMove.piece.name === 'pawn' &&
+				   lastMove.piece.color !== this.color &&
+				   lastMove.piece.moves === 1 &&
+				   square?.piece === lastMove.piece;
 		};
 
 		const moves: ChessPosition[] = [];
@@ -59,10 +76,10 @@ export default class Pawn extends ChessPiece {
 			}
 		}
 
-		if (isCapture(oneSquareDiagonallyToLeft)) {
+		if (isCapture(oneSquareDiagonallyToLeft) || isEnPassant(leftSquare)) {
 			moves.push((oneSquareDiagonallyToLeft as Square).name);
 		}
-		if (isCapture(oneSquareDiagonallyToRight)) {
+		if (isCapture(oneSquareDiagonallyToRight) || isEnPassant(rightSquare)) {
 			moves.push((oneSquareDiagonallyToRight as Square).name);
 		}
 
