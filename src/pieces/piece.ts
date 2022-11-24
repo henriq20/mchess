@@ -1,3 +1,4 @@
+import Chess from '../chess.js';
 import ChessBoard from '../board/board.js';
 import { ChessPosition } from '../board/position.js';
 
@@ -24,13 +25,5 @@ export default abstract class ChessPiece {
 		this.moves = 0;
 	}
 
-	canMove(to: ChessPosition): boolean {
-		if (!this.board || !this.square) {
-			return false;
-		}
-
-		return this.possibleMoves().includes(to);
-	}
-
-	abstract possibleMoves(): ChessPosition[];
+	abstract possibleMoves(chess?: Chess): ChessPosition[];
 }

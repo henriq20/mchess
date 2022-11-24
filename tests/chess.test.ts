@@ -36,14 +36,6 @@ describe('place', () => {
         expect((piece as ChessPiece).square).toBe('a3');
     });
 
-    it('should return null when the piece was not added', () => {
-        const chess = new Chess();
-
-        const piece = chess.place('p', 'a9' as ChessPosition);
-
-        expect(piece).toBe(null);
-    });
-
     it('should add the piece to the pieces array', () => {
         const chess = new Chess();
 

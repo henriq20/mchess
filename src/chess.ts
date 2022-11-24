@@ -10,6 +10,8 @@ import ChessPiece, { ChessPieceColor, ChessPieceLetter } from './pieces/piece.js
 
 const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
+type CanMoveOptions = ChessPosition | { to?: ChessPosition, illegal?: boolean };
+
 export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
@@ -38,7 +40,7 @@ export default class Chess {
 		this.turn = result.turn;
 	}
 
-	place(piece: ChessPieceLetter | ChessPiece, position: ChessPosition | ArrayPosition): ChessPiece | null {
+	place(piece: ChessPieceLetter | ChessPiece, position: ChessPosition | ArrayPosition): ChessPiece {
 		piece = typeof piece === 'string' ? createPiece(piece) : piece;
 		const [ row, column ] = typeof position === 'string' ? toArrayPosition(position) : position;
 
@@ -58,11 +60,9 @@ export default class Chess {
 
 				this.blackKing = piece;
 			}
-
-			return piece;
 		}
 
-		return null;
+		return piece;
 	}
 
 	takeOut(position: ChessPosition): ChessPiece | null {
@@ -94,7 +94,7 @@ export default class Chess {
 	move(move: ChessMove): ChessMoveResult | false {
 		const movingPiece = this.piece(move.from);
 
-		if (!movingPiece || !movingPiece.canMove(move.to)) {
+		if (!movingPiece || !this.canMove(movingPiece, move.to)) {
 			return false;
 		}
 
@@ -150,7 +150,7 @@ export default class Chess {
 		return !this.isCheck() && !this.moves().length;
 	}
 
-	moves(square?: ChessPosition): ChessPosition[] {
+	moves(squareOrPiece?: ChessPosition | ChessPiece): ChessPosition[] {
 		const wouldNotBeInCheck = (from: ChessPosition) => (to: ChessPosition) => {
 			return !this._wouldBeInCheck({
 				from,
@@ -158,19 +158,33 @@ export default class Chess {
 			});
 		};
 
-		if (square) {
-			const piece = this.square(square)?.piece;
+		if (squareOrPiece) {
+			const piece = typeof squareOrPiece === 'string' ? this.square(squareOrPiece)?.piece : squareOrPiece;
 
-			return !piece ? [] : piece.possibleMoves().filter(wouldNotBeInCheck(piece.square as ChessPosition));
+			return !piece ? [] : piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));
 		}
 
 		const pieces = [ ...this[this.turn].values() ];
 
 		const moves = pieces.map(piece => {
-			return piece.possibleMoves().filter(wouldNotBeInCheck(piece.square as ChessPosition));
+			return piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));
 		}).flat();
 
 		return moves;
+	}
+
+	canMove(from: ChessPosition | ChessPiece, options: CanMoveOptions): boolean {
+		const piece = typeof from === 'string' ? this.piece(from) : from;
+		const to = typeof options === 'string' ? options : options.to;
+		const illegal = typeof options === 'string' ? false : options.illegal;
+
+		if (!piece) {
+			return false;
+		}
+
+		const moves = illegal ? piece.possibleMoves(this) : this.moves(piece);
+
+		return to ? moves.includes(to) : !!moves.length;
 	}
 
 	clear() {
@@ -190,7 +204,7 @@ export default class Chess {
 		const enemies = this[king.color === 'white' ? 'black' : 'white'].values();
 
 		for (const enemy of enemies) {
-			if (enemy.canMove(king.square)) {
+			if (this.canMove(enemy, { to: king.square, illegal: true })) {
 				return true;
 			}
 		}
