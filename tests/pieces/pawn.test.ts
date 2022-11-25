@@ -16,9 +16,11 @@ it('should be able to move one square forward', () => {
 });
 
 it('should be able to move two squares forward', () => {
-    const pawn = chess.place('P', 'a2');
+    const whitePawn = chess.place('P', 'a2');
+    const blackPawn = chess.place('p', 'a7');
 
-    expect(chess.canMove(pawn, 'a4')).toBe(true);
+    expect(chess.canMove(whitePawn, 'a4')).toBe(true);
+    expect(chess.canMove(blackPawn, 'a5')).toBe(true);
 });
 
 it('should not be able to move two squares forward when it has already moved once', () => {
@@ -74,4 +76,48 @@ it('should be able to en passant to the right', () => {
     }
 
     expect(chess.canMove(whitePawn, 'f6')).toBe(true);
+});
+
+it('should not be able to en passant if last move was not of a pawn', () => {
+    chess = new Chess('k7/3p4/8/4P3/8/8/8/K7 b - - 0 2');
+
+    chess.move({
+        from: 'd7',
+        to: 'd5'
+    });
+
+    chess.move({
+        from: 'a1',
+        to: 'a2'
+    });
+
+    chess.move({
+        from: 'a8',
+        to: 'a7'
+    });
+
+    const whitePawn = chess.piece('e5');
+
+    if (!whitePawn) {
+        return fail();
+    }
+
+    expect(chess.canMove(whitePawn, 'd6')).toBe(false);
+});
+
+it('should not be able to en passant if last move was of another pawn', () => {
+    chess = new Chess('k7/3p4/8/4P3/8/8/8/K7 b - - 0 2');
+
+    chess.move({
+        from: 'c7',
+        to: 'c5'
+    });
+
+    const whitePawn = chess.piece('e5');
+
+    if (!whitePawn) {
+        return fail();
+    }
+
+    expect(chess.canMove(whitePawn, 'd6')).toBe(false);
 });
