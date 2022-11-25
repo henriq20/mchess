@@ -1,4 +1,5 @@
 import { ChessPosition, toArrayPosition } from '../board/position.js';
+import Chess from '../chess.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 
 const offsets = [
@@ -17,7 +18,7 @@ export default class King extends ChessPiece {
 		super('k', color);
 	}
 
-	possibleMoves(): ChessPosition[] {
+	possibleMoves(chess: Chess): ChessPosition[] {
 		if (!this.board || !this.square) {
 			return [];
 		}
@@ -39,6 +40,21 @@ export default class King extends ChessPiece {
 			}
 		}
 
+		if (!this._hasMoved(chess)) {
+			const castleSquare = this.board.at(square.position, [ 0, 2 ]);
+			const rookSquare = this.board.at(square.position, [ 0, 3 ]);
+
+			if (castleSquare && rookSquare?.piece?.type === 'r' && rookSquare.piece.color === this.color) {
+				if (this.board.at(square.position, [ 0, 1 ])?.empty && castleSquare.empty) {
+					moves.push(castleSquare.name);
+				}
+			}
+		}
+
 		return moves;
+	}
+
+	_hasMoved(chess: Chess) {
+		return chess.history.some(m => m.result.piece === this);
 	}
 }
