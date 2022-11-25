@@ -111,13 +111,13 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 			break;
 		}
 
+		case MoveType.CAPTURE:
 		case MoveType.PAWN_PROMOTION: {
-			result.promotedTo = options.promoteTo || 'q';
-			piece = createPiece((piece.color === 'white' ? result.promotedTo.toUpperCase() : result.promotedTo.toLowerCase()) as ChessPieceSymbol);
-			break;
-		}
+			if (result.type === MoveType.PAWN_PROMOTION) {
+				result.promotedTo = options.promoteTo || 'q';
+				piece = createPiece((piece.color === 'white' ? result.promotedTo.toUpperCase() : result.promotedTo.toLowerCase()) as ChessPieceSymbol);
+			}
 
-		case MoveType.CAPTURE: {
 			const capturedPiece = chess.takeOut(options.to);
 
 			if (capturedPiece) {
@@ -138,16 +138,15 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 }
 
 function determineMoveType(chess: Chess, from: Square, to: Square): MoveType {
+	const lastMove = chess.history.at(-1);
+
+	if (lastMove?.result.piece?.type === 'p' && from.piece?.type === 'p' && from.position[1] !== to.position[1]) {
+		return MoveType.EN_PASSANT;
+	}
+	if (from.piece?.type === 'p' && (to.position[0] === 0 || to.position[0] === 7)) {
+		return MoveType.PAWN_PROMOTION;
+	}
 	if (to.empty) {
-		const lastMove = chess.history.at(-1);
-
-		if (lastMove?.result.piece?.type === 'p' && from.piece?.type === 'p' && from.position[1] !== to.position[1]) {
-			return MoveType.EN_PASSANT;
-		}
-		if (from.piece?.type === 'p' && (to.position[0] === 0 || to.position[0] === 7)) {
-			return MoveType.PAWN_PROMOTION;
-		}
-
 		return MoveType.QUIET;
 	}
 

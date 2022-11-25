@@ -137,6 +137,21 @@ describe('promotion', () => {
         expect(move.result.promotedTo).toBe('r');
         expect(chess.piece('e8')?.type).toBe('r');
     });
+
+    it('should capture and promote', () => {
+        const chess = new Chess('k4n2/4P3/8/8/8/8/5p2/K7 w - - 0 2');
+
+        const move = makeMove(chess, {
+            from: 'e7',
+            to: 'f8',
+            promoteTo: 'r'
+        });
+
+        expect(move.result.capturedPiece).toBeTruthy();
+        expect(move.result.capturedPiece?.type).toBe('n');
+        expect(move.result.promotedTo).toBe('r');
+        expect(chess.piece('f8')?.type).toBe('r');
+    });
 });
 
 describe('enPassant', () => {
