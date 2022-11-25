@@ -68,10 +68,11 @@ describe('place', () => {
 
         const pawn = createPiece('p');
 
-        const result = board.place(0, 0, pawn);
+        const square = board.place(0, 0, pawn) as Square;
 
-        expect(result).toBe(true);
-        expect(board.get(0, 0)?.piece).toBeInstanceOf(Pawn);
+        expect(square).toBeTruthy();
+        expect(square.empty).toBe(false);
+        expect(square.piece).toBeInstanceOf(Pawn);
     });
 
     it('should return false when the piece was not added', () => {

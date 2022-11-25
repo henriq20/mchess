@@ -24,7 +24,7 @@ const offsets: { [ key: string ]: ArrayPosition[] } = {
 
 export default class Pawn extends ChessPiece {
 	constructor(color: ChessPieceColor) {
-		super('pawn', color === 'white' ? 'P' : 'p', color);
+		super('p', color);
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {
@@ -32,13 +32,13 @@ export default class Pawn extends ChessPiece {
 			return [];
 		}
 
-		const square = this.board.get(...toArrayPosition(this.square));
+		const position = toArrayPosition(this.square);
+		const square = this.board.get(...position);
 
 		if (!square) {
 			return [];
 		}
 
-		const position = toArrayPosition(this.square);
 		const offset = offsets[this.color];
 
 		const oneSquareForward = this.board.at(position, offset[0]);
@@ -60,10 +60,9 @@ export default class Pawn extends ChessPiece {
 			const lastMove = chess.history.at(-1);
 
 			return lastMove &&
-				   lastMove.piece.name === 'pawn' &&
-				   lastMove.piece.color !== this.color &&
-				   lastMove.piece.moves === 1 &&
-				   square?.piece === lastMove.piece;
+				   lastMove.result.piece?.type === 'p' &&
+				   lastMove.result.piece.color !== this.color &&
+				   square?.piece === lastMove.result.piece;
 		};
 
 		const moves: ChessPosition[] = [];
@@ -71,7 +70,7 @@ export default class Pawn extends ChessPiece {
 		if (isQuiet(oneSquareForward)) {
 			moves.push((oneSquareForward as Square).name);
 
-			if (isQuiet(twoSquaresForward) && this.moves === 0) {
+			if (isQuiet(twoSquaresForward) && this._canMoveTwoSquares(position)) {
 				moves.push((twoSquaresForward as Square).name);
 			}
 		}
@@ -84,5 +83,9 @@ export default class Pawn extends ChessPiece {
 		}
 
 		return moves;
+	}
+
+	_canMoveTwoSquares(position: ArrayPosition) {
+		return (this.color === 'white' && position[0] === 1) || (this.color === 'black' && position[0] === 6);
 	}
 }

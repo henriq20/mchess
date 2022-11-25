@@ -4,7 +4,7 @@ import { ChessPosition, toArrayPosition } from '../board/position.js';
 
 export default class Rook extends ChessPiece {
 	constructor(color: ChessPieceColor) {
-		super('rook', color === 'white' ? 'R' : 'r', color);
+		super('r', color);
 	}
 
 	possibleMoves(): ChessPosition[] {

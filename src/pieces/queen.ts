@@ -5,7 +5,7 @@ import { ChessPosition, toArrayPosition } from '../board/position.js';
 
 export default class Queen extends ChessPiece {
 	constructor(color: ChessPieceColor) {
-		super('queen', color === 'white' ? 'Q' : 'q', color);
+		super('q', color);
 	}
 
 	possibleMoves(): ChessPosition[] {

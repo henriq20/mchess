@@ -79,7 +79,7 @@ it('should modify how each piece is displayed', () => {
                 return '0';
             }
 
-            return piece.color === 'white' ? piece.letter.toUpperCase() : piece.letter.toLowerCase();
+            return piece.color === 'white' ? piece.type.toUpperCase() : piece.type.toLowerCase();
         }
     });
 

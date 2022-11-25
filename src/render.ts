@@ -43,7 +43,13 @@ export type RenderOptions = {
 export const defaultOptions: RenderOptions = {
 	rank: rank => rank,
 	file: file => file,
-	piece: piece => piece?.letter || ' ',
+	piece: piece => {
+		if (piece) {
+			return piece.color === 'white' ? piece.type.toUpperCase() : piece.type.toLowerCase();
+		}
+
+		return ' ';
+	},
 	squareHeight: 1,
 	squareWidth: 3,
 	separators: {

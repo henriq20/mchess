@@ -5,7 +5,7 @@ import { ChessPosition, toArrayPosition } from '../board/position';
 
 export default class Bishop extends ChessPiece {
 	constructor(color: ChessPieceColor) {
-		super('bishop', color === 'white' ? 'B' : 'b', color);
+		super('b', color);
 	}
 
 	possibleMoves(): ChessPosition[] {
@@ -23,7 +23,6 @@ export default class Bishop extends ChessPiece {
 
 		const validate = (square: Square) => {
 			if (square.empty) {
-
 				moves.push(square.name);
 				return false;
 			}

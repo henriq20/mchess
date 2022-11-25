@@ -14,7 +14,7 @@ const offsets = [
 
 export default class King extends ChessPiece {
 	constructor(color: ChessPieceColor) {
-		super('king', color === 'white' ? 'K' : 'k', color);
+		super('k', color);
 	}
 
 	possibleMoves(): ChessPosition[] {

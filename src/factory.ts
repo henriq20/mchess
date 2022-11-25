@@ -4,12 +4,12 @@ import Rook from './pieces/rook.js';
 import Queen from './pieces/queen.js';
 import Knight from './pieces/knight.js';
 import Bishop from './pieces/bishop.js';
-import ChessPiece, { ChessPieceColor, ChessPieceLetter } from './pieces/piece.js';
+import ChessPiece, { ChessPieceColor, ChessPieceSymbol } from './pieces/piece.js';
 
-export default function createPiece(letter: ChessPieceLetter): ChessPiece {
-	const color: ChessPieceColor = /[a-z]/.test(letter) ? 'black' : 'white';
+export default function createPiece(symbol: ChessPieceSymbol): ChessPiece {
+	const color: ChessPieceColor = /[a-z]/.test(symbol) ? 'black' : 'white';
 
-	switch (letter) {
+	switch (symbol) {
 		case 'r':
 		case 'R':
 			return new Rook(color);

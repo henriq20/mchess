@@ -1,23 +1,26 @@
 import createPiece from '../src/factory';
-import { ChessPieceLetter } from '../src/pieces/piece';
+import { ChessPieceSymbol } from '../src/pieces/piece';
 
 it.each([
     // White pieces
-    { name: 'king', color: 'white', letter: 'K' },
-    { name: 'queen', color: 'white', letter: 'Q' },
-    { name: 'rook', color: 'white', letter: 'R' },
-    { name: 'bishop', color: 'white', letter: 'B' },
-    { name: 'knight', color: 'white', letter: 'N' },
-    { name: 'pawn', color: 'white', letter: 'P' },
+    { type: 'k', color: 'white', symbol: 'K' },
+    { type: 'q', color: 'white', symbol: 'Q' },
+    { type: 'r', color: 'white', symbol: 'R' },
+    { type: 'b', color: 'white', symbol: 'B' },
+    { type: 'n', color: 'white', symbol: 'N' },
+    { type: 'p', color: 'white', symbol: 'P' },
 
     // Black pieces
-    { name: 'king', color: 'black', letter: 'k' },
-    { name: 'queen', color: 'black', letter: 'q' },
-    { name: 'rook', color: 'black', letter: 'r' },
-    { name: 'bishop', color: 'black', letter: 'b' },
-    { name: 'knight', color: 'black', letter: 'n' },
-    { name: 'pawn', color: 'black', letter: 'p' },
+    { type: 'k', color: 'black', symbol: 'k' },
+    { type: 'q', color: 'black', symbol: 'q' },
+    { type: 'r', color: 'black', symbol: 'r' },
+    { type: 'b', color: 'black', symbol: 'b' },
+    { type: 'n', color: 'black', symbol: 'n' },
+    { type: 'p', color: 'black', symbol: 'p' },
 
-])('it should create a $color $name when passed the letter $letter', (piece) => {
-    expect(createPiece(piece.letter as ChessPieceLetter)).toMatchObject(piece);
+])('it should create a $color $name when passed the letter $letter', ({ type, color, symbol }) => {
+    const piece = createPiece(symbol as ChessPieceSymbol);
+
+    expect(piece.type).toBe(type);
+    expect(piece.color).toBe(color);
 });

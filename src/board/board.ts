@@ -46,14 +46,17 @@ export default class ChessBoard {
 		return this._board;
 	}
 
-	place(row: number, column: number, piece: ChessPiece): boolean {
+	place(row: number, column: number, piece: ChessPiece): Square | false {
 		if (this._isOffBounds(row, column)) {
 			return false;
 		}
 
-		this._board[row][column].piece = piece;
+		const square = this._board[row][column];
+		square.piece = piece;
+		piece.board = this;
+		piece.square = square.name;
 
-		return true;
+		return square;
 	}
 
 	get(row: number, column: number): Square | null {

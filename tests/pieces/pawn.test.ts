@@ -16,17 +16,15 @@ it('should be able to move one square forward', () => {
 });
 
 it('should be able to move two squares forward', () => {
-    const pawn = chess.place('P', 'a1');
+    const pawn = chess.place('P', 'a2');
 
-    expect(chess.canMove(pawn, 'a3')).toBe(true);
+    expect(chess.canMove(pawn, 'a4')).toBe(true);
 });
 
 it('should not be able to move two squares forward when it has already moved once', () => {
-    const pawn = chess.place('P', 'a1') as Pawn;
+    const pawn = chess.place('P', 'a3') as Pawn;
 
-    pawn.moves++;
-
-    expect(chess.canMove(pawn, 'a3')).toBe(false);
+    expect(chess.canMove(pawn, 'a5')).toBe(false);
 });
 
 it('should be able to capture a piece diagonally to the left', () => {

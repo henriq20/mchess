@@ -17,7 +17,7 @@ describe('place', () => {
         const square = chess.board.get(2, 0);
 
         expect(square?.empty).toBe(false);
-        expect(square?.piece?.name).toBe('pawn');
+        expect(square?.piece?.type).toBe('p');
     });
 
     it('should return the piece created', () => {
@@ -46,15 +46,6 @@ describe('place', () => {
         expect(chess.black.size).toBe(17);
         expect(chess.black.get('a3')?.color).toBe('black');
         expect(chess.white.get('a4')?.color).toBe('white');
-    });
-
-    it('should add a piece by passing row and column', () => {
-        const chess = new Chess();
-
-        chess.place('P', [ 2, 0 ]);
-
-        expect(chess.white.size).toBe(17);
-        expect(chess.board.get(2, 0)?.piece).toBeInstanceOf(Pawn);
     });
 
     it('should set the white or black king', () => {
@@ -122,7 +113,6 @@ describe('move', () => {
             to: 'a4'
         });
 
-        expect(chess.piece('a4')?.moves).toBe(1);
         expect(chess.piece('a4')).toBeInstanceOf(Pawn);
         expect(chess.square('a2')?.empty).toBe(true);
     });
@@ -137,7 +127,6 @@ describe('move', () => {
 
         expect(result).toBe(false);
         expect(chess.piece('a5')).toBe(null);
-        expect(chess.piece('a2')?.moves).toBe(0);
     });
 
     it('should add the move to the history', () => {
@@ -149,7 +138,7 @@ describe('move', () => {
         });
 
         expect(chess.history).toHaveLength(1);
-        expect(chess.history[0]).toBe(result);
+        expect(chess.history[0].result).toBe(result);
     });
 
     it('should not add the move to the history when the move is invalid', () => {

@@ -1,153 +1,248 @@
-import move, { ChessMoveResult } from '../src/move';
 import Chess from '../src/chess';
+import makeMove, { MoveType } from '../src/move';
 import { ChessPosition } from '../src/board/position';
-import Pawn from '../src/pieces/pawn';
 
-it('should move a piece', () => {
-    const chess = new Chess();
+describe('quiet', () => {
+    it('should move a piece', () => {
+        const chess = new Chess();
 
-    move(chess, {
-        from: 'e2',
-        to: 'e4'
+        makeMove(chess, {
+            from: 'e2',
+            to: 'e4'
+        });
+
+        expect(chess.piece('e2')).toBe(null);
+        expect(chess.piece('e4')?.type).toBe('p');
     });
 
-    expect(chess.piece('e2')).toBe(null);
-    expect(chess.piece('e4')?.name).toBe('pawn');
-});
+    it('should return the correct result', () => {
+        const chess = new Chess();
 
-it('should return the correct result', () => {
-    const chess = new Chess();
+        const move = makeMove(chess, {
+            from: 'e2',
+            to: 'e4'
+        });
 
-    const result = move(chess, {
-        from: 'e2',
-        to: 'e4'
+        expect(move).toBeTruthy();
+        expect(move.result).toMatchObject({
+            type: MoveType.QUIET,
+            from: 'e2',
+            to: 'e4'
+        });
     });
 
-    expect(result).toBeTruthy();
-    expect(result).toMatchObject({
-        from: 'e2',
-        to: 'e4',
-        piece: chess.piece('e4')
-    });
-});
+    it('should add the move to the history', () => {
+        const chess = new Chess();
 
-it('should increase the number of movements', () => {
-    const chess = new Chess();
+        const move = makeMove(chess, {
+            from: 'e2',
+            to: 'e4'
+        });
 
-    move(chess, {
-        from: 'e2',
-        to: 'e4'
-    });
-
-    expect(chess.piece('e4')?.moves).toBe(1);
-});
-
-it('should capture a piece', () => {
-    const chess = new Chess();
-
-    chess.place('p', 'e3');
-
-    move(chess, {
-        from: 'd2',
-        to: 'e3'
-    });
-
-    expect(chess.black.size).toBe(16);
-    expect(chess.piece('d2')).toBe(null);
-    expect(chess.piece('e3')?.color).toBe('white');
-});
-
-it('should return the correct result after a capture', () => {
-    const chess = new Chess();
-
-    const capturedPiece = chess.place('p', 'e3');
-
-    const result = move(chess, {
-        from: 'd2',
-        to: 'e3'
-    });
-
-    expect(result).toBeTruthy();
-    expect(result).toMatchObject({
-        from: 'd2',
-        to: 'e3',
-        piece: chess.piece('e3'),
-        capturedPiece
+        expect(chess.history).toHaveLength(1);
+        expect(chess.history[0]).toBe(move);
     });
 });
 
-it('should return false when the `from` square does not have a piece', () => {
-    const chess = new Chess();
+describe('capture', () => {
+    it('should capture a piece', () => {
+        const chess = new Chess();
 
-    const result = move(chess, {
-        from: 'e3',
-        to: 'e4'
+        chess.place('p', 'e3');
+
+        makeMove(chess, {
+            from: 'd2',
+            to: 'e3'
+        });
+
+        expect(chess.black.size).toBe(16);
+        expect(chess.piece('d2')).toBe(null);
+        expect(chess.piece('e3')?.color).toBe('white');
     });
 
-    expect(result).toBe(false);
+    it('should return the correct result after a capture', () => {
+        const chess = new Chess();
+
+        const capturedPiece = chess.place('p', 'e3');
+
+        const move = makeMove(chess, {
+            from: 'd2',
+            to: 'e3'
+        });
+
+        expect(move).toBeTruthy();
+        expect(move.result).toMatchObject({
+            type: MoveType.CAPTURE,
+            from: 'd2',
+            to: 'e3',
+            capturedPiece
+        });
+    });
 });
 
-it('should return false when the `from` square does not exist', () => {
-    const chess = new Chess();
+describe('promotion', () => {
+    it('should promote a white pawn', () => {
+        const chess = new Chess('k7/4P3/8/8/8/8/5p2/K7 w - - 0 2');
 
-    const result = move(chess, {
-        from: 'e0' as ChessPosition,
-        to: 'e4'
+        const move = makeMove(chess, {
+            from: 'e7',
+            to: 'e8',
+            promoteTo: 'q'
+        });
+
+        expect(move.result.promotedTo).toBe('q');
+        expect(move.result.type).toBe(MoveType.PAWN_PROMOTION);
+        expect(chess.piece('e8')?.type).toBe('q');
+        expect(chess.piece('e8')?.color).toBe('white');
+        expect(chess.piece('e8')?.square).toBe('e8');
     });
 
-    expect(result).toBe(false);
-});
+    it('should promote a black pawn', () => {
+        const chess = new Chess('k7/4P3/8/8/8/8/5p2/K7 b - - 0 2');
 
-it('should return false when the `to` square does not exist', () => {
-    const chess = new Chess();
+        const move = makeMove(chess, {
+            from: 'f2',
+            to: 'f1',
+            promoteTo: 'q'
+        });
 
-    const result = move(chess, {
-        from: 'e2',
-        to: 'e0' as ChessPosition
+        expect(move.result.promotedTo).toBe('q');
+        expect(move.result.type).toBe(MoveType.PAWN_PROMOTION);
+        expect(chess.piece('f1')?.type).toBe('q');
+        expect(chess.piece('f1')?.color).toBe('black');
+        expect(chess.piece('f1')?.square).toBe('f1');
     });
 
-    expect(result).toBe(false);
+    it('should promote to queen by default', () => {
+        const chess = new Chess('k7/4P3/8/8/8/8/5p2/K7 w - - 0 2');
+
+        const move = makeMove(chess, {
+            from: 'e7',
+            to: 'e8'
+        });
+
+        expect(move.result.promotedTo).toBe('q');
+        expect(chess.piece('e8')?.type).toBe('q');
+    });
+
+    it('should promote to another piece', () => {
+        const chess = new Chess('k7/4P3/8/8/8/8/5p2/K7 w - - 0 2');
+
+        const move = makeMove(chess, {
+            from: 'e7',
+            to: 'e8',
+            promoteTo: 'r'
+        });
+
+        expect(move.result.promotedTo).toBe('r');
+        expect(chess.piece('e8')?.type).toBe('r');
+    });
 });
 
-it('should undo a movement', () => {
-    const chess = new Chess();
+describe('enPassant', () => {
+    it('should be able to en passant', () => {
+        const chess = new Chess('k7/3p4/8/4P3/8/8/8/K7 b - - 0 2');
 
-    const move = chess.move({
-        from: 'e2',
-        to: 'e4'
-    }) as ChessMoveResult;
+        makeMove(chess, {
+            from: 'd7',
+            to: 'd5'
+        });
 
-    move.undo();
+        const enPassantMove = makeMove(chess, {
+            from: 'e5',
+            to: 'd6'
+        });
 
-    expect(chess.piece('e4')).toBe(null);
-    expect(chess.piece('e2')).toBeInstanceOf(Pawn);
+        expect(enPassantMove.result.type).toBe(MoveType.EN_PASSANT);
+        expect(enPassantMove.result.capturedPiece?.type).toBe('p');
+        expect(enPassantMove.result.capturedPiece?.color).toBe('black');
+        expect(chess.piece('d5')).toBe(null);
+        expect(chess.piece('d6')?.type).toBe('p');
+        expect(chess.piece('d6')?.color).toBe('white');
+    });
 });
 
-it('should decrease the number of movements after undoing the move', () => {
-    const chess = new Chess();
+describe('invalid', () => {
+    it('should return an invalid move when the `from` square does not have a piece', () => {
+        const chess = new Chess();
 
-    const move = chess.move({
-        from: 'e2',
-        to: 'e4'
-    }) as ChessMoveResult;
+        const move = makeMove(chess, {
+            from: 'e3',
+            to: 'e4'
+        });
 
-    move.undo();
+        expect(move.result.type).toBe(MoveType.INVALID);
+    });
 
-    expect(chess.piece('e2')?.moves).toBe(0);
+    it('should an invalid move when the `from` square does not exist', () => {
+        const chess = new Chess();
+
+        const move = makeMove(chess, {
+            from: 'e0' as ChessPosition,
+            to: 'e4'
+        });
+
+        expect(move.result.type).toBe(MoveType.INVALID);
+    });
+
+    it('should return an invalid move when the `to` square does not exist', () => {
+        const chess = new Chess();
+
+        const move = makeMove(chess, {
+            from: 'e2',
+            to: 'e0' as ChessPosition
+        });
+
+        expect(move.result.type).toBe(MoveType.INVALID);
+    });
 });
 
-it('should undo a capture', () => {
-    const chess = new Chess();
+describe('undo', () => {
+    it('should undo a move', () => {
+        const chess = new Chess();
 
-    chess.place('p', 'f3');
+        const move = makeMove(chess, {
+            from: 'e2',
+            to: 'e4'
+        });
 
-    const move = chess.move({
-        from: 'e2',
-        to: 'f3'
-    }) as ChessMoveResult;
+        move.undo();
 
-    move.undo();
+        expect(chess.piece('e4')).toBe(null);
+        expect(chess.piece('e2')?.type).toBe('p');
+    });
 
-    expect(chess.piece('f3')?.color).toBe('black');
-    expect(chess.piece('e2')?.color).toBe('white');
+    it('should undo a capture', () => {
+        const chess = new Chess();
+
+        chess.place('p', 'f3');
+
+        const move = makeMove(chess, {
+            from: 'e2',
+            to: 'f3'
+        });
+
+        move.undo();
+
+        expect(chess.piece('f3')?.color).toBe('black');
+        expect(chess.piece('e2')?.color).toBe('white');
+    });
+
+    it('should undo a pawn promotion', () => {
+        const chess = new Chess('k7/4P3/8/8/8/8/5p2/K7 w - - 0 2');
+
+        const move = makeMove(chess, {
+            from: 'e7',
+            to: 'e8',
+            promoteTo: 'q'
+        });
+
+        move.undo();
+
+        expect(chess.piece('e8')).toBe(null);
+        expect(chess.piece('e7')?.type).toBe('p');
+        expect(chess.piece('e7')?.square).toBe('e7');
+        expect(chess.piece('e7')?.color).toBe('white');
+    });
 });
+
