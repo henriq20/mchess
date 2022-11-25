@@ -259,5 +259,21 @@ describe('undo', () => {
         expect(chess.piece('e7')?.square).toBe('e7');
         expect(chess.piece('e7')?.color).toBe('white');
     });
+
+    it('should undo an en passant', () => {
+        const chess = new Chess('k7/3p4/8/4P3/8/8/8/K7 b - - 0 2');
+
+        const move = makeMove(chess, {
+            from: 'd7',
+            to: 'd5'
+        });
+
+        move.undo();
+
+        expect(chess.piece('d7')?.type).toBe('p');
+        expect(chess.piece('d7')?.color).toBe('black');
+        expect(chess.piece('e5')?.type).toBe('p');
+        expect(chess.piece('e5')?.color).toBe('white');
+    });
 });
 
