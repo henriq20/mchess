@@ -279,7 +279,7 @@ describe('enemies', () => {
 
         const enemies = chess.enemies();
 
-        for (const [ _, enemy ] of enemies) {
+        for (const [_, enemy] of enemies) {
             expect(enemy.color).toBe('white');
         }
     });
@@ -289,7 +289,7 @@ describe('enemies', () => {
 
         const enemies = chess.enemies();
 
-        for (const [ _, enemy ] of enemies) {
+        for (const [_, enemy] of enemies) {
             expect(enemy.color).toBe('black');
         }
     });
@@ -299,8 +299,8 @@ describe('moves', () => {
     it('should get the possible moves of a piece', () => {
         const chess = new Chess();
 
-        expect(chess.moves('e2')).toStrictEqual([ 'e3', 'e4' ]);
-        expect(chess.moves('e7')).toStrictEqual([ 'e6', 'e5' ]);
+        expect(chess.moves('e2')).toStrictEqual(['e3', 'e4']);
+        expect(chess.moves('e7')).toStrictEqual(['e6', 'e5']);
     });
 
     it('should return an empty array when the square does not have a piece', () => {
@@ -356,5 +356,22 @@ describe('clear', () => {
         expect(chess.black.size).toBe(0);
         expect(chess.history).toHaveLength(0);
         expect(chess.turn).toBe('white');
+    });
+});
+
+describe('reset', () => {
+    it('should reset the board to its default position', () => {
+        const chess = new Chess('rnbqkbnr/ppp1pppp/8/3p4/5P2/8/PPPPP1PP/RNBQKBNR w KQkq d6 0 2');
+
+        chess.move({
+            from: 'c2',
+            to: 'c4'
+        });
+
+        chess.reset();
+
+        const fen = chess.fen();
+
+        expect(fen).toMatch('rnbqkbnr/ppp1pppp/8/3p4/5P2/8/PPPPP1PP/RNBQKBNR w KQkq');
     });
 });

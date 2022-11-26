@@ -1,4 +1,4 @@
-import { decode, Flags } from './fen.js';
+import { decode, encode, Flags } from './fen.js';
 import King from './pieces/king.js';
 import Square from './board/square.js';
 import createPiece from './factory.js';
@@ -21,6 +21,7 @@ export default class Chess {
 	blackKing: King | null;
 	history: ChessMove[];
 	flags: Flags;
+	_fen: string;
 
 	constructor(fen?: string) {
 		this.board = new ChessBoard();
@@ -30,6 +31,7 @@ export default class Chess {
 		this.blackKing = null;
 		this.history = [];
 		this.turn = 'white';
+		this._fen = fen ?? DEFAULT_POSITION;
 		this.flags = {
 			WHITE_KINGSIDE_CASTLING: true,
 			WHITE_QUEENSIDE_CASTLING: true,
@@ -216,6 +218,15 @@ export default class Chess {
 		this.blackKing = null;
 		this.white = new Map();
 		this.black = new Map();
+	}
+
+	reset() {
+		this.clear();
+		this.setup(this._fen);
+	}
+
+	fen() {
+		return encode(this);
 	}
 
 	_changeTurn() {
