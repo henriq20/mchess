@@ -228,7 +228,7 @@ describe('decode', () => {
     });
 });
 
-describe.only('encode', () => {
+describe('encode', () => {
     const cases = [
         {
             fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
