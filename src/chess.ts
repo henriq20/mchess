@@ -17,14 +17,16 @@ export default class Chess {
 	turn: ChessPieceColor;
 	white: Map<ChessPosition, ChessPiece>;
 	black: Map<ChessPosition, ChessPiece>;
-	whiteKing?: King;
-	blackKing?: King;
+	whiteKing: King | null;
+	blackKing: King | null;
 	history: ChessMove[];
 
 	constructor(fen?: string) {
 		this.board = new ChessBoard();
 		this.white = new Map();
 		this.black = new Map();
+		this.whiteKing = null;
+		this.blackKing = null;
 		this.history = [];
 		this.turn = 'white';
 		this.setup(fen ?? DEFAULT_POSITION);
@@ -200,6 +202,12 @@ export default class Chess {
 
 	clear() {
 		this.board.clear();
+		this.history = [];
+		this.turn = 'white';
+		this.whiteKing = null;
+		this.blackKing = null;
+		this.white = new Map();
+		this.black = new Map();
 	}
 
 	_changeTurn() {

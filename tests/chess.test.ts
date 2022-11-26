@@ -343,3 +343,18 @@ describe('moves', () => {
         ]));
     });
 });
+
+describe('clear', () => {
+    it('should clear the board', () => {
+        const chess = new Chess();
+
+        chess.clear();
+
+        expect(chess.whiteKing).toBe(null);
+        expect(chess.blackKing).toBe(null);
+        expect(chess.white.size).toBe(0);
+        expect(chess.black.size).toBe(0);
+        expect(chess.history).toHaveLength(0);
+        expect(chess.turn).toBe('white');
+    });
+});
