@@ -3,7 +3,7 @@ import Pawn from './pieces/pawn.js';
 import createPiece from './factory.js';
 import Square from './board/square.js';
 import ChessPiece, { ChessPieceSymbol } from './pieces/piece.js';
-import { ChessPosition, toChessPosition } from './board/position.js';
+import { ChessPosition, toArrayPosition, toChessPosition } from './board/position.js';
 
 export type ChessMoveOptions = {
 	from: ChessPosition,
@@ -62,6 +62,10 @@ export class ChessMove {
 			case MoveType.PAWN_PROMOTION:
 				return this._undoPromotion(piece);
 
+			case MoveType.KINGSIDE_CASTLE:
+			case MoveType.QUEENSIDE_CASTLE:
+				return this._undoCastling();
+
 			default:
 				break;
 		}
@@ -78,6 +82,18 @@ export class ChessMove {
 
 	_undoPromotion(piece: ChessPiece) {
 		this.chess.place(new Pawn(piece.color), this.result.from);
+	}
+
+	_undoCastling() {
+		const from = toArrayPosition(this.result.from);
+
+		if (this.result.type === MoveType.KINGSIDE_CASTLE) {
+			const rook = this.chess.takeOut(toChessPosition(from[0], from[1] + 1));
+
+			if (rook) {
+				this.chess.place(rook, toChessPosition(from[0], from[1] + 3));
+			}
+		}
 	}
 }
 
@@ -126,6 +142,15 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 			break;
 		}
 
+		case MoveType.KINGSIDE_CASTLE: {
+			const rook = chess.takeOut(toChessPosition(from.position[0], from.position[1] + 3));
+
+			if (rook && rook.type === 'r') {
+				chess.place(rook, toChessPosition(from.position[0], from.position[1] + 1));
+			}
+			break;
+		}
+
 		default:
 			break;
 	}
@@ -145,6 +170,9 @@ function determineMoveType(chess: Chess, from: Square, to: Square): MoveType {
 	}
 	if (from.piece?.type === 'p' && (to.position[0] === 0 || to.position[0] === 7)) {
 		return MoveType.PAWN_PROMOTION;
+	}
+	if (from.piece?.type === 'k' && to.position[1] - from.position[1] === 2) {
+		return MoveType.KINGSIDE_CASTLE;
 	}
 	if (to.empty) {
 		return MoveType.QUIET;

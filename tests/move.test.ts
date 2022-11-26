@@ -177,6 +177,22 @@ describe('enPassant', () => {
     });
 });
 
+describe('castling', () => {
+    it('should be able to castle kingside', () => {
+        const chess = new Chess('4k2r/8/8/8/8/8/8/4K2R w - - 0 1');
+
+        const move = makeMove(chess, {
+            from: 'e1',
+            to: 'g1'
+        });
+
+        expect(move.result.type).toBe(MoveType.KINGSIDE_CASTLE);
+        expect(move.result.piece?.type).toBe('k');
+        expect(chess.piece('f1')?.type).toBe('r');
+        expect(chess.piece('g1')?.type).toBe('k');
+    });
+});
+
 describe('invalid', () => {
     it('should return an invalid move when the `from` square does not have a piece', () => {
         const chess = new Chess();
@@ -274,6 +290,22 @@ describe('undo', () => {
         expect(chess.piece('d7')?.color).toBe('black');
         expect(chess.piece('e5')?.type).toBe('p');
         expect(chess.piece('e5')?.color).toBe('white');
+    });
+
+    it('should undo kingside castle', () => {
+        const chess = new Chess('4k2r/8/8/8/8/8/8/4K2R w - - 0 1');
+
+        const move = makeMove(chess, {
+            from: 'e1',
+            to: 'g1'
+        });
+
+        move.undo();
+
+        expect(chess.piece('e1')?.type).toBe('k');
+        expect(chess.piece('h1')?.type).toBe('r');
+        expect(chess.piece('f1')).toBe(null);
+        expect(chess.piece('g1')).toBe(null);
     });
 });
 
