@@ -151,6 +151,19 @@ describe('move', () => {
 
         expect(chess.history).toHaveLength(0);
     });
+
+    it('should not move a piece if it is not its turn', () => {
+        const chess = new Chess();
+
+        chess.move({
+            from: 'e7',
+            to: 'e5'
+        });
+
+        expect(chess.history).toHaveLength(0);
+        expect(chess.piece('e5')).toBe(null);
+        expect(chess.piece('e7')?.type).toBe('p');
+    });
 });
 
 describe('isCheck', () => {

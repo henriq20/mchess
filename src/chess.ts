@@ -98,7 +98,7 @@ export default class Chess {
 	move(options: ChessMoveOptions): ChessMoveResult | false {
 		const movingPiece = this.piece(options.from);
 
-		if (!movingPiece || !this.canMove(movingPiece, options.to)) {
+		if (!movingPiece || movingPiece.color !== this.turn || !this.canMove(movingPiece, options.to)) {
 			return false;
 		}
 
