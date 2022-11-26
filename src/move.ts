@@ -19,7 +19,7 @@ export enum MoveType {
 	KINGSIDE_CASTLE = 4,
 	QUEENSIDE_CASTLE = 5,
 	PAWN_PROMOTION = 6
-};
+}
 
 export type ChessMoveResult = {
 	type: MoveType,

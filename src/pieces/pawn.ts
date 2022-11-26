@@ -60,9 +60,9 @@ export default class Pawn extends ChessPiece {
 			const lastMove = chess.history.at(-1);
 
 			return lastMove &&
-				   lastMove.result.piece?.type === 'p' &&
-				   lastMove.result.piece.color !== this.color &&
-				   square?.piece === lastMove.result.piece;
+					lastMove.result.piece?.type === 'p' &&
+					lastMove.result.piece.color !== this.color &&
+					square?.piece === lastMove.result.piece;
 		};
 
 		const moves: ChessPosition[] = [];
