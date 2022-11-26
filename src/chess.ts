@@ -153,6 +153,14 @@ export default class Chess {
 		return !this.isCheck() && !this.moves().length;
 	}
 
+	isGameOver() {
+		return this.isCheckmate() || this.isStalemate();
+	}
+
+	isDraw() {
+		return this.isStalemate();
+	}
+
 	moves(squareOrPiece?: ChessPosition | ChessPiece): ChessPosition[] {
 		const wouldNotBeInCheck = (from: ChessPosition) => (to: ChessPosition) => {
 			return !this._wouldBeInCheck({
