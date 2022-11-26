@@ -22,4 +22,8 @@ export default abstract class ChessPiece {
 	}
 
 	abstract possibleMoves(chess?: Chess): ChessPosition[];
+
+	hasMoved(chess: Chess) {
+		return chess.history.some(m => m.result.piece === this);
+	}
 }

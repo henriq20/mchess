@@ -40,7 +40,7 @@ export default class King extends ChessPiece {
 			}
 		}
 
-		if (!this._hasMoved(chess)) {
+		if (!this.hasMoved(chess)) {
 			const castleSquare = this.board.at(square.position, [ 0, 2 ]);
 			const rookSquare = this.board.at(square.position, [ 0, 3 ]);
 
@@ -52,9 +52,5 @@ export default class King extends ChessPiece {
 		}
 
 		return moves;
-	}
-
-	_hasMoved(chess: Chess) {
-		return chess.history.some(m => m.result.piece === this);
 	}
 }
