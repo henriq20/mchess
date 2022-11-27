@@ -86,6 +86,12 @@ describe('get', () => {
         expect(board.get('a0' as ChessPosition)).toBe(null);
         expect(board.get('h9' as ChessPosition)).toBe(null);
     });
+
+    it('should return null when position is `-`', () => {
+        const board = new ChessBoard();
+
+        expect(board.get('-')).toBe(null);
+    });
 });
 
 describe('remove', () => {

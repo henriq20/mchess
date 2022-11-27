@@ -1,7 +1,6 @@
 import Chess from '../chess.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 import { Coordinate, ChessPosition } from '../board/position.js';
-import Square from '../board/square.js';
 
 const offsets: Array<Coordinate> = [
 	[ 1, 0 ], // One square forward
