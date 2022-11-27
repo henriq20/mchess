@@ -39,13 +39,13 @@ it('should show where each piece is on the board', () => {
     const board = new ChessBoard();
     const d = new ChessBoardRenderer(board);
 
-    board.place(0, 0, createPiece('P'));
-    board.place(1, 1, createPiece('N'));
-    board.place(2, 2, createPiece('Q'));
-    board.place(3, 3, createPiece('B'));
-    board.place(7, 7, createPiece('k'));
-    board.place(7, 6, createPiece('q'));
-    board.place(7, 5, createPiece('p'));
+    board.place('a1', createPiece('P'));
+    board.place('b2', createPiece('N'));
+    board.place('c3', createPiece('Q'));
+    board.place('d4', createPiece('B'));
+    board.place('h8', createPiece('k'));
+    board.place('g8', createPiece('q'));
+    board.place('f8', createPiece('p'));
 
     const str = d.render();
 
@@ -83,13 +83,13 @@ it('should modify how each piece is displayed', () => {
         }
     });
 
-    board.place(0, 0, createPiece('P'));
-    board.place(1, 1, createPiece('N'));
-    board.place(2, 2, createPiece('Q'));
-    board.place(3, 3, createPiece('B'));
-    board.place(7, 7, createPiece('k'));
-    board.place(7, 6, createPiece('q'));
-    board.place(7, 5, createPiece('p'));
+    board.place('a1', createPiece('P'));
+    board.place('b2', createPiece('N'));
+    board.place('c3', createPiece('Q'));
+    board.place('d4', createPiece('B'));
+    board.place('h8', createPiece('k'));
+    board.place('g8', createPiece('q'));
+    board.place('f8', createPiece('p'));
 
     const str = d.render();
 

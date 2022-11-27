@@ -1,18 +1,19 @@
 import Square from '../board/square.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
-import { ChessPosition, toArrayPosition } from '../board/position.js';
+import { ChessPosition } from '../board/position.js';
+import Chess from '../chess.js';
 
 export default class Rook extends ChessPiece {
 	constructor(color: ChessPieceColor) {
 		super('r', color);
 	}
 
-	possibleMoves(): ChessPosition[] {
-		if (!this.board || !this.square) {
+	possibleMoves(chess: Chess): ChessPosition[] {
+		if (!this.square) {
 			return [];
 		}
 
-		const square = this.board.get(...toArrayPosition(this.square));
+		const square = chess.board.get(this.square);
 
 		if (!square) {
 			return [];
@@ -34,7 +35,7 @@ export default class Rook extends ChessPiece {
 			return true;
 		};
 
-		this.board.traverse(square, [ 'top', 'left', 'bottom', 'right' ], validate.bind(this));
+		chess.board.traverse(square, [ 'top', 'left', 'bottom', 'right' ], validate.bind(this));
 
 		return moves;
 	}

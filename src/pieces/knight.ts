@@ -1,18 +1,19 @@
 import ChessPiece, { ChessPieceColor } from './piece.js';
-import { ChessPosition, toArrayPosition } from '../board/position.js';
+import { Coordinate, ChessPosition } from '../board/position.js';
+import Chess from '../chess.js';
 
-const offsets = [
-	[ 2, -1 ], // Two squares forward and one to the left
-	[ 1, -2 ], // One square forward and two to the left
+const offsets: Array<Coordinate> = [
+	[2, -1], // Two squares forward and one to the left
+	[1, -2], // One square forward and two to the left
 
-	[ 2, 1 ], // Two squares forward and one to the right
-	[ 1, 2 ], // One square forward and two to the right
+	[2, 1], // Two squares forward and one to the right
+	[1, 2], // One square forward and two to the right
 
-	[ -2, -1 ], // Two squares backward and one to the left
-	[ -1, -2 ], // One square backward and two to the left
+	[-2, -1], // Two squares backward and one to the left
+	[-1, -2], // One square backward and two to the left
 
-	[ -2, 1 ], // Two squares backward and one to the right
-	[ -1, 2 ]  // One square backward and two to the right
+	[-2, 1], // Two squares backward and one to the right
+	[-1, 2]  // One square backward and two to the right
 ];
 
 export default class Knight extends ChessPiece {
@@ -20,22 +21,21 @@ export default class Knight extends ChessPiece {
 		super('n', color);
 	}
 
-	possibleMoves(): ChessPosition[] {
-		if (!this.board || !this.square) {
+	possibleMoves(chess: Chess): ChessPosition[] {
+		if (!this.square) {
 			return [];
 		}
 
-		const square = this.board.get(...toArrayPosition(this.square));
+		const square = chess.board.get(this.square);
 
 		if (!square) {
 			return [];
 		}
 
-		const [ row, column ] = square.position;
 		const moves: ChessPosition[] = [];
 
 		for (const offset of offsets) {
-			const square = this.board.get(row + offset[0], column + offset[1]);
+			const square = chess.board.at(this.square, offset);
 
 			if (square && (!square.piece || square.piece.color !== this.color)) {
 				moves.push(square.name);

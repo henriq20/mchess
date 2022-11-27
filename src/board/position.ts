@@ -8,7 +8,7 @@ export type ChessPosition =
 	'a2' | 'b2' | 'c2' | 'd2' | 'e2' | 'f2' | 'g2' | 'h2' |
 	'a1' | 'b1' | 'c1' | 'd1' | 'e1' | 'f1' | 'g1' | 'h1';
 
-export type ArrayPosition = [ x: number, y: number ];
+export type Coordinate = [x: number, y: number];
 
 export function toChessPosition(x: number, y: number): ChessPosition {
 	const rank = x + 1;
@@ -17,9 +17,9 @@ export function toChessPosition(x: number, y: number): ChessPosition {
 	return (file + rank) as ChessPosition;
 }
 
-export function toArrayPosition(position: ChessPosition): [ x: number, y: number ] {
-	const rank = Number(position[1]);
-	const file = position[0];
+export function offset(position: ChessPosition, offset: Coordinate): ChessPosition {
+	const file = String.fromCharCode(position[0].charCodeAt(0) + offset[1]);
+	const rank = Number(position[1]) + offset[0];
 
-	return [ rank - 1, file.charCodeAt(0) - 'a'.charCodeAt(0) ];
+	return (file + rank) as ChessPosition;
 }

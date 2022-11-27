@@ -1,24 +1,24 @@
 import Chess from '../chess.js';
 import Square from '../board/square.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
-import { ArrayPosition, ChessPosition, toArrayPosition } from '../board/position.js';
+import { Coordinate, ChessPosition } from '../board/position.js';
 
-const offsets: { [ key: string ]: ArrayPosition[] } = {
+const offsets: { [key: string]: Coordinate[] } = {
 	white: [
-		[ 1, 0 ],
-		[ 2, 0 ],
-		[ 1, -1 ],
-		[ 1, 1 ],
-		[ 0, -1 ],
-		[ 0, 1 ]
+		[1, 0],
+		[2, 0],
+		[1, -1],
+		[1, 1],
+		[0, -1],
+		[0, 1]
 	],
 	black: [
-		[ -1, 0 ],
-		[ -2, 0 ],
-		[ -1, -1 ],
-		[ -1, 1 ],
-		[ 0, -1 ],
-		[ 0, 1 ]
+		[-1, 0],
+		[-2, 0],
+		[-1, -1],
+		[-1, 1],
+		[0, -1],
+		[0, 1]
 	],
 };
 
@@ -28,12 +28,11 @@ export default class Pawn extends ChessPiece {
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {
-		if (!this.board || !this.square) {
+		if (!this.square) {
 			return [];
 		}
 
-		const position = toArrayPosition(this.square);
-		const square = this.board.get(...position);
+		const square = chess.board.get(this.square);
 
 		if (!square) {
 			return [];
@@ -41,12 +40,12 @@ export default class Pawn extends ChessPiece {
 
 		const offset = offsets[this.color];
 
-		const oneSquareForward = this.board.at(position, offset[0]);
-		const twoSquaresForward = this.board.at(position, offset[1]);
-		const oneSquareDiagonallyToLeft = this.board.at(position, offset[2]);
-		const oneSquareDiagonallyToRight = this.board.at(position, offset[3]);
-		const leftSquare = this.board.at(position, offset[4]);
-		const rightSquare = this.board.at(position, offset[5]);
+		const oneSquareForward = chess.board.at(this.square, offset[0]);
+		const twoSquaresForward = chess.board.at(this.square, offset[1]);
+		const oneSquareDiagonallyToLeft = chess.board.at(this.square, offset[2]);
+		const oneSquareDiagonallyToRight = chess.board.at(this.square, offset[3]);
+		const leftSquare = chess.board.at(this.square, offset[4]);
+		const rightSquare = chess.board.at(this.square, offset[5]);
 
 		const isQuiet = (square: Square | null) => {
 			return square && square.empty;
@@ -60,9 +59,9 @@ export default class Pawn extends ChessPiece {
 			const lastMove = chess.history.at(-1);
 
 			return lastMove &&
-					lastMove.result.piece?.type === 'p' &&
-					lastMove.result.piece.color !== this.color &&
-					square?.piece === lastMove.result.piece;
+				lastMove.result.piece?.type === 'p' &&
+				lastMove.result.piece.color !== this.color &&
+				square?.piece === lastMove.result.piece;
 		};
 
 		const moves: ChessPosition[] = [];
@@ -70,7 +69,7 @@ export default class Pawn extends ChessPiece {
 		if (isQuiet(oneSquareForward)) {
 			moves.push((oneSquareForward as Square).name);
 
-			if (isQuiet(twoSquaresForward) && this._canMoveTwoSquares(position)) {
+			if (isQuiet(twoSquaresForward) && this._canMoveTwoSquares()) {
 				moves.push((twoSquaresForward as Square).name);
 			}
 		}
@@ -85,7 +84,9 @@ export default class Pawn extends ChessPiece {
 		return moves;
 	}
 
-	_canMoveTwoSquares(position: ArrayPosition) {
-		return (this.color === 'white' && position[0] === 1) || (this.color === 'black' && position[0] === 6);
+	_canMoveTwoSquares() {
+		return this.square &&
+			((this.color === 'white' && this.square[1] === '2') ||
+				(this.color === 'black' && this.square[1] === '7'));
 	}
 }

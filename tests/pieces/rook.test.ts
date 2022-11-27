@@ -5,7 +5,7 @@ it('should move horizontally and vertically', () => {
 
     const piece = chess.place('r', 'e5');
 
-    const possibleMoves = piece?.possibleMoves();
+    const possibleMoves = piece?.possibleMoves(chess);
 
     expect(possibleMoves).toHaveLength(14);
     expect(possibleMoves).toEqual(expect.arrayContaining([

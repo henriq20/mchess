@@ -3,8 +3,7 @@ import King from './pieces/king.js';
 import Square from './board/square.js';
 import createPiece from './factory.js';
 import ChessBoard from './board/board.js';
-import { toArrayPosition } from './board/position.js';
-import { ArrayPosition, ChessPosition } from './board/position.js';
+import { Coordinate, ChessPosition } from './board/position.js';
 import ChessPiece, { ChessPieceColor, ChessPieceSymbol } from './pieces/piece.js';
 import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions } from './move.js';
 
@@ -44,7 +43,7 @@ export default class Chess {
 	setup(fen: string) {
 		const result = decode(fen);
 
-		for (const [ symbol, position ] of result.pieces) {
+		for (const [symbol, position] of result.pieces) {
 			this._place(createPiece(symbol), position);
 		}
 
@@ -55,19 +54,19 @@ export default class Chess {
 	place(piece: ChessPieceSymbol | ChessPiece, position: ChessPosition): ChessPiece {
 		piece = typeof piece === 'string' ? createPiece(piece) : piece;
 
-		this._place(piece, toArrayPosition(position));
+		this._place(piece, position);
 
 		return piece;
 	}
 
-	_place(piece: ChessPiece, position: ArrayPosition) {
-		const square = this.board.place(...position, piece);
+	_place(piece: ChessPiece, square: ChessPosition) {
+		const s = this.board.place(square, piece);
 
-		if (!square) {
+		if (!s) {
 			return false;
 		}
 
-		this[piece.color].set(square.name, piece);
+		this[piece.color].set(s.name, piece);
 
 		if (piece.type === 'k') {
 			if (piece.color === 'white') {
@@ -81,14 +80,14 @@ export default class Chess {
 		return true;
 	}
 
-	takeOut(position: ChessPosition): ChessPiece | null {
-		const square = this.square(position);
+	takeOut(position: ChessPosition, offset?: Coordinate): ChessPiece | null {
+		const square = offset ? this.board.at(position, offset) : this.square(position);
 
 		if (!square || square.empty) {
 			return null;
 		}
 
-		const piece = this.board.remove(...toArrayPosition(square.name));
+		const piece = this.board.remove(square.name);
 
 		if (!piece) {
 			return null;
@@ -104,7 +103,7 @@ export default class Chess {
 	}
 
 	square(position: ChessPosition): Square | null {
-		return this.board.get(...toArrayPosition(position));
+		return this.board.get(position);
 	}
 
 	move(options: ChessMoveOptions): ChessMoveResult | false {
@@ -187,7 +186,7 @@ export default class Chess {
 			return !piece ? [] : piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));
 		}
 
-		const pieces = [ ...this[this.turn].values() ];
+		const pieces = [...this[this.turn].values()];
 
 		const moves = pieces.map(piece => {
 			return piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));

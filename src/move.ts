@@ -3,7 +3,7 @@ import Pawn from './pieces/pawn.js';
 import createPiece from './factory.js';
 import Square from './board/square.js';
 import ChessPiece, { ChessPieceSymbol } from './pieces/piece.js';
-import { ChessPosition, toArrayPosition, toChessPosition } from './board/position.js';
+import { ChessPosition, offset } from './board/position.js';
 
 export type ChessMoveOptions = {
 	from: ChessPosition,
@@ -85,13 +85,11 @@ export class ChessMove {
 	}
 
 	_undoCastling() {
-		const from = toArrayPosition(this.result.from);
-
 		if (this.result.type === MoveType.KINGSIDE_CASTLE) {
-			const rook = this.chess.takeOut(toChessPosition(from[0], from[1] + 1));
+			const rook = this.chess.takeOut(this.result.from, [ 0, 1 ]);
 
 			if (rook) {
-				this.chess.place(rook, toChessPosition(from[0], from[1] + 3));
+				this.chess.place(rook, offset(this.result.from, [ 0, 3 ]));
 			}
 		}
 	}
@@ -119,7 +117,7 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 
 	switch (result.type) {
 		case MoveType.EN_PASSANT: {
-			const capturedPiece = chess.takeOut(toChessPosition(to.position[0] - 1, to.position[1]));
+			const capturedPiece = chess.takeOut(to.name, [ -1, 0 ]);
 
 			if (capturedPiece) {
 				result.capturedPiece = capturedPiece;
@@ -143,10 +141,14 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 		}
 
 		case MoveType.KINGSIDE_CASTLE: {
-			const rook = chess.takeOut(toChessPosition(from.position[0], from.position[1] + 3));
+			const rook = chess.takeOut(from.name, [ 0, 3 ]);
 
 			if (rook && rook.type === 'r') {
-				chess.place(rook, toChessPosition(from.position[0], from.position[1] + 1));
+				const toSquare = chess.board.at(from.name, [ 0, 1 ])?.name;
+
+				if (toSquare) {
+					chess.place(rook, toSquare);
+				}
 			}
 			break;
 		}
@@ -165,13 +167,13 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 function determineMoveType(chess: Chess, from: Square, to: Square): MoveType {
 	const lastMove = chess.history.at(-1);
 
-	if (lastMove?.result.piece?.type === 'p' && from.piece?.type === 'p' && from.position[1] !== to.position[1]) {
+	if (lastMove?.result.piece?.type === 'p' && from.piece?.type === 'p' && from.name[0] !== to.name[0]) {
 		return MoveType.EN_PASSANT;
 	}
-	if (from.piece?.type === 'p' && (to.position[0] === 0 || to.position[0] === 7)) {
+	if (from.piece?.type === 'p' && (to.name[1] === '1' || to.name[1] === '8')) {
 		return MoveType.PAWN_PROMOTION;
 	}
-	if (from.piece?.type === 'k' && to.position[1] - from.position[1] === 2) {
+	if (from.piece?.type === 'k' && to.name[0] === 'g') {
 		return MoveType.KINGSIDE_CASTLE;
 	}
 	if (to.empty) {

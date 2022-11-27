@@ -14,7 +14,7 @@ describe('place', () => {
 
         chess.place('p', 'a3');
 
-        const square = chess.board.get(2, 0);
+        const square = chess.board.get('a3');
 
         expect(square?.empty).toBe(false);
         expect(square?.piece?.type).toBe('p');
@@ -63,33 +63,23 @@ describe('setup', () => {
         expect(chess.white.size).toBe(16);
         expect(chess.black.size).toBe(16);
 
-        for (let column = 0; column < chess.board.size; column++) {
-            const white = chess.board.get(1, column);
-            const black = chess.board.get(6, column);
+        expect(chess.board.get('a1')?.piece).toBeInstanceOf(Rook);
+        expect(chess.board.get('b1')?.piece).toBeInstanceOf(Knight);
+        expect(chess.board.get('c1')?.piece).toBeInstanceOf(Bishop);
+        expect(chess.board.get('d1')?.piece).toBeInstanceOf(Queen);
+        expect(chess.board.get('e1')?.piece).toBeInstanceOf(King);
+        expect(chess.board.get('f1')?.piece).toBeInstanceOf(Bishop);
+        expect(chess.board.get('g1')?.piece).toBeInstanceOf(Knight);
+        expect(chess.board.get('h1')?.piece).toBeInstanceOf(Rook);
 
-            expect(white?.piece).toBeInstanceOf(Pawn);
-            expect(black?.piece).toBeInstanceOf(Pawn);
-            expect(white?.piece?.color).toBe('white');
-            expect(black?.piece?.color).toBe('black');
-        }
-
-        expect(chess.board.get(0, 0)?.piece).toBeInstanceOf(Rook);
-        expect(chess.board.get(0, 1)?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get(0, 2)?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get(0, 3)?.piece).toBeInstanceOf(Queen);
-        expect(chess.board.get(0, 4)?.piece).toBeInstanceOf(King);
-        expect(chess.board.get(0, 5)?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get(0, 6)?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get(0, 7)?.piece).toBeInstanceOf(Rook);
-
-        expect(chess.board.get(7, 0)?.piece).toBeInstanceOf(Rook);
-        expect(chess.board.get(7, 1)?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get(7, 2)?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get(7, 3)?.piece).toBeInstanceOf(Queen);
-        expect(chess.board.get(7, 4)?.piece).toBeInstanceOf(King);
-        expect(chess.board.get(7, 5)?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get(7, 6)?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get(7, 7)?.piece).toBeInstanceOf(Rook);
+        expect(chess.board.get('a8')?.piece).toBeInstanceOf(Rook);
+        expect(chess.board.get('b8')?.piece).toBeInstanceOf(Knight);
+        expect(chess.board.get('c8')?.piece).toBeInstanceOf(Bishop);
+        expect(chess.board.get('d8')?.piece).toBeInstanceOf(Queen);
+        expect(chess.board.get('e8')?.piece).toBeInstanceOf(King);
+        expect(chess.board.get('f8')?.piece).toBeInstanceOf(Bishop);
+        expect(chess.board.get('g8')?.piece).toBeInstanceOf(Knight);
+        expect(chess.board.get('h8')?.piece).toBeInstanceOf(Rook);
     });
 });
 

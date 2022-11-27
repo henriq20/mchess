@@ -1,6 +1,6 @@
-import { ArrayPosition } from './board/position';
 import Square from './board/square';
 import Chess from './chess';
+import { ChessPosition, toChessPosition } from './board/position';
 import { ChessPieceColor, ChessPieceSymbol } from './pieces/piece';
 
 export type Flags = {
@@ -12,7 +12,7 @@ export type Flags = {
 };
 
 export type FENResult = {
-	pieces: Array<[ChessPieceSymbol, ArrayPosition]>
+	pieces: Array<[ChessPieceSymbol, ChessPosition]>
 	turn: ChessPieceColor,
 	flags: Flags
 };
@@ -27,7 +27,7 @@ const FLAGS_MAP: { [key: string]: string } = {
 export function decode(fen: string): FENResult {
 	const [ placement, turn, castlingRights ] = fen.split(/\s+/);
 
-	const pieces: Array<[ChessPieceSymbol, ArrayPosition]> = [];
+	const pieces: Array<[ChessPieceSymbol, ChessPosition]> = [];
 
 	let i = -1, row = 7, column = 0;
 	while (++i < placement.length) {
@@ -43,7 +43,7 @@ export function decode(fen: string): FENResult {
 			continue;
 		}
 
-		pieces.push([ char as ChessPieceSymbol, [ row, column++ ] ]);
+		pieces.push([ char as ChessPieceSymbol, toChessPosition(row, column++) ]);
 	}
 
 	return {
@@ -66,7 +66,7 @@ export function encode(chess: Chess): string {
 		let currentRow = '';
 
 		for (let column = 0; column < chess.board.size; column++) {
-			const square = chess.board.get(row, column) as Square;
+			const square = chess.board._get(row, column) as Square;
 
 			if (square.empty) {
 				emptySquares++;
@@ -77,7 +77,6 @@ export function encode(chess: Chess): string {
 			emptySquares = 0;
 		}
 
-		// rows.push(currentRow || emptySquares);
 		rows.push(emptySquares === 0 ? currentRow || emptySquares : currentRow + emptySquares);
 	}
 

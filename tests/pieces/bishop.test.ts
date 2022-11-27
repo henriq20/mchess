@@ -5,7 +5,7 @@ it('should move diagonally', () => {
 
     const piece = chess.place('b', 'e5');
 
-    const possibleMoves = piece?.possibleMoves();
+    const possibleMoves = piece?.possibleMoves(chess);
 
     expect(possibleMoves).toHaveLength(13);
     expect(possibleMoves).toEqual(expect.arrayContaining([

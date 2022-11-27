@@ -1,5 +1,4 @@
 import Chess from '../chess.js';
-import ChessBoard from '../board/board.js';
 import { ChessPosition } from '../board/position.js';
 
 export type ChessPieceType = 'k' | 'q' | 'r' | 'b' | 'n' | 'p';
@@ -14,14 +13,17 @@ export default abstract class ChessPiece {
 	type: ChessPieceType;
 	color: ChessPieceColor;
 	square?: ChessPosition;
-	board?: ChessBoard;
 
 	constructor(type: ChessPieceType, color: ChessPieceColor) {
 		this.type = type;
 		this.color = color;
 	}
 
-	abstract possibleMoves(chess?: Chess): ChessPosition[];
+	abstract possibleMoves(chess: Chess): ChessPosition[];
+
+	get symbol() {
+		return this.color === 'white' ? this.type.toUpperCase() : this.type;
+	}
 
 	hasMoved(chess: Chess) {
 		return chess.history.some(m => m.result.piece === this);

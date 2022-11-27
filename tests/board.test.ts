@@ -1,7 +1,7 @@
 import Square from '../src/board/square';
 import ChessBoard, { Direction } from '../src/board/board';
 import createPiece from '../src/factory';
-import { ChessPosition, toArrayPosition } from '../src/board/position';
+import { ChessPosition } from '../src/board/position';
 import Pawn from '../src/pieces/pawn';
 
 describe('constructor', () => {
@@ -39,27 +39,6 @@ describe('constructor', () => {
             expect(board._board[i].map(s => s.name)).toStrictEqual(row);
         }
     });
-
-    it('should set each square row and column based on its position', () => {
-        const board = new ChessBoard();
-
-        const squares = [
-            [ [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7] ],
-            [ [1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [1, 7] ],
-            [ [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7] ],
-            [ [3, 0], [3, 1], [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7] ],
-            [ [4, 0], [4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7] ],
-            [ [5, 0], [5, 1], [5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7] ],
-            [ [6, 0], [6, 1], [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 7] ],
-            [ [7, 0], [7, 1], [7, 2], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7] ]
-        ];
-
-        for (let i = 0; i < squares.length; i++) {
-            const row = squares[i];
-
-            expect(board._board[i].map(s => s.position)).toStrictEqual(row);
-        }
-    });
 });
 
 describe('place', () => {
@@ -68,7 +47,7 @@ describe('place', () => {
 
         const pawn = createPiece('p');
 
-        const square = board.place(0, 0, pawn) as Square;
+        const square = board.place('a1', pawn) as Square;
 
         expect(square).toBeTruthy();
         expect(square.empty).toBe(false);
@@ -80,10 +59,8 @@ describe('place', () => {
 
         const pawn = createPiece('p');
 
-        expect(board.place(8, 0, pawn)).toBe(false);
-        expect(board.place(0, 8, pawn)).toBe(false);
-        expect(board.place(-1, 0, pawn)).toBe(false);
-        expect(board.place(0, -1, pawn)).toBe(false);
+        expect(board.place('a0' as ChessPosition, pawn)).toBe(false);
+        expect(board.place('h9' as ChessPosition, pawn)).toBe(false);
 
         expect(board._board.every(row => row.every(s => !s.piece))).toBe(true);
     });
@@ -96,20 +73,18 @@ describe('get', () => {
         const whitePawn = createPiece('P');
         const blackPawn = createPiece('p');
 
-        board.place(0, 0, whitePawn);
-        board.place(5, 5, blackPawn);
+        board.place('a1', whitePawn);
+        board.place('e5', blackPawn);
 
-        expect(board.get(0, 0)?.piece?.color).toBe('white');
-        expect(board.get(5, 5)?.piece?.color).toBe('black');
+        expect(board.get('a1')?.piece?.color).toBe('white');
+        expect(board.get('e5')?.piece?.color).toBe('black');
     });
 
     it('should return null if the specified index is off bounds', () => {
         const board = new ChessBoard();
 
-        expect(board.get(-1, 0)).toBe(null);
-        expect(board.get(0, -1)).toBe(null);
-        expect(board.get(8, 0)).toBe(null);
-        expect(board.get(0, 8)).toBe(null);
+        expect(board.get('a0' as ChessPosition)).toBe(null);
+        expect(board.get('h9' as ChessPosition)).toBe(null);
     });
 });
 
@@ -119,32 +94,30 @@ describe('remove', () => {
 
         const pawn = createPiece('p');
 
-        board.place(0, 0, pawn);
-        board.place(0, 1, pawn);
-        board.place(1, 0, pawn);
+        board.place('a1', pawn);
+        board.place('b1', pawn);
+        board.place('a2', pawn);
 
-        const removedPiece = board.remove(0, 1);
+        const removedPiece = board.remove('b1');
 
         expect(removedPiece).toBeInstanceOf(Pawn);
-        expect(board.get(0, 1)?.piece).toBe(null);
-        expect(board.get(0, 0)).toBeTruthy();
-        expect(board.get(1, 0)).toBeTruthy();
+        expect(board.get('b1')?.piece).toBe(null);
+        expect(board.get('a1')).toBeTruthy();
+        expect(board.get('a2')).toBeTruthy();
     });
 
     it('should return null if the index was off bounds', () => {
         const board = new ChessBoard();
 
-        expect(board.remove(-1, 0)).toBe(null);
-        expect(board.remove(0, -1)).toBe(null);
-        expect(board.remove(8, 0)).toBe(null);
-        expect(board.remove(0, 8)).toBe(null);
+        expect(board.remove('a0' as ChessPosition)).toBe(null);
+        expect(board.remove('h9' as ChessPosition)).toBe(null);
     });
 
     it('should return null if the piece does not exist', () => {
         const board = new ChessBoard();
 
-        expect(board.remove(0, 0)).toBe(null);
-        expect(board.remove(0, 7)).toBe(null);
+        expect(board.remove('a1')).toBe(null);
+        expect(board.remove('h7')).toBe(null);
     });
 });
 
@@ -155,8 +128,8 @@ describe('clear', () => {
         const whitePawn = createPiece('P');
         const blackPawn = createPiece('p');
 
-        board.place(0, 0, whitePawn);
-        board.place(0, 5, blackPawn);
+        board.place('a1', whitePawn);
+        board.place('h5', blackPawn);
 
         board.clear();
 
@@ -196,7 +169,7 @@ describe('traverse', () => {
         const board = new ChessBoard();
         const squares: Square[] = [];
 
-        const fromSquare = board.get(...toArrayPosition(from));
+        const fromSquare = board.get(from);
 
         if (!fromSquare) {
             return fail();
