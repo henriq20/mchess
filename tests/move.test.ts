@@ -191,6 +191,20 @@ describe('castling', () => {
         expect(chess.piece('f1')?.type).toBe('r');
         expect(chess.piece('g1')?.type).toBe('k');
     });
+
+    it('should be able to castle queenside', () => {
+        const chess = new Chess('r3k3/8/8/8/8/8/8/R3K3 w Qq - 0 1');
+
+        const move = makeMove(chess, {
+            from: 'e1',
+            to: 'c1'
+        });
+
+        expect(move.result.type).toBe(MoveType.QUEENSIDE_CASTLE);
+        expect(move.result.piece?.type).toBe('k');
+        expect(chess.piece('d1')?.type).toBe('r');
+        expect(chess.piece('c1')?.type).toBe('k');
+    });
 });
 
 describe('invalid', () => {
@@ -307,5 +321,20 @@ describe('undo', () => {
         expect(chess.piece('f1')).toBe(null);
         expect(chess.piece('g1')).toBe(null);
     });
-});
 
+    it('should undo queenside castle', () => {
+        const chess = new Chess('r3k3/8/8/8/8/8/8/R3K3 w Qq - 0 1');
+
+        const move = makeMove(chess, {
+            from: 'e1',
+            to: 'c1'
+        });
+
+        move.undo();
+
+        expect(chess.piece('e1')?.type).toBe('k');
+        expect(chess.piece('a1')?.type).toBe('r');
+        expect(chess.piece('d1')).toBe(null);
+        expect(chess.piece('c1')).toBe(null);
+    });
+});

@@ -1,9 +1,9 @@
 import Chess from './chess.js';
 import Pawn from './pieces/pawn.js';
-import createPiece from './factory.js';
 import Square from './board/square.js';
-import ChessPiece, { ChessPieceSymbol } from './pieces/piece.js';
+import createPiece from './factory.js';
 import { ChessPosition, offset } from './board/position.js';
+import ChessPiece, { ChessPieceSymbol } from './pieces/piece.js';
 
 export type ChessMoveOptions = {
 	from: ChessPosition,
@@ -91,6 +91,14 @@ export class ChessMove {
 			if (rook) {
 				this.chess.place(rook, offset(this.result.from, [ 0, 3 ]));
 			}
+
+			return;
+		}
+
+		const rook = this.chess.takeOut(this.result.from, [ 0, -1 ]);
+
+		if (rook) {
+			this.chess.place(rook, offset(this.result.from, [ 0, -4 ]));
 		}
 	}
 }
@@ -153,6 +161,19 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 			break;
 		}
 
+		case MoveType.QUEENSIDE_CASTLE: {
+			const rook = chess.takeOut(from.name, [ 0, -4 ]);
+
+			if (rook && rook.type === 'r') {
+				const toSquare = chess.board.at(from.name, [ 0, -1 ])?.name;
+
+				if (toSquare) {
+					chess.place(rook, toSquare);
+				}
+			}
+			break;
+		}
+
 		default:
 			break;
 	}
@@ -175,6 +196,9 @@ function determineMoveType(chess: Chess, from: Square, to: Square): MoveType {
 	}
 	if (from.piece?.type === 'k' && to.name[0] === 'g') {
 		return MoveType.KINGSIDE_CASTLE;
+	}
+	if (from.piece?.type === 'k' && to.name[0] === 'c') {
+		return MoveType.QUEENSIDE_CASTLE;
 	}
 	if (to.empty) {
 		return MoveType.QUIET;
