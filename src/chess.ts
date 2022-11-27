@@ -70,11 +70,11 @@ export default class Chess {
 
 		if (piece.type === 'k') {
 			if (piece.color === 'white') {
-				this.whiteKing = piece;
+				this.whiteKing = piece as King;
 				return true;
 			}
 
-			this.blackKing = piece;
+			this.blackKing = piece as King;
 		}
 
 		return true;

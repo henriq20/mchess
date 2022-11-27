@@ -1,4 +1,5 @@
 import Chess from '../chess.js';
+import Square from '../board/square.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 import { Coordinate, ChessPosition } from '../board/position.js';
 
@@ -36,16 +37,39 @@ export default class King extends ChessPiece {
 		}
 
 		if (!this.hasMoved(chess)) {
-			const castleSquare = chess.board.at(this.square, [ 0, 2 ]);
-			const rookSquare = chess.board.at(this.square, [ 0, 3 ]);
+			const kingsideCastleSquare = chess.board.at(this.square, [ 0, 2 ]);
+			const queensideCastleSquare = chess.board.at(this.square, [ 0, -2 ]);
 
-			if (castleSquare && rookSquare?.piece?.type === 'r' && rookSquare.piece.color === this.color) {
-				if (chess.board.at(this.square, [ 0, 1 ])?.empty && castleSquare.empty) {
-					moves.push(castleSquare.name);
-				}
+			if (kingsideCastleSquare && this._canKingsideCastle(chess, kingsideCastleSquare)) {
+				moves.push(kingsideCastleSquare.name);
+			}
+
+			if (queensideCastleSquare && this._canQueensideCastle(chess, queensideCastleSquare)) {
+				moves.push(queensideCastleSquare.name);
 			}
 		}
 
 		return moves;
+	}
+
+	_canKingsideCastle(chess: Chess, to: Square) {
+		const rook = chess.board.at(this.square, [ 0, 3 ])?.piece;
+
+		return rook &&
+			rook.type === 'r' &&
+			rook.color === this.color &&
+			to.empty &&
+			chess.board.at(this.square, [ 0, 1 ])?.empty;
+	}
+
+	_canQueensideCastle(chess: Chess, to: Square) {
+		const rook = chess.board.at(this.square, [ 0, -4 ])?.piece;
+
+		return rook &&
+			rook.type === 'r' &&
+			rook.color === this.color &&
+			to.empty &&
+			chess.board.at(this.square, [ 0, -1 ])?.empty &&
+			chess.board.at(this.square, [ 0, -3 ])?.empty;
 	}
 }
