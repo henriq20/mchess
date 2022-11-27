@@ -147,7 +147,7 @@ export default class Chess {
 	isCheckmate() {
 		const king = this.turn === 'white' ? this.whiteKing : this.blackKing;
 
-		if (!king?.square) {
+		if (!king) {
 			return false;
 		}
 
@@ -155,12 +155,6 @@ export default class Chess {
 	}
 
 	isStalemate() {
-		const king = this.turn === 'white' ? this.whiteKing : this.blackKing;
-
-		if (!king?.square) {
-			return false;
-		}
-
 		return !this.isCheck() && !this.moves().length;
 	}
 

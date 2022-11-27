@@ -22,10 +22,6 @@ export default class Knight extends ChessPiece {
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {
-		if (!this.square) {
-			return [];
-		}
-
 		const square = chess.board.get(this.square);
 
 		if (!square) {
