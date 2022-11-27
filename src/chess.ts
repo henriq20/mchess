@@ -1,11 +1,11 @@
-import { decode, encode, Flags } from './fen.js';
 import King from './pieces/king.js';
 import Square from './board/square.js';
 import createPiece from './factory.js';
 import ChessBoard from './board/board.js';
+import { decode, encode, Flags } from './fen.js';
 import { Coordinate, ChessPosition } from './board/position.js';
 import ChessPiece, { ChessPieceColor, ChessPieceSymbol } from './pieces/piece.js';
-import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions } from './move.js';
+import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
 
 const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -115,7 +115,7 @@ export default class Chess {
 
 		const move = makeMove(this, options);
 
-		if (move) {
+		if (move.result.type !== MoveType.INVALID) {
 			this._changeTurn();
 		}
 

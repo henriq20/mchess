@@ -142,6 +142,17 @@ describe('move', () => {
         expect(chess.history).toHaveLength(0);
     });
 
+    it('should not change the turn if move is invalid', () => {
+        const chess = new Chess();
+
+        chess.move({
+            from: 'a3',
+            to: 'a4'
+        });
+
+        expect(chess.turn).toBe('white');
+    });
+
     it('should not move a piece if it is not its turn', () => {
         const chess = new Chess();
 
