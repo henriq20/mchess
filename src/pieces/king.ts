@@ -36,7 +36,7 @@ export default class King extends ChessPiece {
 			}
 		}
 
-		if (!this.hasMoved(chess)) {
+		if (!chess.moved(this)) {
 			const kingsideCastleSquare = chess.board.at(this.square, [ 0, 2 ]);
 			const queensideCastleSquare = chess.board.at(this.square, [ 0, -2 ]);
 

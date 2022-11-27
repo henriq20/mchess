@@ -189,6 +189,11 @@ export default class Chess {
 		return moves;
 	}
 
+	moved(piece: ChessPiece | ChessPosition) {
+		piece = typeof piece !== 'string' ? piece.square : piece;
+		return this.history.some(m => m.result.piece?.square === piece);
+	}
+
 	canMove(from: ChessPosition | ChessPiece, options: CanMoveOptions): boolean {
 		const piece = typeof from === 'string' ? this.piece(from) : from;
 		const to = typeof options === 'string' ? options : options.to;

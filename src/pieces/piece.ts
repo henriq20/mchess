@@ -25,8 +25,4 @@ export default abstract class ChessPiece {
 	get symbol() {
 		return this.color === 'white' ? this.type.toUpperCase() : this.type;
 	}
-
-	hasMoved(chess: Chess) {
-		return chess.history.some(m => m.result.piece === this);
-	}
 }
