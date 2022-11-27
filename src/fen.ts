@@ -59,7 +59,7 @@ export function decode(fen: string): FENResult {
 }
 
 export function encode(chess: Chess): string {
-	let rows = [];
+	const rows = [];
 
 	for (let row = chess.board.size - 1; row >= 0; row--) {
 		let emptySquares = 0;
@@ -81,7 +81,7 @@ export function encode(chess: Chess): string {
 	}
 
 	const flags = Object.keys(chess.flags).map(flag => {
-		return chess.flags[flag] ? FLAGS_MAP[flag] : ''
+		return chess.flags[flag] ? FLAGS_MAP[flag] : '';
 	}).join('') || '-';
 
 	return `${ rows.join('/') } ${ chess.turn.charAt(0) } ${ flags } - 0 1`;

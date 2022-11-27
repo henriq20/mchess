@@ -3,14 +3,14 @@ import ChessPiece, { ChessPieceColor } from './piece.js';
 import { Coordinate, ChessPosition } from '../board/position.js';
 
 const offsets: Array<Coordinate> = [
-	[1, 0], // One square forward
-	[1, 1], // One square forward and diagonally to the right
-	[1, -1], // One square forward and diagonally to the left
-	[0, -1], // One square to the left
-	[0, 1], // One square to the right
-	[-1, 0], // One square backward
-	[-1, 1], // One square backward and diagonally to the right
-	[-1, -1]  // One square backward and diagonally to the left
+	[ 1, 0 ], // One square forward
+	[ 1, 1 ], // One square forward and diagonally to the right
+	[ 1, -1 ], // One square forward and diagonally to the left
+	[ 0, -1 ], // One square to the left
+	[ 0, 1 ], // One square to the right
+	[ -1, 0 ], // One square backward
+	[ -1, 1 ], // One square backward and diagonally to the right
+	[ -1, -1 ]  // One square backward and diagonally to the left
 ];
 
 export default class King extends ChessPiece {
@@ -40,11 +40,11 @@ export default class King extends ChessPiece {
 		}
 
 		if (!this.hasMoved(chess)) {
-			const castleSquare = chess.board.at(this.square, [0, 2]);
-			const rookSquare = chess.board.at(this.square, [0, 3]);
+			const castleSquare = chess.board.at(this.square, [ 0, 2 ]);
+			const rookSquare = chess.board.at(this.square, [ 0, 3 ]);
 
 			if (castleSquare && rookSquare?.piece?.type === 'r' && rookSquare.piece.color === this.color) {
-				if (chess.board.at(this.square, [0, 1])?.empty && castleSquare.empty) {
+				if (chess.board.at(this.square, [ 0, 1 ])?.empty && castleSquare.empty) {
 					moves.push(castleSquare.name);
 				}
 			}

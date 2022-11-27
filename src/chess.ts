@@ -43,7 +43,7 @@ export default class Chess {
 	setup(fen: string) {
 		const result = decode(fen);
 
-		for (const [symbol, position] of result.pieces) {
+		for (const [ symbol, position ] of result.pieces) {
 			this._place(createPiece(symbol), position);
 		}
 
@@ -186,7 +186,7 @@ export default class Chess {
 			return !piece ? [] : piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));
 		}
 
-		const pieces = [...this[this.turn].values()];
+		const pieces = [ ...this[this.turn].values() ];
 
 		const moves = pieces.map(piece => {
 			return piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));
