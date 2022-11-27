@@ -1,6 +1,6 @@
+import Chess from '../chess.js';
 import ChessPiece, { ChessPieceColor } from './piece.js';
 import { Coordinate, ChessPosition } from '../board/position.js';
-import Chess from '../chess.js';
 
 const offsets: Array<Coordinate> = [
 	[ 2, -1 ], // Two squares forward and one to the left
@@ -17,8 +17,8 @@ const offsets: Array<Coordinate> = [
 ];
 
 export default class Knight extends ChessPiece {
-	constructor(color: ChessPieceColor) {
-		super('n', color);
+	constructor(color: ChessPieceColor, square?: ChessPosition) {
+		super('n', color, square || '-');
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {

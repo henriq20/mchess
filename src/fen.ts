@@ -1,5 +1,5 @@
-import Square from './board/square';
 import Chess from './chess';
+import Square from './board/square';
 import { ChessPosition, toChessPosition } from './board/position';
 import { ChessPieceColor, ChessPieceSymbol } from './pieces/piece';
 

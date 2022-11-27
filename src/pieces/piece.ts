@@ -12,11 +12,12 @@ export type ChessPieceSymbol =
 export default abstract class ChessPiece {
 	type: ChessPieceType;
 	color: ChessPieceColor;
-	square?: ChessPosition;
+	square: ChessPosition;
 
-	constructor(type: ChessPieceType, color: ChessPieceColor) {
+	constructor(type: ChessPieceType, color: ChessPieceColor, square: ChessPosition) {
 		this.type = type;
 		this.color = color;
+		this.square = square;
 	}
 
 	abstract possibleMoves(chess: Chess): ChessPosition[];

@@ -1,12 +1,12 @@
+import Chess from '../chess.js';
 import Square from '../board/square.js';
 import { Direction } from '../board/board';
-import ChessPiece, { ChessPieceColor } from './piece.js';
 import { ChessPosition } from '../board/position.js';
-import Chess from '../chess.js';
+import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Queen extends ChessPiece {
-	constructor(color: ChessPieceColor) {
-		super('q', color);
+	constructor(color: ChessPieceColor, square?: ChessPosition) {
+		super('q', color, square || '-');
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {

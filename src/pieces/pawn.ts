@@ -23,8 +23,8 @@ const offsets: { [key: string]: Coordinate[] } = {
 };
 
 export default class Pawn extends ChessPiece {
-	constructor(color: ChessPieceColor) {
-		super('p', color);
+	constructor(color: ChessPieceColor, square?: ChessPosition) {
+		super('p', color, square || '-');
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {

@@ -1,11 +1,11 @@
-import Square from '../board/square.js';
-import ChessPiece, { ChessPieceColor } from './piece.js';
-import { ChessPosition } from '../board/position.js';
 import Chess from '../chess.js';
+import Square from '../board/square.js';
+import { ChessPosition } from '../board/position.js';
+import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Rook extends ChessPiece {
-	constructor(color: ChessPieceColor) {
-		super('r', color);
+	constructor(color: ChessPieceColor, square?: ChessPosition) {
+		super('r', color, square || '-');
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {
