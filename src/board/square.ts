@@ -1,6 +1,5 @@
 import ChessPiece from '../pieces/piece.js';
-import ChessBoard from './board.js';
-import { Coordinate, ChessPosition } from './position.js';
+import { ChessPosition } from './position.js';
 
 export default class Square {
 	readonly name: ChessPosition;
@@ -13,9 +12,5 @@ export default class Square {
 
 	get empty(): boolean {
 		return !this.piece;
-	}
-
-	get coord(): Coordinate {
-		return ChessBoard.coord(this.name);
 	}
 }
