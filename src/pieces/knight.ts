@@ -18,7 +18,7 @@ const offsets: Array<Coordinate> = [
 
 export default class Knight extends ChessPiece {
 	constructor(color: ChessPieceColor, square?: ChessPosition) {
-		super('n', color, square || '-');
+		super('n', color, square);
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {

@@ -6,7 +6,7 @@ import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Bishop extends ChessPiece {
 	constructor(color: ChessPieceColor, square?: ChessPosition) {
-		super('b', color, square || '-');
+		super('b', color, square);
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {

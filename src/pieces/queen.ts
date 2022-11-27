@@ -6,7 +6,7 @@ import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Queen extends ChessPiece {
 	constructor(color: ChessPieceColor, square?: ChessPosition) {
-		super('q', color, square || '-');
+		super('q', color, square);
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {

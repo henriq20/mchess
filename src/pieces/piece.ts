@@ -14,10 +14,10 @@ export default abstract class ChessPiece {
 	color: ChessPieceColor;
 	square: ChessPosition;
 
-	constructor(type: ChessPieceType, color: ChessPieceColor, square: ChessPosition) {
+	constructor(type: ChessPieceType, color: ChessPieceColor, square?: ChessPosition) {
 		this.type = type;
 		this.color = color;
-		this.square = square;
+		this.square = square || '-';
 	}
 
 	abstract possibleMoves(chess: Chess): ChessPosition[];

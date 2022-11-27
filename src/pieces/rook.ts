@@ -5,7 +5,7 @@ import ChessPiece, { ChessPieceColor } from './piece.js';
 
 export default class Rook extends ChessPiece {
 	constructor(color: ChessPieceColor, square?: ChessPosition) {
-		super('r', color, square || '-');
+		super('r', color, square);
 	}
 
 	possibleMoves(chess: Chess): ChessPosition[] {
