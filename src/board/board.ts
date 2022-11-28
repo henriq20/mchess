@@ -133,9 +133,9 @@ export default class ChessBoard {
 		let [ row, column ] = SQUARE_MAP[from.name];
 
 		while (!this._isOffBounds(row += x, column += y)) {
-			const square = this._get(row, column);
+			const square = this._board[row][column];
 
-			if (!square || fn(square)) {
+			if (fn(square)) {
 				break;
 			}
 		}
