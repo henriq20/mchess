@@ -25,7 +25,7 @@ export default function generateMoves(chess: Chess, piece: ChessPiece) {
 
 		for (const offset of pieceOffset.offsets) {
 			let n = index;
-			while (true) {
+			while (n !== -1) {
 				n = MAILBOX[MAILBOX64[n] + offset];
 
 				if (n === -1) {
