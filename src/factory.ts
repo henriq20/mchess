@@ -1,36 +1,7 @@
-import King from './pieces/king.js';
-import Pawn from './pieces/pawn.js';
-import Rook from './pieces/rook.js';
-import Queen from './pieces/queen.js';
-import Knight from './pieces/knight.js';
-import Bishop from './pieces/bishop.js';
-import ChessPiece, { ChessPieceColor, ChessPieceSymbol } from './pieces/piece.js';
+import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPieceType } from './pieces/piece.js';
 
 export default function createPiece(symbol: ChessPieceSymbol): ChessPiece {
 	const color: ChessPieceColor = /[a-z]/.test(symbol) ? 'black' : 'white';
 
-	switch (symbol) {
-		case 'r':
-		case 'R':
-			return new Rook(color);
-
-		case 'k':
-		case 'K':
-			return new King(color);
-
-		case 'q':
-		case 'Q':
-			return new Queen(color);
-
-		case 'n':
-		case 'N':
-			return new Knight(color);
-
-		case 'b':
-		case 'B':
-			return new Bishop(color);
-
-		default:
-			return new Pawn(color);
-	}
+	return new ChessPiece(symbol.toLowerCase() as ChessPieceType, color);
 }

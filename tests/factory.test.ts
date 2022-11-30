@@ -18,7 +18,7 @@ it.each([
     { type: 'n', color: 'black', symbol: 'n' },
     { type: 'p', color: 'black', symbol: 'p' },
 
-])('it should create a $color $name when passed the letter $letter', ({ type, color, symbol }) => {
+])('it should create a $color $name when passed the letter $symbol', ({ type, color, symbol }) => {
     const piece = createPiece(symbol as ChessPieceSymbol);
 
     expect(piece.type).toBe(type);
