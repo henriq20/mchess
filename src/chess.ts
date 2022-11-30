@@ -1,23 +1,25 @@
-import King from './pieces/king.js';
 import Square from './board/square.js';
 import createPiece from './factory.js';
 import ChessBoard from './board/board.js';
+import generateMoves from './pieces/moves.js';
 import { decode, encode, Flags } from './fen.js';
-import { Coordinate, ChessPosition } from './board/position.js';
-import ChessPiece, { ChessPieceColor, ChessPieceSymbol } from './pieces/piece.js';
+import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece.js';
 import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
 
 const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
-type CanMoveOptions = ChessPosition | { to?: ChessPosition, illegal?: boolean };
+type CanMoveOptions = ChessPosition | {
+	to?: ChessPosition,
+	illegal?: boolean
+};
 
 export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
 	white: Map<ChessPosition, ChessPiece>;
 	black: Map<ChessPosition, ChessPiece>;
-	whiteKing: King | null;
-	blackKing: King | null;
+	whiteKing: ChessPiece | null;
+	blackKing: ChessPiece | null;
 	history: ChessMove[];
 	flags: Flags;
 	_fen: string;
@@ -51,16 +53,16 @@ export default class Chess {
 		this.flags = result.flags;
 	}
 
-	place(piece: ChessPieceSymbol | ChessPiece, position: ChessPosition): ChessPiece {
+	place(piece: ChessPieceSymbol | ChessPiece, position: ChessPosition, offset?: number): ChessPiece {
 		piece = typeof piece === 'string' ? createPiece(piece) : piece;
 
-		this._place(piece, position);
+		this._place(piece, position, offset);
 
 		return piece;
 	}
 
-	_place(piece: ChessPiece, square: ChessPosition) {
-		const s = this.board.place(square, piece);
+	_place(piece: ChessPiece, square: ChessPosition, offset?: number): boolean {
+		const s = this.board.place(piece, square, offset);
 
 		if (!s) {
 			return false;
@@ -70,17 +72,17 @@ export default class Chess {
 
 		if (piece.type === 'k') {
 			if (piece.color === 'white') {
-				this.whiteKing = piece as King;
+				this.whiteKing = piece;
 				return true;
 			}
 
-			this.blackKing = piece as King;
+			this.blackKing = piece;
 		}
 
 		return true;
 	}
 
-	takeOut(position: ChessPosition, offset?: Coordinate): ChessPiece | null {
+	takeOut(position: ChessPosition, offset?: number): ChessPiece | null {
 		const square = offset ? this.board.at(position, offset) : this.square(position);
 
 		if (!square || square.empty) {
@@ -177,13 +179,13 @@ export default class Chess {
 		if (squareOrPiece) {
 			const piece = typeof squareOrPiece === 'string' ? this.square(squareOrPiece)?.piece : squareOrPiece;
 
-			return !piece ? [] : piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));
+			return !piece ? [] : generateMoves(this, piece).filter(wouldNotBeInCheck(piece.square));
 		}
 
 		const pieces = [ ...this[this.turn].values() ];
 
 		const moves = pieces.map(piece => {
-			return piece.possibleMoves(this).filter(wouldNotBeInCheck(piece.square as ChessPosition));
+			return generateMoves(this, piece).filter(wouldNotBeInCheck(piece.square));
 		}).flat();
 
 		return moves;
@@ -203,7 +205,7 @@ export default class Chess {
 			return false;
 		}
 
-		const moves = illegal ? piece.possibleMoves(this) : this.moves(piece);
+		const moves = illegal ? generateMoves(this, piece) : this.moves(piece);
 
 		return to ? moves.includes(to) : !!moves.length;
 	}
@@ -232,8 +234,8 @@ export default class Chess {
 		return this.turn;
 	}
 
-	_isKingAttacked(king: King): boolean {
-		if (!king.square) {
+	_isKingAttacked(king: ChessPiece): boolean {
+		if (!king.square || king.type !== 'k') {
 			return false;
 		}
 

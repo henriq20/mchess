@@ -1,12 +1,5 @@
 import Chess from '../src/chess';
-import Bishop from '../src/pieces/bishop';
-import King from '../src/pieces/king';
-import Knight from '../src/pieces/knight';
-import Pawn from '../src/pieces/pawn';
-import ChessPiece from '../src/pieces/piece';
-import Queen from '../src/pieces/queen';
-import Rook from '../src/pieces/rook';
-import { ChessPosition } from '../src/board/position';
+import ChessPiece, { ChessPosition } from '../src/pieces/piece';
 
 describe('place', () => {
     it('should place a piece on the specified position', () => {
@@ -25,7 +18,7 @@ describe('place', () => {
 
         const piece = chess.place('p', 'a3');
 
-        expect(piece).toBeInstanceOf(Pawn);
+        expect(piece.type).toBe('p');
     });
 
     it('should set the piece square', () => {
@@ -51,8 +44,8 @@ describe('place', () => {
     it('should set the white or black king', () => {
         const chess = new Chess();
 
-        expect(chess.whiteKing).toBeInstanceOf(King);
-        expect(chess.blackKing).toBeInstanceOf(King);
+        expect(chess.whiteKing?.type).toBe('k');
+        expect(chess.blackKing?.type).toBe('k');
     });
 });
 
@@ -63,23 +56,23 @@ describe('setup', () => {
         expect(chess.white.size).toBe(16);
         expect(chess.black.size).toBe(16);
 
-        expect(chess.board.get('a1')?.piece).toBeInstanceOf(Rook);
-        expect(chess.board.get('b1')?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get('c1')?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get('d1')?.piece).toBeInstanceOf(Queen);
-        expect(chess.board.get('e1')?.piece).toBeInstanceOf(King);
-        expect(chess.board.get('f1')?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get('g1')?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get('h1')?.piece).toBeInstanceOf(Rook);
+        expect(chess.board.get('a1')?.piece?.type).toBe('r');
+        expect(chess.board.get('b1')?.piece?.type).toBe('n');
+        expect(chess.board.get('c1')?.piece?.type).toBe('b');
+        expect(chess.board.get('d1')?.piece?.type).toBe('q');
+        expect(chess.board.get('e1')?.piece?.type).toBe('k');
+        expect(chess.board.get('f1')?.piece?.type).toBe('b');
+        expect(chess.board.get('g1')?.piece?.type).toBe('n');
+        expect(chess.board.get('h1')?.piece?.type).toBe('r');
 
-        expect(chess.board.get('a8')?.piece).toBeInstanceOf(Rook);
-        expect(chess.board.get('b8')?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get('c8')?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get('d8')?.piece).toBeInstanceOf(Queen);
-        expect(chess.board.get('e8')?.piece).toBeInstanceOf(King);
-        expect(chess.board.get('f8')?.piece).toBeInstanceOf(Bishop);
-        expect(chess.board.get('g8')?.piece).toBeInstanceOf(Knight);
-        expect(chess.board.get('h8')?.piece).toBeInstanceOf(Rook);
+        expect(chess.board.get('a8')?.piece?.type).toBe('r');
+        expect(chess.board.get('b8')?.piece?.type).toBe('n');
+        expect(chess.board.get('c8')?.piece?.type).toBe('b');
+        expect(chess.board.get('d8')?.piece?.type).toBe('q');
+        expect(chess.board.get('e8')?.piece?.type).toBe('k');
+        expect(chess.board.get('f8')?.piece?.type).toBe('b');
+        expect(chess.board.get('g8')?.piece?.type).toBe('n');
+        expect(chess.board.get('h8')?.piece?.type).toBe('r');
     });
 });
 
@@ -90,7 +83,7 @@ describe('takeOut', () => {
         const piece = chess.takeOut('e2');
 
         expect(chess.white.size).toBe(15);
-        expect(piece).toBeInstanceOf(Pawn);
+        expect(piece?.type).toBe('p');
     });
 });
 
@@ -103,7 +96,7 @@ describe('move', () => {
             to: 'a4'
         });
 
-        expect(chess.piece('a4')).toBeInstanceOf(Pawn);
+        expect(chess.piece('a4')?.type).toBe('p');
         expect(chess.square('a2')?.empty).toBe(true);
     });
 
@@ -265,7 +258,7 @@ describe('undo', () => {
         chess.undo();
 
         expect(chess.piece('e4')).toBe(null);
-        expect(chess.piece('e2')).toBeInstanceOf(Pawn);
+        expect(chess.piece('e2')?.type).toBe('p');
     });
 });
 
