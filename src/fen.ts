@@ -1,5 +1,5 @@
 import Chess from './chess';
-import { SQUARE_MAP } from './board/board';
+import { CHESS_POSITIONS } from './board/board';
 import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece';
 
 export type Flags = {
@@ -22,8 +22,6 @@ const FLAGS_MAP: { [key: string]: string } = {
 	BLACK_KINGSIDE_CASTLING: 'k',
 	BLACK_QUEENSIDE_CASTLING: 'q'
 };
-
-const CHESS_POSITIONS = Object.keys(SQUARE_MAP);
 
 export function decode(fen: string): FENResult {
 	const [ placement, turn, castlingRights ] = fen.split(/\s+/);

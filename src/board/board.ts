@@ -13,6 +13,8 @@ export const SQUARE_MAP: { [key in ChessPosition]: number } = {
 	'-': -1
 };
 
+export const CHESS_POSITIONS = Object.keys(SQUARE_MAP) as ChessPosition[];
+
 export const MAILBOX = [
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -51,10 +53,8 @@ export default class ChessBoard {
 	fill() {
 		this._board = [];
 
-		const squares = Object.keys(SQUARE_MAP);
-
 		for (let i = 0; i < 64; i++) {
-			this._board.push(new Square(squares[i] as ChessPosition));
+			this._board.push(new Square(CHESS_POSITIONS[i]));
 		}
 
 		return this._board;
