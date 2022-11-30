@@ -1,9 +1,7 @@
 import Chess from './chess.js';
-import Pawn from './pieces/pawn.js';
 import Square from './board/square.js';
 import createPiece from './factory.js';
-import { ChessPosition, offset } from './board/position.js';
-import ChessPiece, { ChessPieceSymbol } from './pieces/piece.js';
+import ChessPiece, { ChessPieceSymbol, ChessPosition } from './pieces/piece.js';
 
 export type ChessMoveOptions = {
 	from: ChessPosition,
@@ -81,24 +79,24 @@ export class ChessMove {
 	}
 
 	_undoPromotion(piece: ChessPiece) {
-		this.chess.place(new Pawn(piece.color), this.result.from);
+		this.chess.place(new ChessPiece('p', piece.color), this.result.from);
 	}
 
 	_undoCastling() {
 		if (this.result.type === MoveType.KINGSIDE_CASTLE) {
-			const rook = this.chess.takeOut(this.result.from, [ 0, 1 ]);
+			const rook = this.chess.takeOut(this.result.from, 1);
 
 			if (rook) {
-				this.chess.place(rook, offset(this.result.from, [ 0, 3 ]));
+				this.chess.place(rook, this.result.from, 3);
 			}
 
 			return;
 		}
 
-		const rook = this.chess.takeOut(this.result.from, [ 0, -1 ]);
+		const rook = this.chess.takeOut(this.result.from, -1);
 
 		if (rook) {
-			this.chess.place(rook, offset(this.result.from, [ 0, -4 ]));
+			this.chess.place(rook, this.result.from, -4);
 		}
 	}
 }
@@ -125,7 +123,7 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 
 	switch (result.type) {
 		case MoveType.EN_PASSANT: {
-			const capturedPiece = chess.takeOut(to.name, [ -1, 0 ]);
+			const capturedPiece = chess.takeOut(from.name, -1);
 
 			if (capturedPiece) {
 				result.capturedPiece = capturedPiece;
@@ -149,10 +147,10 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 		}
 
 		case MoveType.KINGSIDE_CASTLE: {
-			const rook = chess.takeOut(from.name, [ 0, 3 ]);
+			const rook = chess.takeOut(from.name, 3);
 
 			if (rook && rook.type === 'r') {
-				const toSquare = chess.board.at(from.name, [ 0, 1 ])?.name;
+				const toSquare = chess.board.at(from.name, 1)?.name;
 
 				if (toSquare) {
 					chess.place(rook, toSquare);
@@ -162,10 +160,10 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 		}
 
 		case MoveType.QUEENSIDE_CASTLE: {
-			const rook = chess.takeOut(from.name, [ 0, -4 ]);
+			const rook = chess.takeOut(from.name, -4);
 
 			if (rook && rook.type === 'r') {
-				const toSquare = chess.board.at(from.name, [ 0, -1 ])?.name;
+				const toSquare = chess.board.at(from.name, -1)?.name;
 
 				if (toSquare) {
 					chess.place(rook, toSquare);
