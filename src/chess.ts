@@ -2,8 +2,8 @@ import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves from './pieces/moves.js';
 import { decode, encode, Flags } from './fen.js';
-import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
+import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
 const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -129,6 +129,7 @@ export default class Chess {
 		if (move) {
 			move.undo();
 			this._changeTurn();
+
 			return move.result;
 		}
 
