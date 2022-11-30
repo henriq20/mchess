@@ -67,7 +67,7 @@ export default class ChessBoard {
 			position += offset;
 		}
 
-		if (isNaN(position) || this._isOffBounds(position)) {
+		if (isNaN(position)) {
 			return false;
 		}
 
@@ -78,8 +78,8 @@ export default class ChessBoard {
 		return s;
 	}
 
-	get(square: ChessPosition): Square {
-		return this._board[SQUARE_MAP[square]];
+	get(square: ChessPosition): Square | null {
+		return this._board[SQUARE_MAP[square]] || null;
 	}
 
 	at(from: ChessPosition, offset: number): Square | null {
@@ -92,7 +92,7 @@ export default class ChessBoard {
 	remove(square: ChessPosition): ChessPiece | null {
 		const position = SQUARE_MAP[square];
 
-		if (this._isOffBounds(position)) {
+		if (isNaN(position)) {
 			return null;
 		}
 
@@ -109,9 +109,5 @@ export default class ChessBoard {
 
 	clear() {
 		this._board = this.fill();
-	}
-
-	_isOffBounds(index: number): boolean {
-		return index < 0 || index > 63;
 	}
 }
