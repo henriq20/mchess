@@ -1,119 +1,108 @@
 import Square from './square.js';
-import ChessPiece from '../pieces/piece.js';
-import { Coordinate, ChessPosition, toChessPosition } from './position.js';
+import ChessPiece, { ChessPosition } from '../pieces/piece.js';
 
-export type Direction = 'left'
-	| 'right'
-	| 'top'
-	| 'bottom'
-	| 'topLeft'
-	| 'topRight'
-	| 'bottomLeft'
-	| 'bottomRight';
-
-const TRAVERSAL_OFFSETS = {
-	top: [ 1, 0 ],
-	bottom: [ -1, 0 ],
-	left: [ 0, -1 ],
-	right: [ 0, 1 ],
-	topLeft: [ 1, -1 ],
-	topRight: [ 1, 1 ],
-	bottomLeft: [ -1, -1 ],
-	bottomRight: [ -1, 1 ]
+export const SQUARE_MAP: { [key in ChessPosition]: number } = {
+	a8: 0,  b8: 1,  c8: 2,  d8: 3,  e8: 4,  f8: 5,  g8: 6,  h8: 7,
+	a7: 8,  b7: 9,  c7: 10, d7: 11, e7: 12, f7: 13, g7: 14, h7: 15,
+	a6: 16, b6: 17, c6: 18, d6: 19, e6: 20, f6: 21, g6: 22, h6: 23,
+	a5: 24, b5: 25, c5: 26, d5: 27, e5: 28, f5: 29, g5: 30, h5: 31,
+	a4: 32, b4: 33, c4: 34, d4: 35, e4: 36, f4: 37, g4: 38, h4: 39,
+	a3: 40, b3: 41, c3: 42, d3: 43, e3: 44, f3: 45, g3: 46, h3: 47,
+	a2: 48, b2: 49, c2: 50, d2: 51, e2: 52, f2: 53, g2: 54, h2: 55,
+	a1: 56, b1: 57, c1: 58, d1: 59, e1: 60, f1: 61, g1: 62, h1: 63,
+	'-': -1
 };
 
-const SQUARE_MAP: { [key in ChessPosition]: Coordinate } = {
-	a8: [ 7, 0 ], b8: [ 7, 1 ], c8: [ 7, 2 ], d8: [ 7, 3 ], e8: [ 7, 4 ], f8: [ 7, 5 ], g8: [ 7, 6 ], h8: [ 7, 7 ],
-	a7: [ 6, 0 ], b7: [ 6, 1 ], c7: [ 6, 2 ], d7: [ 6, 3 ], e7: [ 6, 4 ], f7: [ 6, 5 ], g7: [ 6, 6 ], h7: [ 6, 7 ],
-	a6: [ 5, 0 ], b6: [ 5, 1 ], c6: [ 5, 2 ], d6: [ 5, 3 ], e6: [ 5, 4 ], f6: [ 5, 5 ], g6: [ 5, 6 ], h6: [ 5, 7 ],
-	a5: [ 4, 0 ], b5: [ 4, 1 ], c5: [ 4, 2 ], d5: [ 4, 3 ], e5: [ 4, 4 ], f5: [ 4, 5 ], g5: [ 4, 6 ], h5: [ 4, 7 ],
-	a4: [ 3, 0 ], b4: [ 3, 1 ], c4: [ 3, 2 ], d4: [ 3, 3 ], e4: [ 3, 4 ], f4: [ 3, 5 ], g4: [ 3, 6 ], h4: [ 3, 7 ],
-	a3: [ 2, 0 ], b3: [ 2, 1 ], c3: [ 2, 2 ], d3: [ 2, 3 ], e3: [ 2, 4 ], f3: [ 2, 5 ], g3: [ 2, 6 ], h3: [ 2, 7 ],
-	a2: [ 1, 0 ], b2: [ 1, 1 ], c2: [ 1, 2 ], d2: [ 1, 3 ], e2: [ 1, 4 ], f2: [ 1, 5 ], g2: [ 1, 6 ], h2: [ 1, 7 ],
-	a1: [ 0, 0 ], b1: [ 0, 1 ], c1: [ 0, 2 ], d1: [ 0, 3 ], e1: [ 0, 4 ], f1: [ 0, 5 ], g1: [ 0, 6 ], h1: [ 0, 7 ],
-	'-': [ -1, -1 ]
-};
+export const MAILBOX = [
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1,  0,  1,  2,  3,  4,  5,  6,  7, -1,
+	-1,  8,  9, 10, 11, 12, 13, 14, 15, -1,
+	-1, 16, 17, 18, 19, 20, 21, 22, 23, -1,
+	-1, 24, 25, 26, 27, 28, 29, 30, 31, -1,
+	-1, 32, 33, 34, 35, 36, 37, 38, 39, -1,
+	-1, 40, 41, 42, 43, 44, 45, 46, 47, -1,
+	-1, 48, 49, 50, 51, 52, 53, 54, 55, -1,
+	-1, 56, 57, 58, 59, 60, 61, 62, 63, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+];
+
+export const MAILBOX64 = [
+    21, 22, 23, 24, 25, 26, 27, 28,
+    31, 32, 33, 34, 35, 36, 37, 38,
+    41, 42, 43, 44, 45, 46, 47, 48,
+    51, 52, 53, 54, 55, 56, 57, 58,
+    61, 62, 63, 64, 65, 66, 67, 68,
+    71, 72, 73, 74, 75, 76, 77, 78,
+    81, 82, 83, 84, 85, 86, 87, 88,
+    91, 92, 93, 94, 95, 96, 97, 98
+];
 
 export default class ChessBoard {
 	readonly size: number;
-	_board: Square[][];
+	_board: Square[];
 
 	constructor() {
-		this.size = 8;
+		this.size = 64;
 		this._board = this.fill();
-	}
-
-	static coord(square: ChessPosition): Coordinate {
-		return SQUARE_MAP[square];
 	}
 
 	fill() {
 		this._board = [];
 
-		let row = 0;
-		while (row < 8) {
-			this._board.push(new Array(this.size).fill(undefined).map((value, column) => {
-				return new Square(toChessPosition(row, column));
-			}));
+		const squares = Object.keys(SQUARE_MAP);
 
-			row++;
+		for (let i = 0; i < 64; i++) {
+			this._board.push(new Square(squares[i] as ChessPosition));
 		}
 
 		return this._board;
 	}
 
-	place(square: ChessPosition, piece: ChessPiece): Square | false {
-		const position = SQUARE_MAP[square];
+	place(piece: ChessPiece, square: ChessPosition, offset?: number): Square | false {
+		let position = SQUARE_MAP[square];
 
-		if (!position || this._isOffBounds(position[0], position[1])) {
+		if (offset) {
+			position += offset;
+		}
+
+		if (isNaN(position) || this._isOffBounds(position)) {
 			return false;
 		}
 
-		const s = this._board[position[0]][position[1]];
+		const s = this._board[position];
 		s.piece = piece;
 		piece.square = s.name;
 
 		return s;
 	}
 
-	get(square: ChessPosition): Square | null {
-		const coord = SQUARE_MAP[square];
-		return coord && this._get(coord[0], coord[1]) || null;
+	get(square: ChessPosition): Square {
+		return this._board[SQUARE_MAP[square]];
 	}
 
-	_get(row: number, column: number): Square | null {
-		if (this._isOffBounds(row, column)) {
-			return null;
-		}
+	at(from: ChessPosition, offset: number): Square | null {
+		const squareIndex = SQUARE_MAP[from];
+		const index = MAILBOX[MAILBOX64[squareIndex] + offset];
 
-		return this._board[row][column];
-	}
-
-	at(from: ChessPosition, offset: Coordinate): Square | null {
-		const coord = SQUARE_MAP[from];
-		return this._get(coord[0] + offset[0], coord[1] + offset[1]);
+		return index === -1 ? null : this._board[index];
 	}
 
 	remove(square: ChessPosition): ChessPiece | null {
 		const position = SQUARE_MAP[square];
 
-		if (!position) {
+		if (this._isOffBounds(position)) {
 			return null;
 		}
 
-		const [ row, column ] = position;
-
-		if (!position || this._isOffBounds(row, column)) {
-			return null;
-		}
-
-		const removedPiece = this._board[row][column].piece;
+		const removedPiece = this.get(square)?.piece;
 
 		if (!removedPiece) {
 			return null;
 		}
 
-		this._board[row][column].piece = null;
+		this._board[SQUARE_MAP[square]].piece = null;
 
 		return removedPiece;
 	}
@@ -122,26 +111,7 @@ export default class ChessBoard {
 		this._board = this.fill();
 	}
 
-	traverse(from: Square, directions: Direction[], fn: (square: Square) => boolean) {
-		for (const direction of directions) {
-			this._traverse(from, direction, fn);
-		}
-	}
-
-	_traverse(from: Square, direction: Direction, fn: (square: Square) => boolean) {
-		const [ x, y ] = TRAVERSAL_OFFSETS[direction];
-		let [ row, column ] = SQUARE_MAP[from.name];
-
-		while (!this._isOffBounds(row += x, column += y)) {
-			const square = this._board[row][column];
-
-			if (fn(square)) {
-				break;
-			}
-		}
-	}
-
-	_isOffBounds(row: number, column: number): boolean {
-		return row < 0 || row > 7 || column < 0 || column > 7;
+	_isOffBounds(index: number): boolean {
+		return index < 0 || index > 63;
 	}
 }
