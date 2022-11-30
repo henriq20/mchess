@@ -1,7 +1,6 @@
 import Square from '../src/board/square';
-import createPiece from '../src/factory';
 import ChessBoard from '../src/board/board';
-import { ChessPosition } from '../src/pieces/piece';
+import { createPiece, ChessPosition } from '../src/pieces/piece';
 
 describe('constructor', () => {
     it('should create an empty board', () => {

@@ -1,7 +1,6 @@
 import Chess from './chess.js';
 import Square from './board/square.js';
-import createPiece from './factory.js';
-import ChessPiece, { ChessPieceSymbol, ChessPosition } from './pieces/piece.js';
+import ChessPiece, { ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
 export type ChessMoveOptions = {
 	from: ChessPosition,

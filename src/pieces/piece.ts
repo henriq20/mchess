@@ -31,3 +31,9 @@ export default class ChessPiece {
 		return this.color === 'white' ? this.type.toUpperCase() : this.type;
 	}
 }
+
+export function createPiece(symbol: ChessPieceSymbol): ChessPiece {
+	const color: ChessPieceColor = /[a-z]/.test(symbol) ? 'black' : 'white';
+
+	return new ChessPiece(symbol.toLowerCase() as ChessPieceType, color);
+}
