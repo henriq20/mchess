@@ -1,7 +1,6 @@
 import Chess from './chess';
-import Square from './board/square';
-import { ChessPosition, toChessPosition } from './board/position';
-import { ChessPieceColor, ChessPieceSymbol } from './pieces/piece';
+import { SQUARE_MAP } from './board/board';
+import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece';
 
 export type Flags = {
 	[key: string]: boolean,
@@ -24,67 +23,73 @@ const FLAGS_MAP: { [key: string]: string } = {
 	BLACK_QUEENSIDE_CASTLING: 'q'
 };
 
+const CHESS_POSITIONS = Object.keys(SQUARE_MAP);
+
 export function decode(fen: string): FENResult {
 	const [ placement, turn, castlingRights ] = fen.split(/\s+/);
 
 	const pieces: Array<[ChessPieceSymbol, ChessPosition]> = [];
 
-	let i = -1, row = 7, column = 0;
-	while (++i < placement.length) {
-		const char = placement.charAt(i);
+	let i = 0, j = 0;
+	while (i < placement.length) {
+		const char = placement.charAt(i++);
 
 		if (char === '/') {
-			row--;
-			column = 0;
-			continue;
-		}
-		if (isDigit(char)) {
-			column += Number(char);
 			continue;
 		}
 
-		pieces.push([ char as ChessPieceSymbol, toChessPosition(row, column++) ]);
+		if (isDigit(char)) {
+			j += Number(char);
+			continue;
+		}
+
+		pieces.push([ char as ChessPieceSymbol, CHESS_POSITIONS[j] as ChessPosition ]);
+		j++;
 	}
 
 	return {
 		pieces,
 		turn: turn === 'b' ? 'black' : 'white',
 		flags: {
-			WHITE_KINGSIDE_CASTLING: castlingRights?.includes('K') ?? false,
-			WHITE_QUEENSIDE_CASTLING: castlingRights?.includes('Q') ?? false,
-			BLACK_KINGSIDE_CASTLING: castlingRights?.includes('k') ?? false,
-			BLACK_QUEENSIDE_CASTLING: castlingRights?.includes('q') ?? false
+			WHITE_KINGSIDE_CASTLING: castlingRights?.indexOf('K') >= 0,
+			WHITE_QUEENSIDE_CASTLING: castlingRights?.indexOf('Q') >= 0,
+			BLACK_KINGSIDE_CASTLING: castlingRights?.indexOf('k') >= 0,
+			BLACK_QUEENSIDE_CASTLING: castlingRights?.indexOf('q') >= 0
 		}
 	};
 }
 
 export function encode(chess: Chess): string {
-	const rows = [];
+	let emptySquares = 0, fen = '';
+	for (let i = 0; i < chess.board.size; i++) {
+		const square = chess.board._board[i];
 
-	for (let row = chess.board.size - 1; row >= 0; row--) {
-		let emptySquares = 0;
-		let currentRow = '';
-
-		for (let column = 0; column < chess.board.size; column++) {
-			const square = chess.board._get(row, column) as Square;
-
-			if (square.empty) {
-				emptySquares++;
-				continue;
-			}
-
-			currentRow += emptySquares > 0 ? emptySquares + (square.piece?.symbol as string) : square.piece?.symbol;
+		if (!square.piece) {
+			emptySquares++;
+		} else {
+			fen += (emptySquares > 0 ? emptySquares : '') + square.piece.symbol;
 			emptySquares = 0;
 		}
 
-		rows.push(emptySquares === 0 ? currentRow || emptySquares : currentRow + emptySquares);
+		if (square.name[0] === 'h') {
+			if (!square.piece) {
+				fen += emptySquares;
+			}
+
+			fen += '/';
+			emptySquares = 0;
+		}
 	}
+
+	fen = fen.substring(0, fen.length - 1);
 
 	const flags = Object.keys(chess.flags).map(flag => {
 		return chess.flags[flag] ? FLAGS_MAP[flag] : '';
 	}).join('') || '-';
 
-	return `${ rows.join('/') } ${ chess.turn.charAt(0) } ${ flags } - 0 1`;
+	const fullMoves = chess.history.filter(m => m.result.piece?.color === 'black').length || 1;
+
+	return `${ fen } ${ chess.turn.charAt(0) } ${ flags } - 0 ${ fullMoves }`;
 }
 
 function isDigit(char = '') {
