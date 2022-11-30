@@ -28,7 +28,7 @@ export function decode(fen: string): FENResult {
 
 	const pieces: Array<[ChessPieceSymbol, ChessPosition]> = [];
 
-	let i = 0, j = 0;
+	let i = 0, squares = 0;
 	while (i < placement.length) {
 		const char = placement.charAt(i++);
 
@@ -37,12 +37,12 @@ export function decode(fen: string): FENResult {
 		}
 
 		if (isDigit(char)) {
-			j += Number(char);
+			squares += Number(char);
 			continue;
 		}
 
-		pieces.push([ char as ChessPieceSymbol, CHESS_POSITIONS[j] as ChessPosition ]);
-		j++;
+		pieces.push([ char as ChessPieceSymbol, CHESS_POSITIONS[squares] as ChessPosition ]);
+		squares++;
 	}
 
 	return {
@@ -85,7 +85,7 @@ export function encode(chess: Chess): string {
 		return chess.flags[flag] ? FLAGS_MAP[flag] : '';
 	}).join('') || '-';
 
-	const fullMoves = chess.history.filter(m => m.result.piece?.color === 'black').length || 1;
+	const fullMoves = chess.history.filter(m => m.result.piece?.color === 'black').length + 1;
 
 	return `${ fen } ${ chess.turn.charAt(0) } ${ flags } - 0 ${ fullMoves }`;
 }
