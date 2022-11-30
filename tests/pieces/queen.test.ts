@@ -6,7 +6,7 @@ it('should move in all directions', () => {
 
     const piece = chess.place('q', 'e5');
 
-    const possibleMoves = generateMoves(chess, piece.square);
+    const possibleMoves = generateMoves(chess, piece);
 
     expect(possibleMoves).toHaveLength(27);
     expect(possibleMoves).toEqual(expect.arrayContaining([

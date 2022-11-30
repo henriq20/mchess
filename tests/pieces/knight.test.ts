@@ -6,7 +6,7 @@ it('should move in L shape', () => {
 
     const piece = chess.place('n', 'e5');
 
-    const possibleMoves = generateMoves(chess, piece.square);
+    const possibleMoves = generateMoves(chess, piece);
 
     expect(possibleMoves).toHaveLength(8);
     expect(possibleMoves).toEqual(expect.arrayContaining([

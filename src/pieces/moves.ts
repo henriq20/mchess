@@ -16,13 +16,7 @@ const PAWN_OFFSETS = {
 	black: [ 10, 20, 11, 9 ]
 };
 
-export default function generateMoves(chess: Chess, from: ChessPiece | ChessPosition) {
-	const piece = typeof from === 'string' ? chess.board.get(from)?.piece : from;
-
-	if (!piece) {
-		return [];
-	}
-
+export default function generateMoves(chess: Chess, piece: ChessPiece) {
 	const moves: ChessPosition[] = [];
 	const index = SQUARE_MAP[piece.square];
 

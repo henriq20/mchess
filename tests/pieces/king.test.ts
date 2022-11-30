@@ -7,7 +7,7 @@ it('should move up to one square in any direction', () => {
 
     const piece = chess.place('k', 'e5');
 
-    const possibleMoves = generateMoves(chess, piece.square);
+    const possibleMoves = generateMoves(chess, piece);
 
     expect(possibleMoves).toHaveLength(8);
     expect(possibleMoves).toEqual(expect.arrayContaining([
