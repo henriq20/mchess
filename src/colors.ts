@@ -10,9 +10,10 @@ const colors = {
 	white: '\u001b[37m',
 	gray: '\u001b[38;5;250m',
 	darkGray: '\u001b[38;5;238m',
+	darkYellow: '\u001b[38;5;222m'
 };
 
-export type Color = 'reset' | 'black' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'white' | 'gray' | 'darkGray';
+export type Color = 'reset' | 'black' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'white' | 'gray' | 'darkGray' | 'darkYellow';
 
 function colorize(input: string, color: string) {
 	if (process.env.NO_COLOR && !process.env.FORCE_COLOR) {
@@ -33,5 +34,6 @@ export default {
 	cyan: (input: string) => colorize(input, colors.cyan),
 	white: (input: string) => colorize(input, colors.white),
 	gray: (input: string) => colorize(input, colors.gray),
-	darkGray: (input: string) => colorize(input, colors.darkGray)
+	darkGray: (input: string) => colorize(input, colors.darkGray),
+	darkYellow: (input: string) => colorize(input, colors.darkYellow)
 };

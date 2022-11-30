@@ -1,6 +1,6 @@
 import ChessBoard from '../src/board/board';
-import createPiece from '../src/factory';
 import ChessBoardRenderer from '../src/render';
+import { createPiece } from '../src/pieces/piece';
 
 beforeAll(() => {
     process.env.NO_COLOR = '1';
@@ -39,13 +39,13 @@ it('should show where each piece is on the board', () => {
     const board = new ChessBoard();
     const d = new ChessBoardRenderer(board);
 
-    board.place('a1', createPiece('P'));
-    board.place('b2', createPiece('N'));
-    board.place('c3', createPiece('Q'));
-    board.place('d4', createPiece('B'));
-    board.place('h8', createPiece('k'));
-    board.place('g8', createPiece('q'));
-    board.place('f8', createPiece('p'));
+    board.place(createPiece('P'), 'a1');
+    board.place(createPiece('N'), 'b2');
+    board.place(createPiece('Q'), 'c3');
+    board.place(createPiece('B'), 'd4');
+    board.place(createPiece('k'), 'h8');
+    board.place(createPiece('q'), 'g8');
+    board.place(createPiece('p'), 'f8');
 
     const str = d.render();
 
@@ -74,22 +74,22 @@ it('should show where each piece is on the board', () => {
 it('should modify how each piece is displayed', () => {
     const board = new ChessBoard();
     const d = new ChessBoardRenderer(board, {
-        piece: piece => {
-            if (!piece) {
+        square: square => {
+            if (!square.piece) {
                 return '0';
             }
 
-            return piece.color === 'white' ? piece.type.toUpperCase() : piece.type.toLowerCase();
+            return square.piece.symbol;
         }
     });
 
-    board.place('a1', createPiece('P'));
-    board.place('b2', createPiece('N'));
-    board.place('c3', createPiece('Q'));
-    board.place('d4', createPiece('B'));
-    board.place('h8', createPiece('k'));
-    board.place('g8', createPiece('q'));
-    board.place('f8', createPiece('p'));
+    board.place(createPiece('P'), 'a1');
+    board.place(createPiece('N'), 'b2');
+    board.place(createPiece('Q'), 'c3');
+    board.place(createPiece('B'), 'd4');
+    board.place(createPiece('k'), 'h8');
+    board.place(createPiece('q'), 'g8');
+    board.place(createPiece('p'), 'f8');
 
     const str = d.render();
 
@@ -112,7 +112,7 @@ it('should modify how each piece is displayed', () => {
         '1 │ P │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │\n' +
         '  └───┴───┴───┴───┴───┴───┴───┴───┘\n' +
         '    a   b   c   d   e   f   g   h'
-    )
+    );
 });
 
 it('should modify how each rank is displayed', () => {
