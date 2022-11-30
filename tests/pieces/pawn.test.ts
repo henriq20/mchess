@@ -1,5 +1,4 @@
 import Chess from '../../src/chess';
-import Pawn from '../../src/pieces/pawn';
 
 it('should be able to move one square forward', () => {
     const chess = new Chess('');
@@ -24,7 +23,7 @@ it('should be able to move two squares forward', () => {
 it('should not be able to move two squares forward when it has already moved once', () => {
     const chess = new Chess('');
 
-    const pawn = chess.place('P', 'a3') as Pawn;
+    const pawn = chess.place('P', 'a3');
 
     expect(chess.canMove(pawn, 'a5')).toBe(false);
 });
