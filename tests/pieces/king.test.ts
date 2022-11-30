@@ -1,11 +1,13 @@
 import Chess from '../../src/chess';
+import ChessPiece from '../../src/pieces/piece';
+import generateMoves from '../../src/pieces/moves';
 
 it('should move up to one square in any direction', () => {
     const chess = new Chess('');
 
     const piece = chess.place('k', 'e5');
 
-    const possibleMoves = piece?.possibleMoves(chess);
+    const possibleMoves = generateMoves(chess, piece.square);
 
     expect(possibleMoves).toHaveLength(8);
     expect(possibleMoves).toEqual(expect.arrayContaining([
@@ -19,8 +21,8 @@ it('should be able to castle kingside', () => {
     const whiteKing = chess.piece('e1');
     const blackKing = chess.piece('e8');
 
-    const whiteMoves = whiteKing?.possibleMoves(chess);
-    const blackMoves = blackKing?.possibleMoves(chess);
+    const whiteMoves = generateMoves(chess, whiteKing as ChessPiece);
+    const blackMoves = generateMoves(chess, blackKing as ChessPiece);
 
     expect(whiteMoves).toHaveLength(6);
     expect(blackMoves).toHaveLength(6);
@@ -39,8 +41,8 @@ it('should be able to castle queenside', () => {
     const whiteKing = chess.piece('e1');
     const blackKing = chess.piece('e8');
 
-    const whiteMoves = whiteKing?.possibleMoves(chess);
-    const blackMoves = blackKing?.possibleMoves(chess);
+    const whiteMoves = generateMoves(chess, whiteKing as ChessPiece);
+    const blackMoves = generateMoves(chess, blackKing as ChessPiece);
 
     expect(whiteMoves).toHaveLength(6);
     expect(blackMoves).toHaveLength(6);
@@ -59,8 +61,8 @@ it('should not be able to castle if there are pieces between king and rook', () 
     const whiteKing = chess.piece('e1');
     const blackKing = chess.piece('e8');
 
-    const whiteMoves = whiteKing?.possibleMoves(chess);
-    const blackMoves = blackKing?.possibleMoves(chess);
+    const whiteMoves = generateMoves(chess, whiteKing as ChessPiece);
+    const blackMoves = generateMoves(chess, blackKing as ChessPiece);
 
     expect(whiteMoves).toHaveLength(3);
     expect(blackMoves).toHaveLength(3);

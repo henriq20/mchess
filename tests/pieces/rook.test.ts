@@ -1,11 +1,12 @@
 import Chess from '../../src/chess';
+import generateMoves from '../../src/pieces/moves';
 
 it('should move horizontally and vertically', () => {
     const chess = new Chess('');
 
     const piece = chess.place('r', 'e5');
 
-    const possibleMoves = piece?.possibleMoves(chess);
+    const possibleMoves = generateMoves(chess, piece.square);
 
     expect(possibleMoves).toHaveLength(14);
     expect(possibleMoves).toEqual(expect.arrayContaining([
