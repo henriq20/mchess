@@ -13,7 +13,7 @@ export const SQUARE_MAP: { [key in ChessPosition]: number } = {
 	'-': -1
 };
 
-export const CHESS_POSITIONS = Object.keys(SQUARE_MAP) as ChessPosition[];
+export const CHESS_POSITIONS = Object.keys(SQUARE_MAP).slice(0, -1) as ChessPosition[];
 
 export const MAILBOX = [
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
