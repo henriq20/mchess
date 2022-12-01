@@ -235,7 +235,7 @@ export default class Chess {
 	}
 
 	_isKingAttacked(king: ChessPiece): boolean {
-		if (!king.square || king.type !== 'k') {
+		if (king.type !== 'k') {
 			return false;
 		}
 
