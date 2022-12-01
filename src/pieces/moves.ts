@@ -16,7 +16,7 @@ const PAWN_OFFSETS = {
 	black: [ 10, 20, 11, 9 ]
 };
 
-export default function generateMoves(chess: Chess, piece: ChessPiece) {
+export default function generateMoves(chess: Chess, piece: ChessPiece): ChessPosition[] {
 	const moves: ChessPosition[] = [];
 	const index = SQUARE_MAP[piece.square];
 
@@ -56,39 +56,43 @@ export default function generateMoves(chess: Chess, piece: ChessPiece) {
 	return [ ...moves, ...generateKingMoves(chess, piece) ];
 }
 
-function generateKingMoves(chess: Chess, piece: ChessPiece) {
-	const moves = [];
+function generateKingMoves(chess: Chess, piece: ChessPiece): ChessPosition[] {
+	const moves: ChessPosition[] = [];
 
-	const kingsideCastleSquare = chess.board.at(piece.square, 2);
-	const queensideCastleSquare = chess.board.at(piece.square, -2);
+	if (chess.flags[piece.color].kingsideCastling) {
+		const kingsideCastleSquare = chess.board.at(piece.square, 2);
+		const kingsideCastleRook = chess.board.at(piece.square, 3);
 
-	const kingsideCastleRook = chess.board.at(piece.square, 3);
-	const queensideCastleRook = chess.board.at(piece.square, -4);
-
-	if (
-		kingsideCastleSquare?.empty &&
-		kingsideCastleRook?.piece?.type === 'r' &&
-		kingsideCastleRook.piece.color === piece.color &&
-		chess.board.at(piece.square, 1)?.empty
-	) {
-		moves.push(kingsideCastleSquare.name);
+		if (
+			kingsideCastleSquare?.empty &&
+			kingsideCastleRook?.piece?.type === 'r' &&
+			kingsideCastleRook.piece.color === piece.color &&
+			chess.board.at(piece.square, 1)?.empty
+		) {
+			moves.push(kingsideCastleSquare.name);
+		}
 	}
 
-	if (
-		queensideCastleSquare?.empty &&
-		queensideCastleRook?.piece?.type === 'r' &&
-		queensideCastleRook.piece.color === piece.color &&
-		chess.board.at(piece.square, -1)?.empty &&
-		chess.board.at(piece.square, -3)?.empty
-	) {
-		moves.push(queensideCastleSquare.name);
+	if (chess.flags[piece.color].queensideCastling) {
+		const queensideCastleSquare = chess.board.at(piece.square, -2);
+		const queensideCastleRook = chess.board.at(piece.square, -4);
+
+		if (
+			queensideCastleSquare?.empty &&
+			queensideCastleRook?.piece?.type === 'r' &&
+			queensideCastleRook.piece.color === piece.color &&
+			chess.board.at(piece.square, -1)?.empty &&
+			chess.board.at(piece.square, -3)?.empty
+		) {
+			moves.push(queensideCastleSquare.name);
+		}
 	}
 
 	return moves;
 }
 
-function generatePawnMoves(chess: Chess, piece: ChessPiece) {
-	const moves = [];
+function generatePawnMoves(chess: Chess, piece: ChessPiece): ChessPosition[] {
+	const moves: ChessPosition[] = [];
 	const index = SQUARE_MAP[piece.square];
 
 	const oneSquareForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][0]);

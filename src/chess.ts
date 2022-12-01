@@ -33,10 +33,14 @@ export default class Chess {
 		this.turn = 'white';
 		this._fen = fen ?? DEFAULT_POSITION;
 		this.flags = {
-			WHITE_KINGSIDE_CASTLING: true,
-			WHITE_QUEENSIDE_CASTLING: true,
-			BLACK_KINGSIDE_CASTLING: true,
-			BLACK_QUEENSIDE_CASTLING: true
+			white: {
+				kingsideCastling: true,
+				queensideCastling: true
+			},
+			black: {
+				kingsideCastling: true,
+				queensideCastling: true
+			}
 		};
 		this.setup(fen ?? DEFAULT_POSITION);
 	}
@@ -118,6 +122,7 @@ export default class Chess {
 
 		if (move.result.type !== MoveType.INVALID) {
 			this._changeTurn();
+			this._updateFlags(move.result);
 		}
 
 		return move.result;
@@ -264,5 +269,16 @@ export default class Chess {
 
 		result.undo();
 		return false;
+	}
+
+	_updateFlags(moveResult: ChessMoveResult) {
+		if (moveResult.piece && moveResult.type === MoveType.KINGSIDE_CASTLE) {
+			this.flags[moveResult.piece.color].kingsideCastling = false;
+			return;
+		}
+
+		if (moveResult.piece && moveResult.type === MoveType.QUEENSIDE_CASTLE) {
+			this.flags[moveResult.piece.color].queensideCastling = false;
+		}
 	}
 }
