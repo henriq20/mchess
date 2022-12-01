@@ -43,74 +43,87 @@ export default function generateMoves(chess: Chess, piece: ChessPiece) {
 				}
 			}
 		}
-	}
 
-	if (piece.type === 'k' && !chess.moved(piece)) {
-		const kingsideCastleSquare = chess.board.at(piece.square, 2);
-		const queensideCastleSquare = chess.board.at(piece.square, -2);
-
-		const kingsideCastleRook = chess.board.at(piece.square, 3);
-		const queensideCastleRook = chess.board.at(piece.square, -4);
-
-		if (
-			kingsideCastleSquare?.empty &&
-            kingsideCastleRook?.piece?.type === 'r' &&
-            kingsideCastleRook.piece.color === piece.color &&
-            chess.board.at(piece.square, 1)?.empty
-		) {
-			moves.push(kingsideCastleSquare.name);
+		if (piece.type !== 'k') {
+			return moves;
 		}
-
-		if (
-			queensideCastleSquare?.empty &&
-            queensideCastleRook?.piece?.type === 'r' &&
-            queensideCastleRook.piece.color === piece.color &&
-            chess.board.at(piece.square, -1)?.empty &&
-            chess.board.at(piece.square, -3)?.empty
-		) {
-			moves.push(queensideCastleSquare.name);
-		}
-
-		return moves;
 	}
 
 	if (piece.type === 'p') {
-		const oneSquareForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][0]);
+		return generatePawnMoves(chess, piece);
+	}
 
-		if (oneSquareForward && oneSquareForward.empty) {
-			moves.push(oneSquareForward.name);
+	return [ ...moves, ...generateKingMoves(chess, piece) ];
+}
 
-			if (_canMoveTwoSquares(piece)) {
-				const twoSquaresForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][1]);
+function generateKingMoves(chess: Chess, piece: ChessPiece) {
+	const moves = [];
 
-				if (twoSquaresForward && twoSquaresForward.empty) {
-					moves.push(twoSquaresForward.name);
-				}
+	const kingsideCastleSquare = chess.board.at(piece.square, 2);
+	const queensideCastleSquare = chess.board.at(piece.square, -2);
+
+	const kingsideCastleRook = chess.board.at(piece.square, 3);
+	const queensideCastleRook = chess.board.at(piece.square, -4);
+
+	if (
+		kingsideCastleSquare?.empty &&
+		kingsideCastleRook?.piece?.type === 'r' &&
+		kingsideCastleRook.piece.color === piece.color &&
+		chess.board.at(piece.square, 1)?.empty
+	) {
+		moves.push(kingsideCastleSquare.name);
+	}
+
+	if (
+		queensideCastleSquare?.empty &&
+		queensideCastleRook?.piece?.type === 'r' &&
+		queensideCastleRook.piece.color === piece.color &&
+		chess.board.at(piece.square, -1)?.empty &&
+		chess.board.at(piece.square, -3)?.empty
+	) {
+		moves.push(queensideCastleSquare.name);
+	}
+
+	return moves;
+}
+
+function generatePawnMoves(chess: Chess, piece: ChessPiece) {
+	const moves = [];
+	const index = SQUARE_MAP[piece.square];
+
+	const oneSquareForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][0]);
+
+	if (oneSquareForward && oneSquareForward.empty) {
+		moves.push(oneSquareForward.name);
+
+		if (_canMoveTwoSquares(piece)) {
+			const twoSquaresForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][1]);
+
+			if (twoSquaresForward && twoSquaresForward.empty) {
+				moves.push(twoSquaresForward.name);
 			}
 		}
+	}
 
-		for (let i = 2; i < 4; i++) {
-			const offset = PAWN_OFFSETS[piece.color][i];
+	for (let i = 2; i < 4; i++) {
+		const offset = PAWN_OFFSETS[piece.color][i];
 
-			const square = chess.board._board[MAILBOX[MAILBOX64[index] + offset]];
+		const square = chess.board._board[MAILBOX[MAILBOX64[index] + offset]];
 
-			if (!square) {
-				continue;
-			}
-
-			if (!square.empty && square.piece?.color !== piece.color) {
-				moves.push(square.name);
-				continue;
-			}
-
-			const enPassantSquare = chess.board.at(piece.square, offset + (Math.sign(offset) * -10));
-
-			if (enPassantSquare && _isEnPassant(chess, piece, enPassantSquare)) {
-				moves.push(square.name);
-			}
+		if (!square) {
+			continue;
 		}
 
-		return moves;
+		if (!square.empty && square.piece?.color !== piece.color) {
+			moves.push(square.name);
+			continue;
+		}
+
+		const enPassantSquare = chess.board.at(piece.square, offset + (Math.sign(offset) * -10));
+
+		if (enPassantSquare && _isEnPassant(chess, piece, enPassantSquare)) {
+			moves.push(square.name);
+		}
 	}
 
 	return moves;
