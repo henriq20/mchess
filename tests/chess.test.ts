@@ -158,6 +158,46 @@ describe('move', () => {
         expect(chess.piece('e5')).toBe(null);
         expect(chess.piece('e7')?.type).toBe('p');
     });
+
+    it('should update the flags after kingside castling', () => {
+        const chess = new Chess('4k2r/8/8/8/8/8/8/4K2R w KkQq - 1 1');
+
+        chess.move({
+            from: 'e1',
+            to: 'g1'
+        });
+
+        chess.move({
+            from: 'e8',
+            to: 'g8'
+        });
+
+        expect(chess.flags.white.kingsideCastling).toBe(false);
+        expect(chess.flags.black.kingsideCastling).toBe(false);
+
+        expect(chess.flags.white.queensideCastling).toBe(true);
+        expect(chess.flags.black.queensideCastling).toBe(true);
+    });
+
+    it('should update the flags after queenside castling', () => {
+        const chess = new Chess('r3k3/8/8/8/8/8/8/R3K3 w KkQq - 1 1');
+
+        chess.move({
+            from: 'e1',
+            to: 'c1'
+        });
+
+        chess.move({
+            from: 'e8',
+            to: 'c8'
+        });
+
+        expect(chess.flags.white.queensideCastling).toBe(false);
+        expect(chess.flags.black.queensideCastling).toBe(false);
+
+        expect(chess.flags.white.kingsideCastling).toBe(true);
+        expect(chess.flags.black.kingsideCastling).toBe(true);
+    });
 });
 
 describe('isCheck', () => {
