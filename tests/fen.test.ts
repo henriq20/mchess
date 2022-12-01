@@ -9,10 +9,14 @@ describe('decode', () => {
                 pieces: [],
                 turn: 'white',
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 },
             }
         },
@@ -22,10 +26,14 @@ describe('decode', () => {
                 pieces: [],
                 turn: 'black',
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 },
             }
         },
@@ -37,10 +45,14 @@ describe('decode', () => {
                     [ 'P', 'a1' ]
                 ],
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 },
             }
         },
@@ -52,10 +64,14 @@ describe('decode', () => {
                     [ 'p', 'h8' ]
                 ],
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 },
             }
         },
@@ -64,10 +80,14 @@ describe('decode', () => {
             expected: {
                 turn: 'white',
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: true,
-                    WHITE_QUEENSIDE_CASTLING: true,
-                    BLACK_KINGSIDE_CASTLING: true,
-                    BLACK_QUEENSIDE_CASTLING: true
+                    white: {
+                        kingsideCastling: true,
+                        queensideCastling: true
+                    },
+                    black: {
+                        kingsideCastling: true,
+                        queensideCastling: true
+                    }
                 },
                 pieces: [
                     [ 'r', 'a8' ],
@@ -112,10 +132,14 @@ describe('decode', () => {
             expected: {
                 turn: 'white',
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 },
                 pieces: [
                     // Black pieces
@@ -152,10 +176,14 @@ describe('decode', () => {
             expected: {
                 turn: 'black',
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 },
                 pieces: [
                     [ 'p', 'a8' ],
@@ -176,10 +204,14 @@ describe('decode', () => {
                     [ 'r', 'h8' ]
                 ],
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: true,
-                    BLACK_QUEENSIDE_CASTLING: true
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: true,
+                        queensideCastling: true
+                    }
                 }
             }
         },
@@ -196,10 +228,14 @@ describe('decode', () => {
                     [ 'r', 'h8' ]
                 ],
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: true,
-                    WHITE_QUEENSIDE_CASTLING: true,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: true,
+                        queensideCastling: true
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 }
             }
         },
@@ -209,10 +245,14 @@ describe('decode', () => {
                 turn: 'white',
                 pieces: [],
                 flags: {
-                    WHITE_KINGSIDE_CASTLING: false,
-                    WHITE_QUEENSIDE_CASTLING: false,
-                    BLACK_KINGSIDE_CASTLING: false,
-                    BLACK_QUEENSIDE_CASTLING: false
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
                 }
             }
         }

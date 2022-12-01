@@ -3,11 +3,15 @@ import { CHESS_POSITIONS } from './board/board';
 import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece';
 
 export type Flags = {
-	[key: string]: boolean,
-	WHITE_KINGSIDE_CASTLING: boolean,
-	WHITE_QUEENSIDE_CASTLING: boolean,
-	BLACK_KINGSIDE_CASTLING: boolean,
-	BLACK_QUEENSIDE_CASTLING: boolean
+	[key: string]: { kingsideCastling: boolean, queensideCastling: boolean },
+	white: {
+		kingsideCastling: boolean,
+		queensideCastling: boolean,
+	},
+	black: {
+		kingsideCastling: boolean,
+		queensideCastling: boolean,
+	}
 };
 
 export type FENResult = {
@@ -16,11 +20,15 @@ export type FENResult = {
 	flags: Flags
 };
 
-const FLAGS_MAP: { [key: string]: string } = {
-	WHITE_KINGSIDE_CASTLING: 'K',
-	WHITE_QUEENSIDE_CASTLING: 'Q',
-	BLACK_KINGSIDE_CASTLING: 'k',
-	BLACK_QUEENSIDE_CASTLING: 'q'
+const FLAGS_MAP: { [key: string]: { kingsideCastling: string, queensideCastling: string } } = {
+	white: {
+		kingsideCastling: 'K',
+		queensideCastling: 'Q',
+	},
+	black: {
+		kingsideCastling: 'k',
+		queensideCastling: 'q',
+	},
 };
 
 export function decode(fen: string): FENResult {
@@ -49,10 +57,14 @@ export function decode(fen: string): FENResult {
 		pieces,
 		turn: turn === 'b' ? 'black' : 'white',
 		flags: {
-			WHITE_KINGSIDE_CASTLING: castlingRights?.indexOf('K') >= 0,
-			WHITE_QUEENSIDE_CASTLING: castlingRights?.indexOf('Q') >= 0,
-			BLACK_KINGSIDE_CASTLING: castlingRights?.indexOf('k') >= 0,
-			BLACK_QUEENSIDE_CASTLING: castlingRights?.indexOf('q') >= 0
+			white: {
+				kingsideCastling: castlingRights?.indexOf('K') >= 0,
+				queensideCastling: castlingRights?.indexOf('Q') >= 0
+			},
+			black: {
+				kingsideCastling: castlingRights?.indexOf('k') >= 0,
+				queensideCastling: castlingRights?.indexOf('q') >= 0
+			}
 		}
 	};
 }
@@ -81,8 +93,13 @@ export function encode(chess: Chess): string {
 
 	fen = fen.substring(0, fen.length - 1);
 
-	const flags = Object.keys(chess.flags).map(flag => {
-		return chess.flags[flag] ? FLAGS_MAP[flag] : '';
+	const flags = Object.keys(chess.flags).map(color => {
+		const flag = chess.flags[color];
+
+		const kingside = flag.kingsideCastling ? FLAGS_MAP[color].kingsideCastling : '';
+		const queenside = flag.queensideCastling ? FLAGS_MAP[color].queensideCastling : '';
+
+		return kingside + queenside;
 	}).join('') || '-';
 
 	const fullMoves = chess.history.filter(m => m.result.piece?.color === 'black').length + 1;
