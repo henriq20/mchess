@@ -29,32 +29,17 @@ describe('place', () => {
         expect((piece as ChessPiece).square).toBe('a3');
     });
 
-    it('should add the piece to the pieces array', () => {
+    it('should set the white and black king', () => {
         const chess = new Chess();
 
-        chess.place('p', 'a3');
-        chess.place('P', 'a4');
-
-        expect(chess.white.size).toBe(17);
-        expect(chess.black.size).toBe(17);
-        expect(chess.black.get('a3')?.color).toBe('black');
-        expect(chess.white.get('a4')?.color).toBe('white');
-    });
-
-    it('should set the white or black king', () => {
-        const chess = new Chess();
-
-        expect(chess.whiteKing?.type).toBe('k');
-        expect(chess.blackKing?.type).toBe('k');
+        expect(chess.kings.white?.type).toBe('k');
+        expect(chess.kings.black?.type).toBe('k');
     });
 });
 
 describe('setup', () => {
     it('should place the initial pieces on the board', () => {
         const chess = new Chess();
-
-        expect(chess.white.size).toBe(16);
-        expect(chess.black.size).toBe(16);
 
         expect(chess.board.get('a1')?.piece?.type).toBe('r');
         expect(chess.board.get('b1')?.piece?.type).toBe('n');
@@ -82,7 +67,6 @@ describe('takeOut', () => {
 
         const piece = chess.takeOut('e2');
 
-        expect(chess.white.size).toBe(15);
         expect(piece?.type).toBe('p');
     });
 });
@@ -302,33 +286,6 @@ describe('undo', () => {
     });
 });
 
-describe('enemies', () => {
-    it('should get the white pieces when it is the black pieces\' turn', () => {
-        const chess = new Chess();
-
-        chess.move({
-            from: 'e2',
-            to: 'e4'
-        });
-
-        const enemies = chess.enemies();
-
-        for (const [_, enemy] of enemies) {
-            expect(enemy.color).toBe('white');
-        }
-    });
-
-    it('should get the black pieces when it is the white pieces\' turn', () => {
-        const chess = new Chess();
-
-        const enemies = chess.enemies();
-
-        for (const [_, enemy] of enemies) {
-            expect(enemy.color).toBe('black');
-        }
-    });
-});
-
 describe('moves', () => {
     it('should get the possible moves of a piece', () => {
         const chess = new Chess();
@@ -383,10 +340,8 @@ describe('clear', () => {
 
         chess.clear();
 
-        expect(chess.whiteKing).toBe(null);
-        expect(chess.blackKing).toBe(null);
-        expect(chess.white.size).toBe(0);
-        expect(chess.black.size).toBe(0);
+        expect(chess.kings.white).toBe(null);
+        expect(chess.kings.black).toBe(null);
         expect(chess.history).toHaveLength(0);
         expect(chess.turn).toBe('white');
     });

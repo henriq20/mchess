@@ -15,20 +15,14 @@ type CanMoveOptions = ChessPosition | {
 export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
-	white: Map<ChessPosition, ChessPiece>;
-	black: Map<ChessPosition, ChessPiece>;
-	whiteKing: ChessPiece | null;
-	blackKing: ChessPiece | null;
+	kings: { white: ChessPiece | null, black: ChessPiece | null };
 	history: ChessMove[];
 	flags: Flags;
 	private _fen: string;
 
 	constructor(fen?: string) {
 		this.board = new ChessBoard();
-		this.white = new Map();
-		this.black = new Map();
-		this.whiteKing = null;
-		this.blackKing = null;
+		this.kings = { white: null, black: null };
 		this.history = [];
 		this.turn = 'white';
 		this._fen = fen ?? DEFAULT_POSITION;
@@ -71,15 +65,8 @@ export default class Chess {
 			return false;
 		}
 
-		this[piece.color].set(s.name, piece);
-
 		if (piece.type === 'k') {
-			if (piece.color === 'white') {
-				this.whiteKing = piece;
-				return true;
-			}
-
-			this.blackKing = piece;
+			this.kings[piece.color] = piece;
 		}
 
 		return true;
@@ -98,13 +85,11 @@ export default class Chess {
 			return null;
 		}
 
-		this[piece.color].delete(square.name);
-
 		return piece;
 	}
 
 	piece(position: ChessPosition): ChessPiece | null {
-		return this.white.get(position) ?? this.black.get(position) ?? null;
+		return this.square(position)?.piece || null;
 	}
 
 	square(position: ChessPosition): Square | null {
@@ -147,18 +132,14 @@ export default class Chess {
 		return null;
 	}
 
-	enemies(): Map<ChessPosition, ChessPiece> {
-		return this.turn === 'white' ? this.black : this.white;
-	}
-
 	isCheck(): boolean {
-		const king = this.turn === 'white' ? this.whiteKing : this.blackKing;
+		const king = this.kings[this.turn];
 
 		return !!king && this.isAttacked(king);
 	}
 
 	isCheckmate() {
-		const king = this.turn === 'white' ? this.whiteKing : this.blackKing;
+		const king = this.kings[this.turn];
 
 		if (!king) {
 			return false;
@@ -228,10 +209,7 @@ export default class Chess {
 		this.board.clear();
 		this.history = [];
 		this.turn = 'white';
-		this.whiteKing = null;
-		this.blackKing = null;
-		this.white = new Map();
-		this.black = new Map();
+		this.kings = { white: null, black: null };
 	}
 
 	reset() {

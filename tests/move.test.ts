@@ -59,7 +59,6 @@ describe('capture', () => {
             type: MoveType.CAPTURE
         });
 
-        expect(chess.black.size).toBe(16);
         expect(chess.piece('d2')).toBe(null);
         expect(chess.piece('e3')?.color).toBe('white');
     });
