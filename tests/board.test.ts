@@ -6,7 +6,6 @@ describe('constructor', () => {
     it('should create an empty board', () => {
         const board = new ChessBoard();
 
-        expect(board.size).toBe(64);
         expect(board._board).toHaveLength(64);
     });
 

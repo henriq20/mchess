@@ -42,11 +42,9 @@ export const MAILBOX64 = [
 ];
 
 export default class ChessBoard {
-	readonly size: number;
 	_board: Square[];
 
 	constructor() {
-		this.size = 64;
 		this._board = this.fill();
 	}
 

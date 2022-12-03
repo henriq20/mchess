@@ -1,5 +1,5 @@
 import Chess from './chess';
-import { CHESS_POSITIONS } from './board/board';
+import { CHESS_POSITIONS, SQUARE_MAP } from './board/board';
 import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece';
 
 export type Flags = {
@@ -71,7 +71,7 @@ export function decode(fen: string): FENResult {
 
 export function encode(chess: Chess): string {
 	let emptySquares = 0, fen = '';
-	for (let i = 0; i < chess.board.size; i++) {
+	for (let i = SQUARE_MAP.a8; i <= SQUARE_MAP.h1; i++) {
 		const square = chess.board._board[i];
 
 		if (!square.piece) {

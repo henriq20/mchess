@@ -1,6 +1,6 @@
 import Square from './board/square.js';
 import consoleColors from './colors.js';
-import ChessBoard from './board/board.js';
+import ChessBoard, { SQUARE_MAP } from './board/board.js';
 
 export type RenderOptions = {
 	rank: (rank: string) => string,
@@ -49,7 +49,7 @@ export default class ChessBoardRenderer {
 
 		const verticalSeparator = renderSeparator('│');
 
-		for (let i = 0; i < this.board.size; i++) {
+		for (let i = SQUARE_MAP.a8; i <= SQUARE_MAP.h1; i++) {
 			const square = this.board._board[i];
 			const renderedSquare = renderSquare(square);
 
@@ -60,7 +60,7 @@ export default class ChessBoardRenderer {
 
 			board += ` ${ renderedSquare } ${ verticalSeparator }`;
 
-			if (square.name[0] === 'h' && i !== this.board.size - 1) {
+			if (square.name[0] === 'h' && i !== SQUARE_MAP.h1) {
 				board += `\n  ${ renderSeparator(MIDDLE) }\n`;
 			}
 		}
