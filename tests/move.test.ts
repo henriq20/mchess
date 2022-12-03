@@ -313,16 +313,22 @@ describe('undo', () => {
     it('should undo an en passant', () => {
         const chess = new Chess('k7/3p4/8/4P3/8/8/8/K7 b - - 0 2');
 
-        const move = makeMove(chess, {
+        makeMove(chess, {
             from: 'd7',
             to: 'd5',
+            type: MoveType.QUIET
+        });
+
+        const enPassantMove = makeMove(chess, {
+            from: 'e5',
+            to: 'd6',
             type: MoveType.EN_PASSANT
         });
 
-        move.undo();
+        enPassantMove.undo();
 
-        expect(chess.piece('d7')?.type).toBe('p');
-        expect(chess.piece('d7')?.color).toBe('black');
+        expect(chess.piece('d5')?.type).toBe('p');
+        expect(chess.piece('d5')?.color).toBe('black');
         expect(chess.piece('e5')?.type).toBe('p');
         expect(chess.piece('e5')?.color).toBe('white');
     });
