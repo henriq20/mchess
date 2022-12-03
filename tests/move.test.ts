@@ -1,6 +1,6 @@
 import Chess from '../src/chess';
 import makeMove, { MoveType } from '../src/move';
-import { ChessPosition } from '../src/board/position';
+import { ChessPosition } from '../src/pieces/piece';
 
 describe('quiet', () => {
     it('should move a piece', () => {
@@ -8,7 +8,8 @@ describe('quiet', () => {
 
         makeMove(chess, {
             from: 'e2',
-            to: 'e4'
+            to: 'e4',
+            type: MoveType.QUIET
         });
 
         expect(chess.piece('e2')).toBe(null);
@@ -20,7 +21,8 @@ describe('quiet', () => {
 
         const move = makeMove(chess, {
             from: 'e2',
-            to: 'e4'
+            to: 'e4',
+            type: MoveType.QUIET
         });
 
         expect(move).toBeTruthy();
@@ -36,7 +38,8 @@ describe('quiet', () => {
 
         const move = makeMove(chess, {
             from: 'e2',
-            to: 'e4'
+            to: 'e4',
+            type: MoveType.QUIET
         });
 
         expect(chess.history).toHaveLength(1);
@@ -52,7 +55,8 @@ describe('capture', () => {
 
         makeMove(chess, {
             from: 'd2',
-            to: 'e3'
+            to: 'e3',
+            type: MoveType.CAPTURE
         });
 
         expect(chess.black.size).toBe(16);
@@ -67,7 +71,8 @@ describe('capture', () => {
 
         const move = makeMove(chess, {
             from: 'd2',
-            to: 'e3'
+            to: 'e3',
+            type: MoveType.CAPTURE
         });
 
         expect(move).toBeTruthy();
@@ -87,7 +92,8 @@ describe('promotion', () => {
         const move = makeMove(chess, {
             from: 'e7',
             to: 'e8',
-            promoteTo: 'q'
+            promoteTo: 'q',
+            type: MoveType.PAWN_PROMOTION
         });
 
         expect(move.result.promotedTo).toBe('q');
@@ -103,7 +109,8 @@ describe('promotion', () => {
         const move = makeMove(chess, {
             from: 'f2',
             to: 'f1',
-            promoteTo: 'q'
+            promoteTo: 'q',
+            type: MoveType.PAWN_PROMOTION
         });
 
         expect(move.result.promotedTo).toBe('q');
@@ -118,7 +125,8 @@ describe('promotion', () => {
 
         const move = makeMove(chess, {
             from: 'e7',
-            to: 'e8'
+            to: 'e8',
+            type: MoveType.PAWN_PROMOTION
         });
 
         expect(move.result.promotedTo).toBe('q');
@@ -131,7 +139,8 @@ describe('promotion', () => {
         const move = makeMove(chess, {
             from: 'e7',
             to: 'e8',
-            promoteTo: 'r'
+            promoteTo: 'r',
+            type: MoveType.PAWN_PROMOTION
         });
 
         expect(move.result.promotedTo).toBe('r');
@@ -144,7 +153,8 @@ describe('promotion', () => {
         const move = makeMove(chess, {
             from: 'e7',
             to: 'f8',
-            promoteTo: 'r'
+            promoteTo: 'r',
+            type: MoveType.PAWN_PROMOTION
         });
 
         expect(move.result.capturedPiece).toBeTruthy();
@@ -160,12 +170,14 @@ describe('enPassant', () => {
 
         makeMove(chess, {
             from: 'd7',
-            to: 'd5'
+            to: 'd5',
+            type: MoveType.QUIET
         });
 
         const enPassantMove = makeMove(chess, {
             from: 'e5',
-            to: 'd6'
+            to: 'd6',
+            type: MoveType.EN_PASSANT
         });
 
         expect(enPassantMove.result.type).toBe(MoveType.EN_PASSANT);
@@ -183,7 +195,8 @@ describe('castling', () => {
 
         const move = makeMove(chess, {
             from: 'e1',
-            to: 'g1'
+            to: 'g1',
+            type: MoveType.KINGSIDE_CASTLE
         });
 
         expect(move.result.type).toBe(MoveType.KINGSIDE_CASTLE);
@@ -197,7 +210,8 @@ describe('castling', () => {
 
         const move = makeMove(chess, {
             from: 'e1',
-            to: 'c1'
+            to: 'c1',
+            type: MoveType.QUEENSIDE_CASTLE
         });
 
         expect(move.result.type).toBe(MoveType.QUEENSIDE_CASTLE);
@@ -213,7 +227,8 @@ describe('invalid', () => {
 
         const move = makeMove(chess, {
             from: 'e3',
-            to: 'e4'
+            to: 'e4',
+            type: MoveType.QUIET
         });
 
         expect(move.result.type).toBe(MoveType.INVALID);
@@ -224,7 +239,8 @@ describe('invalid', () => {
 
         const move = makeMove(chess, {
             from: 'e0' as ChessPosition,
-            to: 'e4'
+            to: 'e4',
+            type: MoveType.QUIET
         });
 
         expect(move.result.type).toBe(MoveType.INVALID);
@@ -235,7 +251,8 @@ describe('invalid', () => {
 
         const move = makeMove(chess, {
             from: 'e2',
-            to: 'e0' as ChessPosition
+            to: 'e0' as ChessPosition,
+            type: MoveType.QUIET
         });
 
         expect(move.result.type).toBe(MoveType.INVALID);
@@ -248,7 +265,8 @@ describe('undo', () => {
 
         const move = makeMove(chess, {
             from: 'e2',
-            to: 'e4'
+            to: 'e4',
+            type: MoveType.QUIET
         });
 
         move.undo();
@@ -264,7 +282,8 @@ describe('undo', () => {
 
         const move = makeMove(chess, {
             from: 'e2',
-            to: 'f3'
+            to: 'f3',
+            type: MoveType.CAPTURE
         });
 
         move.undo();
@@ -279,7 +298,8 @@ describe('undo', () => {
         const move = makeMove(chess, {
             from: 'e7',
             to: 'e8',
-            promoteTo: 'q'
+            promoteTo: 'q',
+            type: MoveType.PAWN_PROMOTION
         });
 
         move.undo();
@@ -295,7 +315,8 @@ describe('undo', () => {
 
         const move = makeMove(chess, {
             from: 'd7',
-            to: 'd5'
+            to: 'd5',
+            type: MoveType.EN_PASSANT
         });
 
         move.undo();
@@ -311,7 +332,8 @@ describe('undo', () => {
 
         const move = makeMove(chess, {
             from: 'e1',
-            to: 'g1'
+            to: 'g1',
+            type: MoveType.KINGSIDE_CASTLE
         });
 
         move.undo();
@@ -327,7 +349,8 @@ describe('undo', () => {
 
         const move = makeMove(chess, {
             from: 'e1',
-            to: 'c1'
+            to: 'c1',
+            type: MoveType.QUEENSIDE_CASTLE
         });
 
         move.undo();

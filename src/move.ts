@@ -1,8 +1,8 @@
 import Chess from './chess.js';
-import Square from './board/square.js';
 import ChessPiece, { ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
 export type ChessMoveOptions = {
+	type: MoveType,
 	from: ChessPosition,
 	to: ChessPosition,
 	promoteTo?: 'q' | 'n' | 'b' | 'r'
@@ -70,11 +70,11 @@ export class ChessMove {
 
 	_undoCapture(capturedPiece: ChessPiece) {
 		if (this.result.type === MoveType.EN_PASSANT) {
-			this.chess.place(capturedPiece, capturedPiece.square as ChessPosition);
+			this.chess.place(capturedPiece, capturedPiece.square);
 			return;
 		}
 
-		this.chess.place(capturedPiece, capturedPiece.square as ChessPosition);
+		this.chess.place(capturedPiece, capturedPiece.square);
 	}
 
 	_undoPromotion(piece: ChessPiece) {
@@ -118,7 +118,7 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 		return move;
 	}
 
-	result.type = determineMoveType(chess, from, to);
+	result.type = options.type;
 
 	switch (result.type) {
 		case MoveType.EN_PASSANT: {
@@ -180,26 +180,4 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 	chess.history.push(move);
 
 	return move;
-}
-
-function determineMoveType(chess: Chess, from: Square, to: Square): MoveType {
-	const lastMove = chess.history.at(-1);
-
-	if (lastMove?.result.piece?.type === 'p' && from.piece?.type === 'p' && from.name[0] !== to.name[0]) {
-		return MoveType.EN_PASSANT;
-	}
-	if (from.piece?.type === 'p' && (to.name[1] === '1' || to.name[1] === '8')) {
-		return MoveType.PAWN_PROMOTION;
-	}
-	if (from.piece?.type === 'k' && to.name[0] === 'g') {
-		return MoveType.KINGSIDE_CASTLE;
-	}
-	if (from.piece?.type === 'k' && to.name[0] === 'c') {
-		return MoveType.QUEENSIDE_CASTLE;
-	}
-	if (to.empty) {
-		return MoveType.QUIET;
-	}
-
-	return MoveType.CAPTURE;
 }
