@@ -4,9 +4,9 @@ import generateMoves from '../../src/pieces/moves';
 it('should move in L shape', () => {
     const chess = new Chess('');
 
-    const piece = chess.place('n', 'e5');
+    const piece = chess.place('N', 'e5');
 
-    const possibleMoves = generateMoves(chess, piece);
+    const possibleMoves = generateMoves(chess, { square: piece.square }).map(m => m.to);
 
     expect(possibleMoves).toHaveLength(8);
     expect(possibleMoves).toEqual(expect.arrayContaining([

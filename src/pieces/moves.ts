@@ -1,14 +1,29 @@
 import Chess from '../chess';
+import { MoveType } from '../move';
 import Square from '../board/square';
-import ChessPiece, { ChessPosition } from './piece';
 import { MAILBOX, MAILBOX64, SQUARE_MAP } from '../board/board';
+import ChessPiece, { ChessPieceColor, ChessPosition } from './piece';
+
+export type PseudoMove = {
+	from: ChessPosition,
+	to: ChessPosition,
+	type: MoveType
+};
+
+const SLIDES = {
+	r: true,
+	b: true,
+	q: true,
+	k: false,
+	n: false
+};
 
 const OFFSETS = {
-	r: { slide: true, offsets: [ -10, -1, 1, 10 ] },
-	b: { slide: true, offsets: [ -11, -9, 9, 11 ] },
-	q: { slide: true, offsets: [ -11, -10, -9, -1, 1, 9, 10, 11 ] },
-	k: { slide: false, offsets: [ -11, -10, -9, -1, 1,  9, 10, 11 ] },
-	n: { slide: false, offsets: [ -21, -19, -12, -8, 8, 12, 19, 21 ] }
+	r: [ -10, -1, 1, 10 ],
+	b: [ -11, -9, 9, 11 ],
+	q: [ -11, -10, -9, -1, 1, 9, 10, 11 ],
+	k: [ -11, -10, -9, -1, 1,  9, 10, 11 ],
+	n: [ -21, -19, -12, -8, 8, 12, 19, 21 ]
 };
 
 const PAWN_OFFSETS = {
@@ -16,117 +31,145 @@ const PAWN_OFFSETS = {
 	black: [ 10, 20, 11, 9 ]
 };
 
-export default function generateMoves(chess: Chess, piece: ChessPiece): ChessPosition[] {
-	const moves: ChessPosition[] = [];
-	const index = SQUARE_MAP[piece.square];
+export default function generateMoves(chess: Chess, options: { square?: ChessPosition, color?: ChessPieceColor } = {}): PseudoMove[] {
+	const moves: PseudoMove[] = [];
 
-	if (piece.type !== 'p') {
-		const pieceOffset = OFFSETS[piece.type];
+	const addMove = (from: ChessPosition, to: ChessPosition, type: MoveType) => {
+		moves.push({
+			from,
+			to,
+			type
+		});
+	};
 
-		for (const offset of pieceOffset.offsets) {
-			let n = index;
-			while (n !== -1) {
-				n = MAILBOX[MAILBOX64[n] + offset];
+	let firstSquare = SQUARE_MAP.a8;
+	let lastSquare = SQUARE_MAP.h1;
 
-				if (n === -1) {
-					break;
+	if (options.square) {
+		firstSquare = lastSquare = SQUARE_MAP[options.square];
+	}
+
+	if (!options.color) {
+		options.color = chess.turn;
+	}
+
+	for (let i = firstSquare; i <= lastSquare; i++) {
+		const square = chess.board._board[i];
+
+		if (!square.piece || square.piece.color !== options.color) {
+			continue;
+		}
+
+		const piece = square.piece;
+		const index = SQUARE_MAP[square.name];
+
+		if (piece.type !== 'p') {
+			const offsets = OFFSETS[piece.type];
+
+			for (let j = 0; j < offsets.length; j++) {
+				const offset = offsets[j];
+
+				let n = index;
+				while (n !== -1) {
+					n = MAILBOX[MAILBOX64[n] + offset];
+
+					if (n === -1) {
+						break;
+					}
+
+					const square = chess.board._board[n];
+
+					if (!square.piece) {
+						addMove(piece.square, square.name, MoveType.QUIET);
+					}
+
+					if (square.piece && square.piece.color !== piece.color) {
+						addMove(piece.square, square.name, MoveType.CAPTURE);
+					}
+
+					if (!SLIDES[piece.type] || square.piece) {
+						break;
+					}
 				}
+			}
 
-				const square = chess.board._board[n];
+			if (piece.type !== 'k') {
+				continue;
+			}
+		}
 
-				if (!square.piece || square.piece.color !== piece.color) {
-					moves.push(square.name);
+		if (piece.type === 'k') {
+			if (chess.flags[piece.color].kingsideCastling) {
+				const kingsideCastleSquare = chess.board.at(piece.square, 2);
+				const kingsideCastleRook = chess.board.at(piece.square, 3);
+
+				if (
+					kingsideCastleSquare?.empty &&
+					kingsideCastleRook?.piece?.type === 'r' &&
+					kingsideCastleRook.piece.color === piece.color &&
+					chess.board.at(piece.square, 1)?.empty
+				) {
+					addMove(piece.square, kingsideCastleSquare.name, MoveType.KINGSIDE_CASTLE);
 				}
+			}
 
-				if (!pieceOffset.slide || !square.empty) {
-					break;
+			if (chess.flags[piece.color].queensideCastling) {
+				const queensideCastleSquare = chess.board.at(piece.square, -2);
+				const queensideCastleRook = chess.board.at(piece.square, -4);
+
+				if (
+					queensideCastleSquare?.empty &&
+					queensideCastleRook?.piece?.type === 'r' &&
+					queensideCastleRook.piece.color === piece.color &&
+					chess.board.at(piece.square, -1)?.empty &&
+					chess.board.at(piece.square, -3)?.empty
+				) {
+					addMove(piece.square, queensideCastleSquare.name, MoveType.QUEENSIDE_CASTLE);
+				}
+			}
+
+			continue;
+		}
+
+		const oneSquareForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][0]);
+
+		if (oneSquareForward && oneSquareForward.empty) {
+			let moveType = MoveType.QUIET;
+
+			if (oneSquareForward.name[1] === '8' || oneSquareForward.name[1] === '1') {
+				moveType = MoveType.PAWN_PROMOTION;
+			}
+
+			addMove(piece.square, oneSquareForward.name, moveType);
+
+			if (_canMoveTwoSquares(piece)) {
+				const twoSquaresForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][1]);
+
+				if (twoSquaresForward && twoSquaresForward.empty) {
+					addMove(piece.square, twoSquaresForward.name, MoveType.QUIET);
 				}
 			}
 		}
 
-		if (piece.type !== 'k') {
-			return moves;
-		}
-	}
+		for (let i = 2; i < 4; i++) {
+			const offset = PAWN_OFFSETS[piece.color][i];
 
-	if (piece.type === 'p') {
-		return generatePawnMoves(chess, piece);
-	}
+			const square = chess.board._board[MAILBOX[MAILBOX64[index] + offset]];
 
-	return [ ...moves, ...generateKingMoves(chess, piece) ];
-}
-
-function generateKingMoves(chess: Chess, piece: ChessPiece): ChessPosition[] {
-	const moves: ChessPosition[] = [];
-
-	if (chess.flags[piece.color].kingsideCastling) {
-		const kingsideCastleSquare = chess.board.at(piece.square, 2);
-		const kingsideCastleRook = chess.board.at(piece.square, 3);
-
-		if (
-			kingsideCastleSquare?.empty &&
-			kingsideCastleRook?.piece?.type === 'r' &&
-			kingsideCastleRook.piece.color === piece.color &&
-			chess.board.at(piece.square, 1)?.empty
-		) {
-			moves.push(kingsideCastleSquare.name);
-		}
-	}
-
-	if (chess.flags[piece.color].queensideCastling) {
-		const queensideCastleSquare = chess.board.at(piece.square, -2);
-		const queensideCastleRook = chess.board.at(piece.square, -4);
-
-		if (
-			queensideCastleSquare?.empty &&
-			queensideCastleRook?.piece?.type === 'r' &&
-			queensideCastleRook.piece.color === piece.color &&
-			chess.board.at(piece.square, -1)?.empty &&
-			chess.board.at(piece.square, -3)?.empty
-		) {
-			moves.push(queensideCastleSquare.name);
-		}
-	}
-
-	return moves;
-}
-
-function generatePawnMoves(chess: Chess, piece: ChessPiece): ChessPosition[] {
-	const moves: ChessPosition[] = [];
-	const index = SQUARE_MAP[piece.square];
-
-	const oneSquareForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][0]);
-
-	if (oneSquareForward && oneSquareForward.empty) {
-		moves.push(oneSquareForward.name);
-
-		if (_canMoveTwoSquares(piece)) {
-			const twoSquaresForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][1]);
-
-			if (twoSquaresForward && twoSquaresForward.empty) {
-				moves.push(twoSquaresForward.name);
+			if (!square) {
+				continue;
 			}
-		}
-	}
 
-	for (let i = 2; i < 4; i++) {
-		const offset = PAWN_OFFSETS[piece.color][i];
+			if (!square.empty && square.piece?.color !== piece.color) {
+				addMove(piece.square, square.name, MoveType.CAPTURE);
+				continue;
+			}
 
-		const square = chess.board._board[MAILBOX[MAILBOX64[index] + offset]];
+			const enPassantSquare = chess.board.at(piece.square, offset + (Math.sign(offset) * -10));
 
-		if (!square) {
-			continue;
-		}
-
-		if (!square.empty && square.piece?.color !== piece.color) {
-			moves.push(square.name);
-			continue;
-		}
-
-		const enPassantSquare = chess.board.at(piece.square, offset + (Math.sign(offset) * -10));
-
-		if (enPassantSquare && _isEnPassant(chess, piece, enPassantSquare)) {
-			moves.push(square.name);
+			if (enPassantSquare && _isEnPassant(chess, piece, enPassantSquare)) {
+				addMove(piece.square, square.name, MoveType.EN_PASSANT);
+			}
 		}
 	}
 
