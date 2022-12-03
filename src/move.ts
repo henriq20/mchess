@@ -54,7 +54,8 @@ export class ChessMove {
 				return this._undoCapture(capturedPiece as ChessPiece);
 
 			case MoveType.PAWN_PROMOTION:
-				return this._undoPromotion(piece);
+				piece.type = 'p';
+				return;
 
 			case MoveType.KINGSIDE_CASTLE:
 			case MoveType.QUEENSIDE_CASTLE:
@@ -67,10 +68,6 @@ export class ChessMove {
 
 	private _undoCapture(capturedPiece: ChessPiece) {
 		this.chess.place(capturedPiece, capturedPiece.square);
-	}
-
-	private _undoPromotion(piece: ChessPiece) {
-		this.chess.place(new ChessPiece('p', piece.color), this.result.from);
 	}
 
 	private _undoCastling() {
