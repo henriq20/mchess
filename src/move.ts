@@ -111,7 +111,7 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 
 	switch (result.type) {
 		case MoveType.EN_PASSANT: {
-			const capturedPiece = chess.takeOut(from.name, -1);
+			const capturedPiece = chess.takeOut(chess.history.at(-1)?.result.piece?.square as ChessPosition);
 
 			if (capturedPiece) {
 				result.capturedPiece = capturedPiece;
