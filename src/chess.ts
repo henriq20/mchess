@@ -154,7 +154,7 @@ export default class Chess {
 	isCheck(): boolean {
 		const king = this.turn === 'white' ? this.whiteKing : this.blackKing;
 
-		return !!king && this._isKingAttacked(king);
+		return !!king && this.isAttacked(king);
 	}
 
 	isCheckmate() {
@@ -177,6 +177,14 @@ export default class Chess {
 
 	isDraw() {
 		return this.isStalemate();
+	}
+
+	isAttacked(piece: ChessPiece): boolean {
+		const enemyMoves = generateMoves(this, {
+			color: piece.color === 'white' ? 'black' : 'white'
+		});
+
+		return enemyMoves.some(move => move.to === piece.square);
 	}
 
 	moves(squareOrPiece?: ChessPosition | ChessPiece): { from: ChessPosition, to: ChessPosition, type: MoveType }[] {
@@ -238,18 +246,6 @@ export default class Chess {
 	_changeTurn() {
 		this.turn = this.turn === 'white' ? 'black' : 'white';
 		return this.turn;
-	}
-
-	_isKingAttacked(king: ChessPiece): boolean {
-		if (king.type !== 'k') {
-			return false;
-		}
-
-		const m = generateMoves(this, {
-			color: king.color === 'white' ? 'black' : 'white'
-		});
-
-		return m.some(move => move.to === king.square);
 	}
 
 	_wouldBeInCheck(move: ChessMoveOptions) {
