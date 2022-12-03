@@ -68,7 +68,7 @@ export class ChessMove {
 		}
 	}
 
-	_undoCapture(capturedPiece: ChessPiece) {
+	private _undoCapture(capturedPiece: ChessPiece) {
 		if (this.result.type === MoveType.EN_PASSANT) {
 			this.chess.place(capturedPiece, capturedPiece.square);
 			return;
@@ -77,11 +77,11 @@ export class ChessMove {
 		this.chess.place(capturedPiece, capturedPiece.square);
 	}
 
-	_undoPromotion(piece: ChessPiece) {
+	private _undoPromotion(piece: ChessPiece) {
 		this.chess.place(new ChessPiece('p', piece.color), this.result.from);
 	}
 
-	_undoCastling() {
+	private _undoCastling() {
 		if (this.result.type === MoveType.KINGSIDE_CASTLE) {
 			const rook = this.chess.takeOut(this.result.from, 1);
 

@@ -21,7 +21,7 @@ export default class Chess {
 	blackKing: ChessPiece | null;
 	history: ChessMove[];
 	flags: Flags;
-	_fen: string;
+	private _fen: string;
 
 	constructor(fen?: string) {
 		this.board = new ChessBoard();
@@ -64,7 +64,7 @@ export default class Chess {
 		return piece;
 	}
 
-	_place(piece: ChessPiece, square: ChessPosition, offset?: number): boolean {
+	private _place(piece: ChessPiece, square: ChessPosition, offset?: number): boolean {
 		const s = this.board.place(piece, square, offset);
 
 		if (!s) {
@@ -243,12 +243,12 @@ export default class Chess {
 		return encode(this);
 	}
 
-	_changeTurn() {
+	private _changeTurn() {
 		this.turn = this.turn === 'white' ? 'black' : 'white';
 		return this.turn;
 	}
 
-	_wouldBeInCheck(move: ChessMoveOptions) {
+	private _wouldBeInCheck(move: ChessMoveOptions) {
 		const result = makeMove(this, move);
 
 		if (!result) {
@@ -264,7 +264,7 @@ export default class Chess {
 		return false;
 	}
 
-	_updateFlags(moveResult: ChessMoveResult) {
+	private _updateFlags(moveResult: ChessMoveResult) {
 		if (moveResult.piece && moveResult.type === MoveType.KINGSIDE_CASTLE) {
 			this.flags[moveResult.piece.color].kingsideCastling = false;
 			return;
