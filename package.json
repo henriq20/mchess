@@ -1,7 +1,7 @@
 {
-	"name": "chess",
+	"name": "mchess",
 	"version": "1.0.0",
-	"description": "",
+	"description": "A complete Chess library for playing and generating moves",
 	"type": "module",
 	"main": "dist/index.js",
 	"module": "dist/index.cjs",
