@@ -51,10 +51,7 @@ export class ChessMove {
 		switch (type) {
 			case MoveType.CAPTURE:
 			case MoveType.EN_PASSANT:
-				if (capturedPiece) {
-					return this._undoCapture(capturedPiece);
-				}
-				break;
+				return this._undoCapture(capturedPiece as ChessPiece);
 
 			case MoveType.PAWN_PROMOTION:
 				return this._undoPromotion(piece);
@@ -69,11 +66,6 @@ export class ChessMove {
 	}
 
 	private _undoCapture(capturedPiece: ChessPiece) {
-		if (this.result.type === MoveType.EN_PASSANT) {
-			this.chess.place(capturedPiece, capturedPiece.square);
-			return;
-		}
-
 		this.chess.place(capturedPiece, capturedPiece.square);
 	}
 
