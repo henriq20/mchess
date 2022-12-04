@@ -161,7 +161,8 @@ export default function generateMoves(chess: Chess, options: { square?: ChessPos
 			}
 
 			if (!square.empty && square.piece?.color !== piece.color) {
-				addMove(piece.square, square.name, MoveType.CAPTURE);
+				const moveType = square.name[1] === '8' || square.name[1] === '1' ? MoveType.PAWN_PROMOTION : MoveType.CAPTURE;
+				addMove(piece.square, square.name, moveType);
 				continue;
 			}
 
