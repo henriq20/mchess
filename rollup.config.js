@@ -10,12 +10,12 @@ export default [
 			{
 				file: packageJson.main,
 				format: 'esm',
-				plugins: [ terser({ module: true }) ]
+				plugins: [ terser({ module: true, mangle: false }) ]
 			},
 			{
 				file: packageJson.module,
 				format: 'cjs',
-				plugins: [ terser({ module: false }) ]
+				plugins: [ terser({ module: false, mangle: false }) ]
 			}
 		],
 		plugins: [ typescript({ declaration: false }) ]
