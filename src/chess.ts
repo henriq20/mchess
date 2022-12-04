@@ -97,6 +97,8 @@ export default class Chess {
 		return this.board.get(position);
 	}
 
+	move(san: string, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false;
+	move(options: { from: ChessPosition, to: ChessPosition }, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false;
 	move(options: { from: ChessPosition, to: ChessPosition } | string, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false {
 		let from: ChessPosition, to: ChessPosition;
 
