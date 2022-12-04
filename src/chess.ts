@@ -2,10 +2,11 @@ import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves from './pieces/moves.js';
 import { decode, encode, Flags } from './fen.js';
+import { parse } from './san.js';
 import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
 import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
-const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+export const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 type CanMoveOptions = ChessPosition | {
 	to?: ChessPosition,
@@ -96,20 +97,36 @@ export default class Chess {
 		return this.board.get(position);
 	}
 
-	move(options: { from: ChessPosition, to: ChessPosition }, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false {
-		const movingPiece = this.piece(options.from);
+	move(options: { from: ChessPosition, to: ChessPosition } | string, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false {
+		let from: ChessPosition, to: ChessPosition;
+
+		if (typeof options === 'string') {
+			const move = parse(this, options);
+
+			if (!move) {
+				return false;
+			}
+
+			from = move.from;
+			to = move.to;
+		} else {
+			from = options.from;
+			to = options.to;
+		}
+
+		const movingPiece = this.piece(from);
 
 		if (!movingPiece || movingPiece.color !== this.turn) {
 			return false;
 		}
 
-		const legalMove = this.moves(options.from).find(m => m.to === options.to);
+		const legalMove = this.moves(from).find(m => m.to === to);
 
 		if (!legalMove) {
 			return false;
 		}
 
-		const move = makeMove(this, { ...options, type: legalMove.type, promoteTo });
+		const move = makeMove(this, { from, to, type: legalMove.type, promoteTo });
 
 		if (move.result.type !== MoveType.INVALID) {
 			this._changeTurn();
