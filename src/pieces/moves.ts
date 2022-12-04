@@ -2,7 +2,7 @@ import Chess from '../chess';
 import { MoveType } from '../move';
 import Square from '../board/square';
 import { MAILBOX, MAILBOX64, SQUARE_MAP } from '../board/board';
-import ChessPiece, { ChessPieceColor, ChessPosition } from './piece';
+import ChessPiece, { ChessPieceColor, ChessPieceType, ChessPosition } from './piece';
 
 export type PseudoMove = {
 	from: ChessPosition,
@@ -31,7 +31,13 @@ const PAWN_OFFSETS = {
 	black: [ 10, 20, 11, 9 ]
 };
 
-export default function generateMoves(chess: Chess, options: { square?: ChessPosition, color?: ChessPieceColor } = {}): PseudoMove[] {
+type GenerateMovesOptions = {
+	square?: ChessPosition,
+	color?: ChessPieceColor,
+	piece?: ChessPieceType
+};
+
+export default function generateMoves(chess: Chess, options: GenerateMovesOptions = {}): PseudoMove[] {
 	const moves: PseudoMove[] = [];
 
 	const addMove = (from: ChessPosition, to: ChessPosition, type: MoveType) => {
@@ -56,7 +62,10 @@ export default function generateMoves(chess: Chess, options: { square?: ChessPos
 	for (let i = firstSquare; i <= lastSquare; i++) {
 		const square = chess.board._board[i];
 
-		if (!square.piece || square.piece.color !== options.color) {
+		if (
+			!square.piece ||
+			square.piece.color !== options.color ||
+			(options.piece && square.piece.type !== options.piece)) {
 			continue;
 		}
 

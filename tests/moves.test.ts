@@ -65,6 +65,30 @@ describe('quiet', () => {
             { from: 'h7', to: 'h5', type: MoveType.QUIET }
         ]));
     });
+
+    it('should get all pseudo-legal moves for the specified piece', () => {
+        const moves = generateMoves(chess, { piece: 'p' });
+
+        expect(moves).toHaveLength(16);
+        expect(moves).toEqual(expect.arrayContaining([
+            { from: 'a2', to: 'a3', type: MoveType.QUIET },
+            { from: 'a2', to: 'a4', type: MoveType.QUIET },
+            { from: 'b2', to: 'b3', type: MoveType.QUIET },
+            { from: 'b2', to: 'b4', type: MoveType.QUIET },
+            { from: 'c2', to: 'c3', type: MoveType.QUIET },
+            { from: 'c2', to: 'c4', type: MoveType.QUIET },
+            { from: 'd2', to: 'd3', type: MoveType.QUIET },
+            { from: 'd2', to: 'd4', type: MoveType.QUIET },
+            { from: 'e2', to: 'e3', type: MoveType.QUIET },
+            { from: 'e2', to: 'e4', type: MoveType.QUIET },
+            { from: 'f2', to: 'f3', type: MoveType.QUIET },
+            { from: 'f2', to: 'f4', type: MoveType.QUIET },
+            { from: 'g2', to: 'g3', type: MoveType.QUIET },
+            { from: 'g2', to: 'g4', type: MoveType.QUIET },
+            { from: 'h2', to: 'h3', type: MoveType.QUIET },
+            { from: 'h2', to: 'h4', type: MoveType.QUIET }
+        ]));
+    });
 });
 
 describe('capture', () => {
