@@ -1,12 +1,24 @@
 import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves from './pieces/moves.js';
-import { decode, encode, Flags } from './fen.js';
+import { decode, encode } from './fen.js';
 import { parse } from './san.js';
 import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
 import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
 export const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+export type Flags = {
+	[key: string]: { kingsideCastling: boolean, queensideCastling: boolean },
+	white: {
+		kingsideCastling: boolean,
+		queensideCastling: boolean,
+	},
+	black: {
+		kingsideCastling: boolean,
+		queensideCastling: boolean,
+	}
+};
 
 type CanMoveOptions = ChessPosition | {
 	to?: ChessPosition,

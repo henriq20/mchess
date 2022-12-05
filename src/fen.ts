@@ -1,18 +1,6 @@
-import Chess from './chess';
+import Chess, { Flags } from './chess';
 import { CHESS_POSITIONS, SQUARE_MAP } from './board/board';
 import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece';
-
-export type Flags = {
-	[key: string]: { kingsideCastling: boolean, queensideCastling: boolean },
-	white: {
-		kingsideCastling: boolean,
-		queensideCastling: boolean,
-	},
-	black: {
-		kingsideCastling: boolean,
-		queensideCastling: boolean,
-	}
-};
 
 export type FENResult = {
 	pieces: Array<[ChessPieceSymbol, ChessPosition]>
