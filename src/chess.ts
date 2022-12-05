@@ -56,10 +56,10 @@ export default class Chess {
 		this.flags = result.flags;
 	}
 
-	place(piece: ChessPieceSymbol | ChessPiece, position: ChessPosition, offset?: number): ChessPiece {
+	place(piece: ChessPieceSymbol | ChessPiece, square: ChessPosition, offset?: number): ChessPiece {
 		piece = typeof piece === 'string' ? createPiece(piece) : piece;
 
-		this._place(piece, position, offset);
+		this._place(piece, square, offset);
 
 		return piece;
 	}
@@ -76,22 +76,22 @@ export default class Chess {
 		return true;
 	}
 
-	takeOut(position: ChessPosition, offset?: number): ChessPiece | null {
-		const square = offset ? this.board.at(position, offset) : this.square(position);
+	takeOut(square: ChessPosition, offset?: number): ChessPiece | null {
+		const squareWithPieceToRemove = offset ? this.board.at(square, offset) : this.square(square);
 
-		if (!square || square.empty) {
+		if (!squareWithPieceToRemove || squareWithPieceToRemove.empty) {
 			return null;
 		}
 
-		return this.board.remove(square.name);
+		return this.board.remove(squareWithPieceToRemove.name);
 	}
 
-	piece(position: ChessPosition): ChessPiece | null {
-		return this.square(position)?.piece || null;
+	piece(square: ChessPosition): ChessPiece | null {
+		return this.square(square)?.piece || null;
 	}
 
-	square(position: ChessPosition): Square | null {
-		return this.board.get(position);
+	square(square: ChessPosition): Square | null {
+		return this.board.get(square);
 	}
 
 	move(san: string, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false;
