@@ -83,13 +83,7 @@ export default class Chess {
 			return null;
 		}
 
-		const piece = this.board.remove(square.name);
-
-		if (!piece) {
-			return null;
-		}
-
-		return piece;
+		return this.board.remove(square.name);
 	}
 
 	piece(position: ChessPosition): ChessPiece | null {
