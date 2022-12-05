@@ -20,11 +20,6 @@ export type Flags = {
 	}
 };
 
-type CanMoveOptions = ChessPosition | {
-	to?: ChessPosition,
-	illegal?: boolean
-};
-
 export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
@@ -195,7 +190,7 @@ export default class Chess {
 		return enemyMoves.some(move => move.to === piece.square);
 	}
 
-	moves(squareOrPiece?: ChessPosition | ChessPiece): { from: ChessPosition, to: ChessPosition, type: MoveType }[] {
+	moves(square?: ChessPosition, legal = true): { from: ChessPosition, to: ChessPosition, type: MoveType }[] {
 		const wouldNotBeInCheck = ({ from, to, type }: { from: ChessPosition, to: ChessPosition, type: MoveType }) => {
 			return !this._wouldBeInCheck({
 				from,
@@ -204,13 +199,9 @@ export default class Chess {
 			});
 		};
 
-		if (squareOrPiece) {
-			const square = typeof squareOrPiece !== 'string' ? squareOrPiece.square : squareOrPiece;
+		const moves = generateMoves(this, { square }).filter(wouldNotBeInCheck);
 
-			return generateMoves(this, { square }).filter(wouldNotBeInCheck);
-		}
-
-		return generateMoves(this).filter(wouldNotBeInCheck);
+		return legal ? moves.filter(wouldNotBeInCheck) : moves;
 	}
 
 	moved(piece: ChessPiece | ChessPosition) {
@@ -218,18 +209,10 @@ export default class Chess {
 		return this.history.some(m => m.result.piece?.square === piece);
 	}
 
-	canMove(from: ChessPosition | ChessPiece, options: CanMoveOptions): boolean {
-		const piece = typeof from === 'string' ? this.piece(from) : from;
-		const to = typeof options === 'string' ? options : options.to;
-		const illegal = typeof options === 'string' ? false : options.illegal;
+	canMove(options: { from: ChessPosition,	to?: ChessPosition, legal: true }): boolean {
+		const moves = this.moves(options.from, options.legal);
 
-		if (!piece) {
-			return false;
-		}
-
-		const moves = illegal ? generateMoves(this, { square: piece.square }) : this.moves(piece);
-
-		return to ? moves.some(m => m.to === to) : !!moves.length;
+		return options.to ? moves.some(move => move.to === options.to) : !!moves.length;
 	}
 
 	clear() {
