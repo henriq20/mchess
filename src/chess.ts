@@ -4,7 +4,7 @@ import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves from './pieces/moves.js';
 import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
-import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
+import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece, PawnPromotion } from './pieces/piece.js';
 
 export const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -94,9 +94,9 @@ export default class Chess {
 		return this.board.get(square);
 	}
 
-	move(san: string, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false;
-	move(options: { from: ChessPosition, to: ChessPosition }, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false;
-	move(options: { from: ChessPosition, to: ChessPosition } | string, promoteTo?: 'q' | 'n' | 'b' | 'r'): ChessMoveResult | false {
+	move(san: string, promoteTo?: PawnPromotion): ChessMoveResult | false;
+	move(options: { from: ChessPosition, to: ChessPosition }, promoteTo?: PawnPromotion): ChessMoveResult | false;
+	move(options: { from: ChessPosition, to: ChessPosition } | string, promoteTo?: PawnPromotion): ChessMoveResult | false {
 		let from: ChessPosition, to: ChessPosition;
 
 		if (typeof options === 'string') {

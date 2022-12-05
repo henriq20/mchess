@@ -1,5 +1,7 @@
 export type ChessPieceType = 'k' | 'q' | 'r' | 'b' | 'n' | 'p';
 
+export type PawnPromotion = 'q' | 'n' | 'b' | 'r';
+
 export type ChessPieceColor = 'black' | 'white';
 
 export type ChessPieceSymbol =

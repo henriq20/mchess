@@ -1,11 +1,11 @@
 import Chess from './chess.js';
-import ChessPiece, { ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
+import ChessPiece, { ChessPieceSymbol, ChessPosition, createPiece, PawnPromotion } from './pieces/piece.js';
 
 export type ChessMoveOptions = {
 	type: MoveType,
 	from: ChessPosition,
 	to: ChessPosition,
-	promoteTo?: 'q' | 'n' | 'b' | 'r'
+	promoteTo?: PawnPromotion
 };
 
 export enum MoveType {
@@ -24,7 +24,7 @@ export type ChessMoveResult = {
 	to: ChessPosition,
 	piece?: ChessPiece | null,
 	capturedPiece?: ChessPiece,
-	promotedTo?: 'q' | 'n' | 'b' | 'r'
+	promotedTo?: PawnPromotion
 };
 
 export class ChessMove {
