@@ -31,14 +31,12 @@ export default class Chess {
 	kings: { white: ChessPiece | null, black: ChessPiece | null };
 	history: ChessMove[];
 	flags: Flags;
-	private _fen: string;
 
 	constructor(fen?: string) {
 		this.board = new ChessBoard();
 		this.kings = { white: null, black: null };
 		this.history = [];
 		this.turn = 'white';
-		this._fen = fen ?? DEFAULT_POSITION;
 		this.flags = {
 			white: {
 				kingsideCastling: true,
@@ -245,7 +243,7 @@ export default class Chess {
 
 	reset() {
 		this.clear();
-		this.setup(this._fen);
+		this.setup(DEFAULT_POSITION);
 	}
 
 	fen() {

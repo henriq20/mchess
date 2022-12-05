@@ -1,4 +1,4 @@
-import Chess from '../src/chess';
+import Chess, { DEFAULT_POSITION } from '../src/chess';
 import ChessPiece, { ChessPosition } from '../src/pieces/piece';
 
 describe('place', () => {
@@ -360,6 +360,6 @@ describe('reset', () => {
 
         const fen = chess.fen();
 
-        expect(fen).toMatch('rnbqkbnr/ppp1pppp/8/3p4/5P2/8/PPPPP1PP/RNBQKBNR w KQkq');
+        expect(fen).toMatch(DEFAULT_POSITION);
     });
 });
