@@ -70,9 +70,7 @@ export default class Chess {
 	}
 
 	private _place(piece: ChessPiece, square: ChessPosition, offset?: number): boolean {
-		const s = this.board.place(piece, square, offset);
-
-		if (!s) {
+		if (!this.board.place(piece, square, offset)) {
 			return false;
 		}
 
