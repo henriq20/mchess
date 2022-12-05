@@ -1,8 +1,8 @@
+import fenParser from './fen.js';
+import sanParser from './san.js';
 import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves from './pieces/moves.js';
-import { decode, encode } from './fen.js';
-import { parse } from './san.js';
 import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
 import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
@@ -12,11 +12,11 @@ export type Flags = {
 	[key: string]: { kingsideCastling: boolean, queensideCastling: boolean },
 	white: {
 		kingsideCastling: boolean,
-		queensideCastling: boolean,
+		queensideCastling: boolean
 	},
 	black: {
 		kingsideCastling: boolean,
-		queensideCastling: boolean,
+		queensideCastling: boolean
 	}
 };
 
@@ -53,7 +53,7 @@ export default class Chess {
 	}
 
 	setup(fen: string) {
-		const result = decode(fen);
+		const result = fenParser.parse(fen);
 
 		for (const [ symbol, position ] of result.pieces) {
 			this._place(createPiece(symbol), position);
@@ -115,7 +115,7 @@ export default class Chess {
 		let from: ChessPosition, to: ChessPosition;
 
 		if (typeof options === 'string') {
-			const move = parse(this, options);
+			const move = sanParser.parse(this, options);
 
 			if (!move) {
 				return false;
@@ -249,7 +249,7 @@ export default class Chess {
 	}
 
 	fen() {
-		return encode(this);
+		return fenParser.encode(this);
 	}
 
 	private _changeTurn() {

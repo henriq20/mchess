@@ -1,5 +1,5 @@
 import Chess from '../src/chess';
-import { encode, decode } from '../src/fen';
+import { parse, encode } from '../src/fen';
 
 describe('decode', () => {
     const cases = [
@@ -259,7 +259,7 @@ describe('decode', () => {
     ]
 
     it.each(cases)('should parse the FEN $fen', ({ fen, expected }) => {
-        const result = decode(fen);
+        const result = parse(fen);
 
         expect(result.turn).toBe(expected.turn);
         expect(result.flags).toMatchObject(expected.flags);

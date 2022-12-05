@@ -76,3 +76,7 @@ export function parse(chess: Chess, san: string): PseudoMove & { promoteTo?: Che
 function stripDecorators(san: string) {
 	return san.replace(/[=+#?!]+/, '');
 }
+
+export default {
+	parse
+};
