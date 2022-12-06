@@ -248,12 +248,12 @@ export default class Chess {
 	}
 
 	private _updateFlags(moveResult: ChessMoveResult) {
-		if (moveResult.piece && moveResult.type === MoveType.KINGSIDE_CASTLE) {
+		if (moveResult.type === MoveType.KINGSIDE_CASTLE) {
 			this.flags[moveResult.piece.color].kingsideCastling = false;
 			return;
 		}
 
-		if (moveResult.piece && moveResult.type === MoveType.QUEENSIDE_CASTLE) {
+		if (moveResult.type === MoveType.QUEENSIDE_CASTLE) {
 			this.flags[moveResult.piece.color].queensideCastling = false;
 		}
 	}
