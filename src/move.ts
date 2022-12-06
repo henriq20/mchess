@@ -1,4 +1,5 @@
 import Chess from './chess.js';
+import { SQUARE_MAP } from './board/board.js';
 import ChessPiece, { ChessPieceSymbol, ChessPosition, createPiece, PawnPromotion } from './pieces/piece.js';
 
 export type ChessMoveOptions = {
@@ -9,7 +10,6 @@ export type ChessMoveOptions = {
 };
 
 export enum MoveType {
-	INVALID = 0,
 	QUIET = 1,
 	CAPTURE = 2,
 	EN_PASSANT = 3,
@@ -18,103 +18,44 @@ export enum MoveType {
 	PAWN_PROMOTION = 6
 }
 
+export type ChessMove = {
+	from: ChessPosition,
+	to: ChessPosition,
+	promoteTo?: PawnPromotion
+};
+
 export type ChessMoveResult = {
 	type: MoveType,
 	from: ChessPosition,
 	to: ChessPosition,
-	piece?: ChessPiece | null,
-	capturedPiece?: ChessPiece,
+	piece: ChessPiece,
+	captured: ChessPiece | null,
 	promotedTo?: PawnPromotion
 };
 
-export class ChessMove {
-	chess: Chess;
-	result: ChessMoveResult;
-
-	constructor(chess: Chess, result: ChessMoveResult) {
-		this.chess = chess;
-		this.result = result;
-	}
-
-	undo() {
-		const { from, to, type, capturedPiece } = this.result;
-
-		const piece = this.chess.takeOut(to);
-
-		if (!piece) {
-			return;
-		}
-
-		this.chess.place(piece, from);
-		this.chess.history.pop();
-
-		switch (type) {
-			case MoveType.CAPTURE:
-			case MoveType.EN_PASSANT:
-				return this._undoCapture(capturedPiece as ChessPiece);
-
-			case MoveType.PAWN_PROMOTION:
-				piece.type = 'p';
-				return;
-
-			case MoveType.KINGSIDE_CASTLE:
-			case MoveType.QUEENSIDE_CASTLE:
-				return this._undoCastling();
-
-			default:
-				break;
-		}
-	}
-
-	private _undoCapture(capturedPiece: ChessPiece) {
-		this.chess.place(capturedPiece, capturedPiece.square);
-	}
-
-	private _undoCastling() {
-		if (this.result.type === MoveType.KINGSIDE_CASTLE) {
-			const rook = this.chess.takeOut(this.result.from, 1);
-
-			if (rook) {
-				this.chess.place(rook, this.result.from, 3);
-			}
-
-			return;
-		}
-
-		const rook = this.chess.takeOut(this.result.from, -1);
-
-		if (rook) {
-			this.chess.place(rook, this.result.from, -4);
-		}
-	}
-}
-
-export default function makeMove(chess: Chess, options: ChessMoveOptions): ChessMove {
+export function makeMove(chess: Chess, options: ChessMoveOptions): ChessMoveResult | false {
 	const from = chess.square(options.from);
 	const to = chess.square(options.to);
 	let piece = from?.piece;
 
-	const result: ChessMoveResult = {
-		type: MoveType.INVALID,
-		from: options.from,
-		to: options.to,
-		piece
-	};
-
-	const move = new ChessMove(chess, result);
-
 	if (!from || !piece || !to || !piece.square) {
-		return move;
+		return false;
 	}
 
-	result.type = options.type;
+	const result: ChessMoveResult = {
+		type: options.type,
+		from: from.name,
+		to: to.name,
+		piece,
+		captured: null,
+	};
 
 	switch (result.type) {
 		case MoveType.EN_PASSANT: {
-			const capturedPiece = chess.takeOut(chess.history.at(-1)?.result.piece?.square as ChessPosition);
+			const capturedPiece = chess.takeOut(chess.history.at(-1)?.piece?.square as ChessPosition);
 
 			if (capturedPiece) {
-				result.capturedPiece = capturedPiece;
+				result.captured = capturedPiece;
 			}
 			break;
 		}
@@ -129,7 +70,7 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 			const capturedPiece = chess.takeOut(options.to);
 
 			if (capturedPiece) {
-				result.capturedPiece = capturedPiece;
+				result.captured = capturedPiece;
 			}
 			break;
 		}
@@ -166,7 +107,70 @@ export default function makeMove(chess: Chess, options: ChessMoveOptions): Chess
 
 	chess.takeOut(options.from);
 	chess.place(piece, options.to);
-	chess.history.push(move);
+	chess.history.push(result);
 
-	return move;
+	return result;
 }
+
+export function undoMove(chess: Chess): ChessMoveResult | false {
+	const move = chess.history.pop();
+
+	if (!move) {
+		return false;
+	}
+
+	const { type, piece, captured } = move;
+
+	const board = chess.board._board;
+	const from = SQUARE_MAP[move.from];
+	const to = SQUARE_MAP[move.to];
+
+	piece.square = move.from;
+	board[from].piece = piece;
+	board[to].piece = captured;
+
+	switch (type) {
+		case MoveType.EN_PASSANT: {
+			if (captured) {
+				board[SQUARE_MAP[captured.square]].piece = captured;
+			}
+
+			return move;
+		}
+
+		case MoveType.PAWN_PROMOTION: {
+			piece.type = 'p';
+			return move;
+		}
+
+		case MoveType.KINGSIDE_CASTLE: {
+			const rookSquare = board[from + 1];
+
+			if (rookSquare) {
+				board[from + 3].piece = rookSquare.piece;
+				rookSquare.piece = null;
+			}
+
+			return move;
+		}
+
+		case MoveType.QUEENSIDE_CASTLE: {
+			const rookSquare = board[from - 1];
+
+			if (rookSquare) {
+				board[from - 4].piece = rookSquare.piece;
+				rookSquare.piece = null;
+			}
+
+			return move;
+		}
+
+		default:
+			return move;
+	}
+}
+
+export default {
+	makeMove,
+	undoMove
+};
