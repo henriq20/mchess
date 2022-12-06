@@ -172,6 +172,26 @@ describe('castling', () => {
         ]);
     });
 
+    it('should not be able to castle kingside if king or rook are on incorrect squares', () => {
+        chess = new Chess('3k2r1/8/8/8/8/8/8/3K2R1 w - - 0 1');
+
+        const whiteMoves = generateMoves(chess, { color: 'white' });
+        const blackMoves = generateMoves(chess, { color: 'black' });
+        const moves = [ ...whiteMoves, ...blackMoves ];
+
+        expect(moves.filter(m => m.type === MoveType.KINGSIDE_CASTLE || m.type === MoveType.QUEENSIDE_CASTLE)).toHaveLength(0);
+    });
+
+    it('should not be able to castle queenside if king or rook are on incorrect squares', () => {
+        chess = new Chess('1r3k2/8/8/8/8/8/8/1R3K2 w - - 0 1');
+
+        const whiteMoves = generateMoves(chess, { color: 'white' });
+        const blackMoves = generateMoves(chess, { color: 'black' });
+        const moves = [ ...whiteMoves, ...blackMoves ];
+
+        expect(moves.filter(m => m.type === MoveType.KINGSIDE_CASTLE || m.type === MoveType.QUEENSIDE_CASTLE)).toHaveLength(0);
+    });
+
     it('should not be able to castle if king has moved', () => {
         chess = new Chess('r2k3r/8/8/8/8/8/8/R2K3R w KkQq - 1 1');
 
