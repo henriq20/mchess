@@ -1,8 +1,8 @@
 import Chess from './chess';
-import { MoveType } from './move';
-import { ChessPieceType } from './pieces/piece';
-import generateMoves, { PseudoMove } from './pieces/moves';
+import { ChessMove } from './move';
+import generateMoves from './pieces/moves';
 import { CHESS_POSITIONS, SQUARE_MAP } from './board/board';
+import { ChessPieceType, PawnPromotion } from './pieces/piece';
 
 const CASTLING_SQUARES: { [key: string]: { kingside: number, queenside: number } } = {
 	white: {
@@ -15,7 +15,7 @@ const CASTLING_SQUARES: { [key: string]: { kingside: number, queenside: number }
 	}
 };
 
-export function parse(chess: Chess, san: string): PseudoMove & { promoteTo?: ChessPieceType } | false {
+export function parse(chess: Chess, san: string): ChessMove | false {
 	san = stripDecorators(san);
 
 	if (san.startsWith('O-O') || san.startsWith('o-o')) {
@@ -33,7 +33,6 @@ export function parse(chess: Chess, san: string): PseudoMove & { promoteTo?: Che
 		return {
 			from: king.square,
 			to,
-			type: isKingsideCastle ? MoveType.KINGSIDE_CASTLE : MoveType.QUEENSIDE_CASTLE
 		};
 	}
 
@@ -64,12 +63,20 @@ export function parse(chess: Chess, san: string): PseudoMove & { promoteTo?: Che
 	// Ambiguious moves
 	if (possibleMoves.length > 1) {
 		// Takes the move where the 'from' position contains the disambiguator
-		return possibleMoves.find(m => m.from.indexOf(disambiguator) !== -1) || false;
+		const move = possibleMoves.find(m => m.from.indexOf(disambiguator) !== -1);
+
+		return !move ? false : {
+			from: move.from,
+			to: move.to
+		}
 	}
 
-	return !promoteTo ? possibleMoves[0] : {
-		...possibleMoves[0],
-		promoteTo: promoteTo.toLowerCase() as ChessPieceType
+	const move = possibleMoves[0];
+
+	return !promoteTo ? move : {
+		from: move.from,
+		to: move.to,
+		promoteTo: promoteTo.toLowerCase() as PawnPromotion
 	};
 }
 
