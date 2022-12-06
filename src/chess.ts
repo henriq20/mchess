@@ -137,42 +137,6 @@ export default class Chess {
 		return null;
 	}
 
-	isCheck(): boolean {
-		const king = this.kings[this.turn];
-
-		return !!king && this.isAttacked(king);
-	}
-
-	isCheckmate() {
-		const king = this.kings[this.turn];
-
-		if (!king) {
-			return false;
-		}
-
-		return this.isCheck() && !this.moves(king.square).length;
-	}
-
-	isStalemate() {
-		return !this.isCheck() && !this.moves().length;
-	}
-
-	isGameOver() {
-		return this.isCheckmate() || this.isStalemate();
-	}
-
-	isDraw() {
-		return this.isStalemate();
-	}
-
-	isAttacked(piece: ChessPiece): boolean {
-		const enemyMoves = generateMoves(this, {
-			color: piece.color === 'white' ? 'black' : 'white'
-		});
-
-		return enemyMoves.some(move => move.to === piece.square);
-	}
-
 	moves(square?: ChessPosition, legal = true): { from: ChessPosition, to: ChessPosition, type: MoveType }[] {
 		const wouldNotBeInCheck = (move: PseudoMove) => {
 			return !this._wouldBeInCheck({
@@ -208,6 +172,42 @@ export default class Chess {
 		const moves = this.moves(options.from, options.legal);
 
 		return options.to ? moves.some(move => move.to === options.to) : !!moves.length;
+	}
+
+	isCheck(): boolean {
+		const king = this.kings[this.turn];
+
+		return !!king && this.isAttacked(king);
+	}
+
+	isCheckmate() {
+		const king = this.kings[this.turn];
+
+		if (!king) {
+			return false;
+		}
+
+		return this.isCheck() && !this.moves(king.square).length;
+	}
+
+	isStalemate() {
+		return !this.isCheck() && !this.moves().length;
+	}
+
+	isGameOver() {
+		return this.isCheckmate() || this.isStalemate();
+	}
+
+	isDraw() {
+		return this.isStalemate();
+	}
+
+	isAttacked(piece: ChessPiece): boolean {
+		const enemyMoves = generateMoves(this, {
+			color: piece.color === 'white' ? 'black' : 'white'
+		});
+
+		return enemyMoves.some(move => move.to === piece.square);
 	}
 
 	clear() {

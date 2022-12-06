@@ -68,7 +68,7 @@ export function parse(chess: Chess, san: string): ChessMove | false {
 		return !move ? false : {
 			from: move.from,
 			to: move.to
-		}
+		};
 	}
 
 	const move = possibleMoves[0];
