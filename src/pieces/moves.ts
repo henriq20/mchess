@@ -192,7 +192,7 @@ function _canMoveTwoSquares(piece: ChessPiece) {
 }
 
 function _isEnPassant(chess: Chess, piece: ChessPiece, to: Square) {
-	const lastMovePiece = chess.history.at(-1)?.result.piece;
+	const lastMovePiece = chess.history.at(-1)?.piece;
 
 	return lastMovePiece &&
         lastMovePiece.type === 'p' &&

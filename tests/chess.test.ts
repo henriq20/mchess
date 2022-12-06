@@ -105,7 +105,7 @@ describe('move', () => {
         });
 
         expect(chess.history).toHaveLength(1);
-        expect(chess.history[0].result).toBe(result);
+        expect(chess.history[0]).toBe(result);
     });
 
     it('should not add the move to the history when the move is invalid', () => {

@@ -2,9 +2,9 @@ import fenParser from './fen.js';
 import sanParser from './san.js';
 import Square from './board/square.js';
 import ChessBoard from './board/board.js';
-import generateMoves from './pieces/moves.js';
-import makeMove, { ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
-import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece, PawnPromotion } from './pieces/piece.js';
+import generateMoves, { PseudoMove } from './pieces/moves.js';
+import { makeMove, undoMove, ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
+import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
 export const DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -24,7 +24,7 @@ export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
 	kings: { white: ChessPiece | null, black: ChessPiece | null };
-	history: ChessMove[];
+	history: ChessMoveResult[];
 	flags: Flags;
 
 	constructor(fen?: string) {
@@ -94,55 +94,44 @@ export default class Chess {
 		return this.board.get(square);
 	}
 
-	move(san: string, promoteTo?: PawnPromotion): ChessMoveResult | false;
-	move(options: { from: ChessPosition, to: ChessPosition }, promoteTo?: PawnPromotion): ChessMoveResult | false;
-	move(options: { from: ChessPosition, to: ChessPosition } | string, promoteTo?: PawnPromotion): ChessMoveResult | false {
-		let from: ChessPosition, to: ChessPosition;
+	move(san: string): ChessMoveResult | false;
+	move(move: ChessMove): ChessMoveResult | false;
+	move(moveOrSan: ChessMove | string): ChessMoveResult | false {
+		const move = typeof moveOrSan === 'string' ? sanParser.parse(this, moveOrSan) : moveOrSan;
 
-		if (typeof options === 'string') {
-			const move = sanParser.parse(this, options);
+		return move ? this._move(move) : false;
+	}
 
-			if (!move) {
-				return false;
+	private _move(move: ChessMove): ChessMoveResult | false {
+		const piece = this.piece(move.from);
+
+		if (!piece || piece.color !== this.turn) {
+			return false;
+		}
+
+		const legalMove = this.moves(piece.square, true).find(m => m.to === move.to);
+
+		if (legalMove) {
+			const result = makeMove(this, { ...legalMove, promoteTo: move.promoteTo });
+
+			if (result) {
+				this._changeTurn();
+				this._updateFlags(result);
 			}
 
-			from = move.from;
-			to = move.to;
-		} else {
-			from = options.from;
-			to = options.to;
+			return result;
 		}
 
-		const movingPiece = this.piece(from);
-
-		if (!movingPiece || movingPiece.color !== this.turn) {
-			return false;
-		}
-
-		const legalMove = this.moves(from).find(m => m.to === to);
-
-		if (!legalMove) {
-			return false;
-		}
-
-		const move = makeMove(this, { from, to, type: legalMove.type, promoteTo });
-
-		if (move.result.type !== MoveType.INVALID) {
-			this._changeTurn();
-			this._updateFlags(move.result);
-		}
-
-		return move.result;
+		return false;
 	}
 
 	undo(): ChessMoveResult | null {
-		const move = this.history.pop();
+		const result = undoMove(this);
 
-		if (move) {
-			move.undo();
+		if (result ) {
 			this._changeTurn();
 
-			return move.result;
+			return result;
 		}
 
 		return null;
@@ -185,25 +174,37 @@ export default class Chess {
 	}
 
 	moves(square?: ChessPosition, legal = true): { from: ChessPosition, to: ChessPosition, type: MoveType }[] {
-		const wouldNotBeInCheck = ({ from, to, type }: { from: ChessPosition, to: ChessPosition, type: MoveType }) => {
+		const wouldNotBeInCheck = (move: PseudoMove) => {
 			return !this._wouldBeInCheck({
-				from,
-				to,
-				type
+				from: move.from,
+				to: move.to,
+				type: move.type
 			});
 		};
 
-		const moves = generateMoves(this, { square }).filter(wouldNotBeInCheck);
+		const moves = generateMoves(this, { square });
 
 		return legal ? moves.filter(wouldNotBeInCheck) : moves;
 	}
 
 	moved(piece: ChessPiece | ChessPosition) {
 		piece = typeof piece !== 'string' ? piece.square : piece;
-		return this.history.some(m => m.result.piece?.square === piece);
+		return this.history.some(m => m.piece?.square === piece);
 	}
 
-	canMove(options: { from: ChessPosition,	to?: ChessPosition, legal: true }): boolean {
+	/**
+	 * Indicates whether a movement can be made.
+	 *
+	 * If the `from` parameter is omitted, it returns whether any piece from the current turn can move.
+	 * If the `to` square is omitted, it returns whether the piece on the `from` square can move at all.
+	 *
+	 * @returns `true` if the movement is legal; `false`, otherwise.
+	 */
+	canMove(options: { from?: ChessPosition, to?: ChessPosition, legal?: boolean } = {}): boolean {
+		options = Object.assign({
+			legal: true
+		}, options);
+
 		const moves = this.moves(options.from, options.legal);
 
 		return options.to ? moves.some(move => move.to === options.to) : !!moves.length;
@@ -238,11 +239,11 @@ export default class Chess {
 		}
 
 		if (this.isCheck()) {
-			result.undo();
+			undoMove(this);
 			return true;
 		}
 
-		result.undo();
+		undoMove(this);
 		return false;
 	}
 
