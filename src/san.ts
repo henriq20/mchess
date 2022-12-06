@@ -61,7 +61,7 @@ export function parse(chess: Chess, san: string): ChessMove | false {
 	}
 
 	// Ambiguious moves
-	if (possibleMoves.length > 1) {
+	if (possibleMoves.length > 1 && disambiguator) {
 		// Takes the move where the 'from' position contains the disambiguator
 		const move = possibleMoves.find(m => m.from.indexOf(disambiguator) !== -1);
 
