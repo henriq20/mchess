@@ -90,7 +90,7 @@ export function encode(chess: Chess): string {
 		return kingside + queenside;
 	}).join('') || '-';
 
-	const fullMoves = chess.history.filter(m => m.result.piece?.color === 'black').length + 1;
+	const fullMoves = chess.history.filter(m => m.piece.color === 'black').length + 1;
 
 	return `${ fen } ${ chess.turn.charAt(0) } ${ flags } - 0 ${ fullMoves }`;
 }
