@@ -334,6 +334,45 @@ describe('moves', () => {
     });
 });
 
+describe('canMove', () => {
+    it('should return true when a piece can move to the specified square', () => {
+        const chess = new Chess();
+
+        expect(chess.canMove({ from: 'a2', to: 'a4' })).toBe(true);
+        expect(chess.canMove({ from: 'e2', to: 'e4' })).toBe(true);
+    });
+
+    it('should return whether a piece can move at all if the `to` square is omitted', () => {
+        const chess = new Chess();
+
+        expect(chess.canMove({ from: 'a2' })).toBe(true);
+        expect(chess.canMove({ from: 'e2' })).toBe(true);
+        expect(chess.canMove({ from: 'a1' })).toBe(false);
+    });
+
+    it('should return whether any piece from the current turn can move if the `from` square is omitted', () => {
+        const chess = new Chess();
+
+        expect(chess.canMove()).toBe(true);
+    });
+
+    it('should return false when a piece cannot move to the specified location', () => {
+        const chess = new Chess();
+
+        expect(chess.canMove({ from: 'e7', to: 'e5' })).toBe(false);
+        expect(chess.canMove({ from: 'e7', to: 'e4' })).toBe(false);
+        expect(chess.canMove({ from: 'e2', to: 'e5' })).toBe(false);
+        expect(chess.canMove({ from: 'c1', to: 'c2' })).toBe(false);
+    });
+
+    it('should return pseudo-legal moves if the `legal` parameter is false', () => {
+        const chess = new Chess('4k1qr/8/8/8/8/8/8/4K2R w Kk - 0 1');
+
+        expect(chess.canMove({ from: 'e1', to: 'g1' })).toBe(false);
+        expect(chess.canMove({ from: 'e1', to: 'g1', legal: false })).toBe(true);
+    });
+});
+
 describe('clear', () => {
     it('should clear the board', () => {
         const chess = new Chess();
