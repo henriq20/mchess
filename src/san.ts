@@ -1,8 +1,9 @@
 import Chess from './chess';
-import { ChessMove } from './move';
+import { file, rank } from './utils';
 import generateMoves from './pieces/moves';
 import { CHESS_POSITIONS, SQUARE_MAP } from './board/board';
 import { ChessPieceType, PawnPromotion } from './pieces/piece';
+import { ChessMove, ChessMoveResult, makeMove, MoveType, undoMove } from './move';
 
 const CASTLING_SQUARES: { [key: string]: { kingside: number, queenside: number } } = {
 	white: {
@@ -80,10 +81,91 @@ export function parse(chess: Chess, san: string): ChessMove | false {
 	};
 }
 
+export function encode(move: ChessMoveResult, chess: Chess): string {
+	switch (move.type) {
+		case MoveType.KINGSIDE_CASTLE:
+			return 'O-O';
+
+		case MoveType.QUEENSIDE_CASTLE:
+			return 'O-O-O';
+
+		default: {
+			let san = move.piece.type === 'p' ? '' : move.piece.type.toUpperCase();
+
+			const result = checkAmbiguity(move, chess);
+
+			if (result.sameRank) {
+				san += move.from[0];
+			}
+
+			if (result.sameFile) {
+				san += move.from[1];
+			}
+
+			if (move.captured) {
+				san += san.length ? 'x' : move.from[0] + 'x';
+			}
+
+			san += move.to;
+
+			if (move.promotedTo) {
+				san += move.promotedTo.toUpperCase();
+			}
+
+			return san;
+		}
+	}
+}
+
+function checkAmbiguity(move: ChessMoveResult, chess: Chess) {
+	const result = {
+		sameFile: false,
+		sameRank: false
+	};
+
+	undoMove(chess);
+
+	const moves = generateMoves(chess, { piece: move.piece.type });
+	const ambiguousMoves = moves.filter(m => m.from !== move.from && m.to === move.to);
+
+	makeMove(chess, move);
+
+	if (!ambiguousMoves.length) {
+		return result;
+	}
+
+	if (ambiguousMoves.length > 1) {
+		result.sameFile = true;
+		result.sameRank = true;
+
+		return result;
+	}
+
+	const { from } = ambiguousMoves[0];
+
+	// Piece on same rank
+	if (rank(from) === rank(move.from)) {
+		result.sameRank = true;
+	}
+
+	// Piece on same file
+	if (file(from) === file(move.from)) {
+		result.sameFile = true;
+	}
+
+	// Piece on different rank and file
+	if (!result.sameRank && !result.sameFile) {
+		result.sameRank = true;
+	}
+
+	return result;
+}
+
 function stripDecorators(san: string) {
 	return san.replace(/[=+#?!]+/, '');
 }
 
 export default {
-	parse
+	parse,
+	encode
 };

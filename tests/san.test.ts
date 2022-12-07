@@ -1,6 +1,7 @@
 import Chess from '../src/chess';
-import { parse } from '../src/san';
-import { MoveType } from '../src/move';
+import { encode, parse } from '../src/san';
+import ChessPiece from '../src/pieces/piece';
+import { ChessMoveResult, MoveType } from '../src/move';
 
 describe('parse', () => {
     const cases = [
@@ -172,9 +173,264 @@ describe('parse', () => {
         },
     ];
 
-    it.each(cases)('should parse the san $san', ({ fen, san, expected }) => {
+    it.each(cases)('should parse the SAN $san', ({ fen, san, expected }) => {
         const chess = new Chess(fen);
 
         expect(parse(chess, san)).toMatchObject(expected);
+    });
+});
+
+describe('encode', () => {
+    const cases: Array<{ fen: string, move: ChessMoveResult, expected: string }> = [
+        {
+            fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            move: {
+                from: 'e2',
+                to: 'e4',
+                piece: new ChessPiece('p', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'e4'
+        },
+        {
+            fen: 'rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 1',
+            move: {
+                from: 'f1',
+                to: 'c4',
+                piece: new ChessPiece('b', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'Bc4'
+        },
+        {
+            fen: 'rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1',
+            move: {
+                from: 'e4',
+                to: 'd5',
+                piece: new ChessPiece('p', 'white'),
+                captured: new ChessPiece('p', 'black'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'exd5'
+        },
+        {
+            fen: 'rnbqkbnr/pp1ppppp/8/8/2p1P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1',
+            move: {
+                from: 'f1',
+                to: 'c4',
+                piece: new ChessPiece('b', 'white'),
+                captured: new ChessPiece('b', 'black'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'Bxc4'
+        },
+        {
+            fen: 'rnbqkbnr/ppp1pppp/8/4p3/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0 1',
+            move: {
+                from: 'e5',
+                to: 'd4',
+                piece: new ChessPiece('p', 'black'),
+                captured: new ChessPiece('p', 'white'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'exd4'
+        },
+        {
+            fen: 'rnbqkbnr/ppp1pppp/3p4/4P3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1',
+            move: {
+                from: 'e5',
+                to: 'd6',
+                piece: new ChessPiece('p', 'white'),
+                captured: new ChessPiece('p', 'black'),
+                type: MoveType.EN_PASSANT
+            },
+            expected: 'exd6'
+        },
+        {
+            fen: 'rnbqkbnr/pppppppp/8/8/8/3BPN2/PPPP1PPP/RNBQK2R w KQkq - 0 1',
+            move: {
+                from: 'e1',
+                to: 'g1',
+                piece: new ChessPiece('k', 'white'),
+                captured: null,
+                type: MoveType.KINGSIDE_CASTLE
+            },
+            expected: 'O-O'
+        },
+        {
+            fen: 'rnbqkbnr/pppppppp/8/8/8/NBP5/PPQPPPPP/R3KBNR b KQkq - 0 1',
+            move: {
+                from: 'e1',
+                to: 'c1',
+                piece: new ChessPiece('k', 'white'),
+                captured: null,
+                type: MoveType.QUEENSIDE_CASTLE
+            },
+            expected: 'O-O-O'
+        },
+        {
+            fen: '8/k4P2/8/8/8/8/K3p3/8 w - - 0 1',
+            move: {
+                from: 'f7',
+                to: 'f8',
+                piece: new ChessPiece('p', 'white'),
+                captured: null,
+                type: MoveType.PAWN_PROMOTION,
+                promotedTo: 'q'
+            },
+            expected: 'f8Q'
+        },
+        {
+            fen: '6n1/k4P2/8/8/8/8/K3p3/8 w - - 0 1',
+            move: {
+                from: 'f7',
+                to: 'g8',
+                piece: new ChessPiece('p', 'white'),
+                captured: new ChessPiece('n', 'black'),
+                type: MoveType.PAWN_PROMOTION,
+                promotedTo: 'q'
+            },
+            expected: 'fxg8Q'
+        },
+
+        // Ambiguious moves
+        {
+            fen: '4k3/8/8/8/8/8/4K3/R6R w - - 0 1',
+            move: {
+                from: 'a1',
+                to: 'd1',
+                piece: new ChessPiece('r', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'Rad1'
+        },
+        {
+            fen: '2k5/8/8/8/8/8/6K1/R6R w - - 0 1',
+            move: {
+                from: 'h1',
+                to: 'd1',
+                piece: new ChessPiece('r', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'Rhd1'
+        },
+        {
+            fen: 'k7/8/8/6N1/8/8/8/K5N1 w - - 0 1',
+            move: {
+                from: 'g5',
+                to: 'f3',
+                piece: new ChessPiece('n', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'N5f3'
+        },
+        {
+            fen: 'k7/8/8/6N1/8/8/8/K5N1 w - - 0 1',
+            move: {
+                from: 'g1',
+                to: 'f3',
+                piece: new ChessPiece('n', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'N1f3'
+        },
+        {
+            fen: 'k7/8/8/8/3N4/5p2/7N/K7 w - - 0 1',
+            move: {
+                from: 'h2',
+                to: 'f3',
+                piece: new ChessPiece('n', 'white'),
+                captured: new ChessPiece('p', 'black'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'Nhxf3'
+        },
+        {
+            fen: 'k7/8/8/6N1/4p3/6N1/8/K7 w - - 0 1',
+            move: {
+                from: 'g3',
+                to: 'e4',
+                piece: new ChessPiece('n', 'white'),
+                captured: new ChessPiece('p', 'black'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'N3xe4'
+        },
+        {
+            fen: 'k7/8/8/6N1/4p3/6N1/8/K7 w - - 0 1',
+            move: {
+                from: 'g5',
+                to: 'e4',
+                piece: new ChessPiece('n', 'white'),
+                captured: new ChessPiece('p', 'black'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'N5xe4'
+        },
+        {
+            fen: '1k1r3r/8/8/R7/4Q2Q/8/8/RK5Q w - - 0 1',
+            move: {
+                from: 'h4',
+                to: 'e1',
+                piece: new ChessPiece('q', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'Qh4e1'
+        },
+        {
+            fen: '1k1r3r/8/8/R7/4Q2Q/8/8/RK5Q w - - 0 1',
+            move: {
+                from: 'e4',
+                to: 'e1',
+                piece: new ChessPiece('q', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'Qe4e1'
+        },
+        {
+            fen: '1k1r3r/8/8/R7/4Q2Q/8/8/RK5Q w - - 0 1',
+            move: {
+                from: 'h1',
+                to: 'e1',
+                piece: new ChessPiece('q', 'white'),
+                captured: null,
+                type: MoveType.QUIET
+            },
+            expected: 'Qh1e1'
+        },
+        {
+            fen: '1k1r3r/8/8/R7/4Q2Q/8/8/RK2p2Q w - - 0 1',
+            move: {
+                from: 'h4',
+                to: 'e1',
+                piece: new ChessPiece('q', 'white'),
+                captured: new ChessPiece('p', 'black'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'Qh4xe1'
+        },
+        {
+            fen: '1k1r3r/8/8/R7/4Q2Q/8/8/RK2p2Q w - - 0 1',
+            move: {
+                from: 'e4',
+                to: 'e1',
+                piece: new ChessPiece('q', 'white'),
+                captured: new ChessPiece('p', 'black'),
+                type: MoveType.CAPTURE
+            },
+            expected: 'Qe4xe1'
+        },
+    ];
+
+    it.each(cases)('should convert the move $move.from-$move.to to $expected', ({ fen, move, expected }) => {
+        expect(encode(move, new Chess(fen))).toBe(expected);
     });
 });
