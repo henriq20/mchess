@@ -19,7 +19,11 @@ const FLAGS_MAP: { [key: string]: { kingsideCastling: string, queensideCastling:
 	},
 };
 
-export function parse(fen: string): FENResult {
+export function parse(fen: string): FENResult | null {
+	if (!isValid(fen)) {
+		return null;
+	}
+
 	const [ placement, turn, castlingRights ] = fen.split(/\s+/);
 
 	const pieces: Array<[ChessPieceSymbol, ChessPosition]> = [];
@@ -97,6 +101,10 @@ export function encode(chess: Chess): string {
 
 function isDigit(char = '') {
 	return /^[1-9]$/.test(char);
+}
+
+function isValid(fen: string): boolean {
+	return /(?:(?:\/|^)[prnbqkPRNBQK1-8]+)+\s+[wb]\s+[KkQq-]{1,4}\s+(?:-|[a-h][1-8])\s+\d+\s+\d+$/g.test(fen);
 }
 
 export default {

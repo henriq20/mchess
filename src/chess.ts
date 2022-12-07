@@ -1,5 +1,5 @@
-import fenParser from './fen.js';
 import sanParser from './san.js';
+import fenParser from './fen.js';
 import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves, { PseudoMove } from './pieces/moves.js';
@@ -47,6 +47,10 @@ export default class Chess {
 
 	setup(fen: string) {
 		const result = fenParser.parse(fen);
+
+		if (!result) {
+			return;
+		}
 
 		for (const [ symbol, position ] of result.pieces) {
 			this._place(createPiece(symbol), position);

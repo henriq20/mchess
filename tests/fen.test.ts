@@ -238,33 +238,17 @@ describe('decode', () => {
                     }
                 }
             }
-        },
-        {
-            fen: '',
-            expected: {
-                turn: 'white',
-                pieces: [],
-                flags: {
-                    white: {
-                        kingsideCastling: false,
-                        queensideCastling: false
-                    },
-                    black: {
-                        kingsideCastling: false,
-                        queensideCastling: false
-                    }
-                }
-            }
         }
     ]
 
     it.each(cases)('should parse the FEN $fen', ({ fen, expected }) => {
         const result = parse(fen);
 
-        expect(result.turn).toBe(expected.turn);
-        expect(result.flags).toMatchObject(expected.flags);
-        expect(result.pieces).toHaveLength(expected.pieces.length);
-        expect(result.pieces).toEqual(expect.arrayContaining(expected.pieces));
+
+        expect(result?.turn).toBe(expected.turn);
+        expect(result?.flags).toMatchObject(expected.flags);
+        expect(result?.pieces).toHaveLength(expected.pieces.length);
+        expect(result?.pieces).toEqual(expect.arrayContaining(expected.pieces));
     });
 });
 
