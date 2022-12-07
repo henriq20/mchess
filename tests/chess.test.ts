@@ -231,6 +231,12 @@ describe('isCheckmate', () => {
 
         expect(chess.isCheckmate()).toBe(true);
     });
+
+    it('should not be checkmate if a piece can save the king', () => {
+        const chess = new Chess('rnbqkbnr/ppp1pppp/8/1B1p4/4P3/8/PPPP1PPP/RNBQK1NR b KQkq - 1 2');
+
+        expect(chess.isCheckmate()).toBe(false);
+    });
 });
 
 describe('isStalemate', () => {

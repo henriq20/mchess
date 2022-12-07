@@ -181,13 +181,7 @@ export default class Chess {
 	}
 
 	isCheckmate() {
-		const king = this.kings[this.turn];
-
-		if (!king) {
-			return false;
-		}
-
-		return this.isCheck() && !this.moves(king.square).length;
+		return this.isCheck() && !this.moves().length;
 	}
 
 	isStalemate() {
