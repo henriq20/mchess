@@ -246,6 +246,7 @@ export default class Chess {
 		this.history = [];
 		this.turn = 'white';
 		this.kings = { white: null, black: null };
+		this.enPassantSquare = null;
 	}
 
 	reset() {
