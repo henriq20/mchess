@@ -30,12 +30,14 @@ export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
 	kings: { white: ChessPiece | null, black: ChessPiece | null };
+	enPassantSquare: ChessPosition | null;
 	history: ChessMoveResult[];
 	flags: Flags;
 
 	constructor(fen?: string) {
 		this.board = new ChessBoard();
 		this.kings = { white: null, black: null };
+		this.enPassantSquare = null;
 		this.history = [];
 		this.turn = 'white';
 		this.flags = {
@@ -127,6 +129,7 @@ export default class Chess {
 			if (result) {
 				this._changeTurn();
 				this._updateFlags(result);
+				this._updateEnPassantSquare(result);
 			}
 
 			return result;
@@ -284,5 +287,15 @@ export default class Chess {
 		if (moveResult.type === MoveType.QUEENSIDE_CASTLE) {
 			this.flags[moveResult.piece.color].queensideCastling = false;
 		}
+	}
+
+	private _updateEnPassantSquare(move: ChessMoveResult) {
+		if (move.type === MoveType.BIG_PAWN) {
+			const offset = move.piece.color === 'white' ? 10 : -10;
+			this.enPassantSquare = this.board.at(move.piece.square, offset)?.name || null;
+			return;
+		}
+
+		this.enPassantSquare = null;
 	}
 }

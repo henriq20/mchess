@@ -182,6 +182,32 @@ describe('move', () => {
         expect(chess.flags.white.kingsideCastling).toBe(true);
         expect(chess.flags.black.kingsideCastling).toBe(true);
     });
+
+    it('should update the en passant square after a white pawn moves two squares', () => {
+        const chess = new Chess();
+
+        chess.move('e4');
+
+        expect(chess.enPassantSquare).toBe('e3');
+    });
+
+    it('should update the en passant square after a black pawn moves two squares', () => {
+        const chess = new Chess();
+
+        chess.move('e4');
+        chess.move('e5');
+
+        expect(chess.enPassantSquare).toBe('e6');
+    });
+
+    it('should set the en passant square to null if the last move was not a big pawn', () => {
+        const chess = new Chess();
+
+        chess.move('e4');
+        chess.move('e6')
+
+        expect(chess.enPassantSquare).toBe(null);
+    });
 });
 
 describe('isCheck', () => {
