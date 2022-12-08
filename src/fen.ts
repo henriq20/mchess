@@ -5,7 +5,8 @@ import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece
 export type FENResult = {
 	pieces: Array<[ChessPieceSymbol, ChessPosition]>
 	turn: ChessPieceColor,
-	flags: Flags
+	flags: Flags,
+	enPassantSquare: ChessPosition | null
 };
 
 const FLAGS_MAP: { [key: string]: { kingsideCastling: string, queensideCastling: string } } = {
@@ -24,7 +25,7 @@ export function parse(fen: string): FENResult | null {
 		return null;
 	}
 
-	const [ placement, turn, castlingRights ] = fen.split(/\s+/);
+	const [ placement, turn, castlingRights, enPassantSquare ] = fen.split(/\s+/);
 
 	const pieces: Array<[ChessPieceSymbol, ChessPosition]> = [];
 
@@ -48,6 +49,7 @@ export function parse(fen: string): FENResult | null {
 	return {
 		pieces,
 		turn: turn === 'b' ? 'black' : 'white',
+		enPassantSquare: enPassantSquare === '-' ? null : enPassantSquare as ChessPosition,
 		flags: {
 			white: {
 				kingsideCastling: castlingRights?.indexOf('K') >= 0,

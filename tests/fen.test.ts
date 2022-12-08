@@ -238,12 +238,37 @@ describe('decode', () => {
                     }
                 }
             }
+        },
+        {
+            fen: 'k7/8/8/8/4P3/8/8/K7 b - e3 0 1',
+            expected: {
+                turn: 'black',
+                enPassantSquare: 'e3',
+                pieces: [
+                    [ 'P', 'e4' ],
+                    [ 'K', 'a1' ],
+                    [ 'k', 'a8' ],
+                ],
+                flags: {
+                    white: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    },
+                    black: {
+                        kingsideCastling: false,
+                        queensideCastling: false
+                    }
+                }
+            }
         }
     ]
 
     it.each(cases)('should parse the FEN $fen', ({ fen, expected }) => {
         const result = parse(fen);
 
+        if (expected.enPassantSquare) {
+            expect(result?.enPassantSquare).toEqual(expected.enPassantSquare);
+        }
 
         expect(result?.turn).toBe(expected.turn);
         expect(result?.flags).toMatchObject(expected.flags);

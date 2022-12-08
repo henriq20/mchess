@@ -66,6 +66,7 @@ export default class Chess {
 
 		this.turn = result.turn;
 		this.flags = result.flags;
+		this.enPassantSquare = result.enPassantSquare;
 	}
 
 	place(piece: ChessPieceSymbol | ChessPiece, square: ChessPosition, offset?: number): ChessPiece {
