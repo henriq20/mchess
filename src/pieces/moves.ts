@@ -2,7 +2,7 @@ import Chess from '../chess';
 import { MoveType } from '../move';
 import Square from '../board/square';
 import { MAILBOX, MAILBOX64, SQUARE_MAP } from '../board/board';
-import ChessPiece, { ChessPieceColor, ChessPieceType, ChessPosition } from './piece';
+import ChessPiece, { ChessPieceColor, ChessPosition } from './piece';
 
 export type PseudoMove = {
 	from: ChessPosition,
@@ -34,7 +34,7 @@ const PAWN_OFFSETS = {
 type GenerateMovesOptions = {
 	square?: ChessPosition,
 	color?: ChessPieceColor,
-	piece?: ChessPieceType
+	piece?: string
 };
 
 export default function generateMoves(chess: Chess, options: GenerateMovesOptions = {}): PseudoMove[] {
@@ -55,17 +55,15 @@ export default function generateMoves(chess: Chess, options: GenerateMovesOption
 		firstSquare = lastSquare = SQUARE_MAP[options.square];
 	}
 
-	if (!options.color) {
-		options.color = chess.turn;
-	}
+	const { color, piece: pieceTypes } = Object.assign({
+		color: chess.turn,
+		piece: 'pnrbqk'
+	}, options);
 
 	for (let i = firstSquare; i <= lastSquare; i++) {
 		const square = chess.board._board[i];
 
-		if (
-			!square.piece ||
-			square.piece.color !== options.color ||
-			(options.piece && square.piece.type !== options.piece)) {
+		if (square.piece?.color !== color || pieceTypes.indexOf(square.piece.type) === -1) {
 			continue;
 		}
 
