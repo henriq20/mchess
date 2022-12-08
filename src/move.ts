@@ -15,7 +15,8 @@ export enum MoveType {
 	EN_PASSANT = 3,
 	KINGSIDE_CASTLE = 4,
 	QUEENSIDE_CASTLE = 5,
-	PAWN_PROMOTION = 6
+	PAWN_PROMOTION = 6,
+	BIG_PAWN = 7
 }
 
 export type ChessMove = {

@@ -20,6 +20,12 @@ export type Flags = {
 	}
 };
 
+export type MovesOptions = {
+	square?: ChessPosition,
+	legal?: boolean,
+	san?: boolean
+};
+
 export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
@@ -113,7 +119,7 @@ export default class Chess {
 			return false;
 		}
 
-		const legalMove = this.moves(piece.square, true).find(m => m.to === move.to);
+		const legalMove = this.moves({ square: piece.square, legal: true }).find(m => m.to === move.to);
 
 		if (legalMove) {
 			const result = makeMove(this, { ...legalMove, promoteTo: move.promoteTo });
@@ -141,7 +147,21 @@ export default class Chess {
 		return null;
 	}
 
-	moves(square?: ChessPosition, legal = true): { from: ChessPosition, to: ChessPosition, type: MoveType }[] {
+	moves(square: ChessPosition): { from: ChessPosition, to: ChessPosition, type: MoveType }[];
+	moves(options?: MovesOptions & { san?: false }): { from: ChessPosition, to: ChessPosition, type: MoveType }[];
+	moves(options?:  MovesOptions & { san?: true }): string[];
+	moves(optionsOrSquare: ChessPosition | MovesOptions = { legal: true }): { from: ChessPosition, to: ChessPosition, type: MoveType }[] | string[] {
+		if (typeof optionsOrSquare === 'string') {
+			return this._moves({
+				square: optionsOrSquare,
+				legal: true
+			});
+		}
+
+		return this._moves(optionsOrSquare);
+	}
+
+	private _moves(options: MovesOptions = { legal: true }): { from: ChessPosition, to: ChessPosition, type: MoveType }[] | string[] {
 		const wouldNotBeInCheck = (move: PseudoMove) => {
 			return !this._wouldBeInCheck({
 				from: move.from,
@@ -150,9 +170,19 @@ export default class Chess {
 			});
 		};
 
-		const moves = generateMoves(this, { square });
+		let moves = [];
 
-		return legal ? moves.filter(wouldNotBeInCheck) : moves;
+		moves = generateMoves(this, { square: options.square });
+
+		if (options.legal) {
+			moves = moves.filter(wouldNotBeInCheck);
+		}
+
+		if (options.san) {
+			moves = moves.map(m => sanParser.encode(m, this));
+		}
+
+		return moves;
 	}
 
 	moved(piece: ChessPiece | ChessPosition) {
@@ -173,7 +203,7 @@ export default class Chess {
 			legal: true
 		}, options);
 
-		const moves = this.moves(options.from, options.legal);
+		const moves = this.moves({ square: options.from, legal: options.legal });
 
 		return options.to ? moves.some(move => move.to === options.to) : !!moves.length;
 	}

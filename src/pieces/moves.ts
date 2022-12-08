@@ -153,7 +153,7 @@ export default function generateMoves(chess: Chess, options: GenerateMovesOption
 				const twoSquaresForward = chess.board.at(piece.square, PAWN_OFFSETS[piece.color][1]);
 
 				if (twoSquaresForward && twoSquaresForward.empty) {
-					addMove(piece.square, twoSquaresForward.name, MoveType.QUIET);
+					addMove(piece.square, twoSquaresForward.name, MoveType.BIG_PAWN);
 				}
 			}
 		}
