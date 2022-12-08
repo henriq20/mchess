@@ -81,7 +81,7 @@ export function parse(chess: Chess, san: string): ChessMove | false {
 	};
 }
 
-export function encode(move: ChessMoveResult, chess: Chess): string {
+export function encode(move: ChessMove & { type: MoveType }, chess: Chess): string {
 	switch (move.type) {
 		case MoveType.KINGSIDE_CASTLE:
 			return 'O-O';
@@ -90,7 +90,13 @@ export function encode(move: ChessMoveResult, chess: Chess): string {
 			return 'O-O-O';
 
 		default: {
-			let san = move.piece.type === 'p' ? '' : move.piece.type.toUpperCase();
+			const piece = chess.piece(move.from);
+
+			if (!piece) {
+				return '';
+			}
+
+			let san = piece.type === 'p' ? '' : piece.type.toUpperCase();
 
 			const result = checkAmbiguity(move, chess);
 
@@ -102,14 +108,14 @@ export function encode(move: ChessMoveResult, chess: Chess): string {
 				san += move.from[1];
 			}
 
-			if (move.captured) {
+			if (chess.piece(move.to)) {
 				san += san.length ? 'x' : move.from[0] + 'x';
 			}
 
 			san += move.to;
 
-			if (move.promotedTo) {
-				san += move.promotedTo.toUpperCase();
+			if (move.type === MoveType.PAWN_PROMOTION && move.promoteTo) {
+				san += move.promoteTo.toUpperCase();
 			}
 
 			return san;
@@ -117,18 +123,14 @@ export function encode(move: ChessMoveResult, chess: Chess): string {
 	}
 }
 
-function checkAmbiguity(move: ChessMoveResult, chess: Chess) {
+function checkAmbiguity(move: ChessMove & { type: MoveType }, chess: Chess) {
 	const result = {
 		sameFile: false,
 		sameRank: false
 	};
 
-	undoMove(chess);
-
-	const moves = generateMoves(chess, { piece: move.piece.type });
+	const moves = generateMoves(chess, { piece: chess.piece(move.from)?.type });
 	const ambiguousMoves = moves.filter(m => m.from !== move.from && m.to === move.to);
-
-	makeMove(chess, move);
 
 	if (!ambiguousMoves.length) {
 		return result;

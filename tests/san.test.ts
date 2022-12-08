@@ -1,7 +1,6 @@
 import Chess from '../src/chess';
 import { encode, parse } from '../src/san';
-import ChessPiece from '../src/pieces/piece';
-import { ChessMoveResult, MoveType } from '../src/move';
+import { ChessMove, MoveType } from '../src/move';
 
 describe('parse', () => {
     const cases = [
@@ -181,14 +180,12 @@ describe('parse', () => {
 });
 
 describe('encode', () => {
-    const cases: Array<{ fen: string, move: ChessMoveResult, expected: string }> = [
+    const cases: Array<{ fen: string, move: ChessMove & { type: MoveType }, expected: string }> = [
         {
             fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             move: {
                 from: 'e2',
                 to: 'e4',
-                piece: new ChessPiece('p', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'e4'
@@ -198,8 +195,6 @@ describe('encode', () => {
             move: {
                 from: 'f1',
                 to: 'c4',
-                piece: new ChessPiece('b', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'Bc4'
@@ -209,8 +204,6 @@ describe('encode', () => {
             move: {
                 from: 'e4',
                 to: 'd5',
-                piece: new ChessPiece('p', 'white'),
-                captured: new ChessPiece('p', 'black'),
                 type: MoveType.CAPTURE
             },
             expected: 'exd5'
@@ -220,8 +213,6 @@ describe('encode', () => {
             move: {
                 from: 'f1',
                 to: 'c4',
-                piece: new ChessPiece('b', 'white'),
-                captured: new ChessPiece('b', 'black'),
                 type: MoveType.CAPTURE
             },
             expected: 'Bxc4'
@@ -231,8 +222,6 @@ describe('encode', () => {
             move: {
                 from: 'e5',
                 to: 'd4',
-                piece: new ChessPiece('p', 'black'),
-                captured: new ChessPiece('p', 'white'),
                 type: MoveType.CAPTURE
             },
             expected: 'exd4'
@@ -242,8 +231,6 @@ describe('encode', () => {
             move: {
                 from: 'e5',
                 to: 'd6',
-                piece: new ChessPiece('p', 'white'),
-                captured: new ChessPiece('p', 'black'),
                 type: MoveType.EN_PASSANT
             },
             expected: 'exd6'
@@ -253,8 +240,6 @@ describe('encode', () => {
             move: {
                 from: 'e1',
                 to: 'g1',
-                piece: new ChessPiece('k', 'white'),
-                captured: null,
                 type: MoveType.KINGSIDE_CASTLE
             },
             expected: 'O-O'
@@ -264,8 +249,6 @@ describe('encode', () => {
             move: {
                 from: 'e1',
                 to: 'c1',
-                piece: new ChessPiece('k', 'white'),
-                captured: null,
                 type: MoveType.QUEENSIDE_CASTLE
             },
             expected: 'O-O-O'
@@ -275,10 +258,8 @@ describe('encode', () => {
             move: {
                 from: 'f7',
                 to: 'f8',
-                piece: new ChessPiece('p', 'white'),
-                captured: null,
                 type: MoveType.PAWN_PROMOTION,
-                promotedTo: 'q'
+                promoteTo: 'q'
             },
             expected: 'f8Q'
         },
@@ -287,10 +268,8 @@ describe('encode', () => {
             move: {
                 from: 'f7',
                 to: 'g8',
-                piece: new ChessPiece('p', 'white'),
-                captured: new ChessPiece('n', 'black'),
+                promoteTo: 'q',
                 type: MoveType.PAWN_PROMOTION,
-                promotedTo: 'q'
             },
             expected: 'fxg8Q'
         },
@@ -301,8 +280,6 @@ describe('encode', () => {
             move: {
                 from: 'a1',
                 to: 'd1',
-                piece: new ChessPiece('r', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'Rad1'
@@ -312,8 +289,6 @@ describe('encode', () => {
             move: {
                 from: 'h1',
                 to: 'd1',
-                piece: new ChessPiece('r', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'Rhd1'
@@ -323,8 +298,6 @@ describe('encode', () => {
             move: {
                 from: 'g5',
                 to: 'f3',
-                piece: new ChessPiece('n', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'N5f3'
@@ -334,8 +307,6 @@ describe('encode', () => {
             move: {
                 from: 'g1',
                 to: 'f3',
-                piece: new ChessPiece('n', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'N1f3'
@@ -345,8 +316,6 @@ describe('encode', () => {
             move: {
                 from: 'h2',
                 to: 'f3',
-                piece: new ChessPiece('n', 'white'),
-                captured: new ChessPiece('p', 'black'),
                 type: MoveType.CAPTURE
             },
             expected: 'Nhxf3'
@@ -356,8 +325,6 @@ describe('encode', () => {
             move: {
                 from: 'g3',
                 to: 'e4',
-                piece: new ChessPiece('n', 'white'),
-                captured: new ChessPiece('p', 'black'),
                 type: MoveType.CAPTURE
             },
             expected: 'N3xe4'
@@ -367,8 +334,6 @@ describe('encode', () => {
             move: {
                 from: 'g5',
                 to: 'e4',
-                piece: new ChessPiece('n', 'white'),
-                captured: new ChessPiece('p', 'black'),
                 type: MoveType.CAPTURE
             },
             expected: 'N5xe4'
@@ -378,8 +343,6 @@ describe('encode', () => {
             move: {
                 from: 'h4',
                 to: 'e1',
-                piece: new ChessPiece('q', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'Qh4e1'
@@ -389,8 +352,6 @@ describe('encode', () => {
             move: {
                 from: 'e4',
                 to: 'e1',
-                piece: new ChessPiece('q', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'Qe4e1'
@@ -400,8 +361,6 @@ describe('encode', () => {
             move: {
                 from: 'h1',
                 to: 'e1',
-                piece: new ChessPiece('q', 'white'),
-                captured: null,
                 type: MoveType.QUIET
             },
             expected: 'Qh1e1'
@@ -411,8 +370,6 @@ describe('encode', () => {
             move: {
                 from: 'h4',
                 to: 'e1',
-                piece: new ChessPiece('q', 'white'),
-                captured: new ChessPiece('p', 'black'),
                 type: MoveType.CAPTURE
             },
             expected: 'Qh4xe1'
@@ -422,8 +379,6 @@ describe('encode', () => {
             move: {
                 from: 'e4',
                 to: 'e1',
-                piece: new ChessPiece('q', 'white'),
-                captured: new ChessPiece('p', 'black'),
                 type: MoveType.CAPTURE
             },
             expected: 'Qe4xe1'
