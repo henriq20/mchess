@@ -133,6 +133,7 @@ export function undoMove(chess: Chess): ChessMoveResult | false {
 	switch (type) {
 		case MoveType.EN_PASSANT: {
 			if (captured) {
+				board[to].piece = null;
 				board[SQUARE_MAP[captured.square]].piece = captured;
 			}
 
