@@ -15,22 +15,22 @@ describe('quiet', () => {
 
         expect(moves).toHaveLength(20);
         expect(moves).toEqual(expect.arrayContaining([
-            { from: 'a2', to: 'a4', type: MoveType.QUIET },
+            { from: 'a2', to: 'a4', type: MoveType.BIG_PAWN },
             { from: 'a2', to: 'a3', type: MoveType.QUIET },
             { from: 'b2', to: 'b3', type: MoveType.QUIET },
-            { from: 'b2', to: 'b4', type: MoveType.QUIET },
+            { from: 'b2', to: 'b4', type: MoveType.BIG_PAWN },
             { from: 'c2', to: 'c3', type: MoveType.QUIET },
-            { from: 'c2', to: 'c4', type: MoveType.QUIET },
+            { from: 'c2', to: 'c4', type: MoveType.BIG_PAWN },
             { from: 'd2', to: 'd3', type: MoveType.QUIET },
-            { from: 'd2', to: 'd4', type: MoveType.QUIET },
+            { from: 'd2', to: 'd4', type: MoveType.BIG_PAWN },
             { from: 'e2', to: 'e3', type: MoveType.QUIET },
-            { from: 'e2', to: 'e4', type: MoveType.QUIET },
+            { from: 'e2', to: 'e4', type: MoveType.BIG_PAWN },
             { from: 'f2', to: 'f3', type: MoveType.QUIET },
-            { from: 'f2', to: 'f4', type: MoveType.QUIET },
+            { from: 'f2', to: 'f4', type: MoveType.BIG_PAWN },
             { from: 'g2', to: 'g3', type: MoveType.QUIET },
-            { from: 'g2', to: 'g4', type: MoveType.QUIET },
+            { from: 'g2', to: 'g4', type: MoveType.BIG_PAWN },
             { from: 'h2', to: 'h3', type: MoveType.QUIET },
-            { from: 'h2', to: 'h4', type: MoveType.QUIET },
+            { from: 'h2', to: 'h4', type: MoveType.BIG_PAWN },
             { from: 'b1', to: 'a3', type: MoveType.QUIET },
             { from: 'b1', to: 'c3', type: MoveType.QUIET },
             { from: 'g1', to: 'f3', type: MoveType.QUIET },
@@ -48,21 +48,21 @@ describe('quiet', () => {
             { from: 'g8', to: 'f6', type: MoveType.QUIET },
             { from: 'g8', to: 'h6', type: MoveType.QUIET },
             { from: 'a7', to: 'a6', type: MoveType.QUIET },
-            { from: 'a7', to: 'a5', type: MoveType.QUIET },
+            { from: 'a7', to: 'a5', type: MoveType.BIG_PAWN },
             { from: 'b7', to: 'b6', type: MoveType.QUIET },
-            { from: 'b7', to: 'b5', type: MoveType.QUIET },
+            { from: 'b7', to: 'b5', type: MoveType.BIG_PAWN },
             { from: 'c7', to: 'c6', type: MoveType.QUIET },
-            { from: 'c7', to: 'c5', type: MoveType.QUIET },
+            { from: 'c7', to: 'c5', type: MoveType.BIG_PAWN },
             { from: 'd7', to: 'd6', type: MoveType.QUIET },
-            { from: 'd7', to: 'd5', type: MoveType.QUIET },
+            { from: 'd7', to: 'd5', type: MoveType.BIG_PAWN },
             { from: 'e7', to: 'e6', type: MoveType.QUIET },
-            { from: 'e7', to: 'e5', type: MoveType.QUIET },
+            { from: 'e7', to: 'e5', type: MoveType.BIG_PAWN },
             { from: 'f7', to: 'f6', type: MoveType.QUIET },
-            { from: 'f7', to: 'f5', type: MoveType.QUIET },
+            { from: 'f7', to: 'f5', type: MoveType.BIG_PAWN },
             { from: 'g7', to: 'g6', type: MoveType.QUIET },
-            { from: 'g7', to: 'g5', type: MoveType.QUIET },
+            { from: 'g7', to: 'g5', type: MoveType.BIG_PAWN },
             { from: 'h7', to: 'h6', type: MoveType.QUIET },
-            { from: 'h7', to: 'h5', type: MoveType.QUIET }
+            { from: 'h7', to: 'h5', type: MoveType.BIG_PAWN }
         ]));
     });
 
@@ -72,21 +72,21 @@ describe('quiet', () => {
         expect(moves).toHaveLength(16);
         expect(moves).toEqual(expect.arrayContaining([
             { from: 'a2', to: 'a3', type: MoveType.QUIET },
-            { from: 'a2', to: 'a4', type: MoveType.QUIET },
+            { from: 'a2', to: 'a4', type: MoveType.BIG_PAWN },
             { from: 'b2', to: 'b3', type: MoveType.QUIET },
-            { from: 'b2', to: 'b4', type: MoveType.QUIET },
+            { from: 'b2', to: 'b4', type: MoveType.BIG_PAWN },
             { from: 'c2', to: 'c3', type: MoveType.QUIET },
-            { from: 'c2', to: 'c4', type: MoveType.QUIET },
+            { from: 'c2', to: 'c4', type: MoveType.BIG_PAWN },
             { from: 'd2', to: 'd3', type: MoveType.QUIET },
-            { from: 'd2', to: 'd4', type: MoveType.QUIET },
+            { from: 'd2', to: 'd4', type: MoveType.BIG_PAWN },
             { from: 'e2', to: 'e3', type: MoveType.QUIET },
-            { from: 'e2', to: 'e4', type: MoveType.QUIET },
+            { from: 'e2', to: 'e4', type: MoveType.BIG_PAWN },
             { from: 'f2', to: 'f3', type: MoveType.QUIET },
-            { from: 'f2', to: 'f4', type: MoveType.QUIET },
+            { from: 'f2', to: 'f4', type: MoveType.BIG_PAWN },
             { from: 'g2', to: 'g3', type: MoveType.QUIET },
-            { from: 'g2', to: 'g4', type: MoveType.QUIET },
+            { from: 'g2', to: 'g4', type: MoveType.BIG_PAWN },
             { from: 'h2', to: 'h3', type: MoveType.QUIET },
-            { from: 'h2', to: 'h4', type: MoveType.QUIET }
+            { from: 'h2', to: 'h4', type: MoveType.BIG_PAWN }
         ]));
     });
 });
