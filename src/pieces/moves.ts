@@ -1,6 +1,6 @@
 import Chess from '../chess';
+import { rank } from '../utils';
 import { MoveType } from '../move';
-import Square from '../board/square';
 import { MAILBOX, MAILBOX64, SQUARE_MAP } from '../board/board';
 import ChessPiece, { ChessPieceColor, ChessPosition } from './piece';
 
@@ -173,9 +173,7 @@ export default function generateMoves(chess: Chess, options: GenerateMovesOption
 				continue;
 			}
 
-			const enPassantSquare = chess.board.at(piece.square, offset + (Math.sign(offset) * -10));
-
-			if (enPassantSquare && _isEnPassant(chess, piece, enPassantSquare)) {
+			if (square.name === chess.enPassantSquare) {
 				addMove(piece.square, square.name, MoveType.EN_PASSANT);
 			}
 		}
@@ -185,15 +183,6 @@ export default function generateMoves(chess: Chess, options: GenerateMovesOption
 }
 
 function _canMoveTwoSquares(piece: ChessPiece) {
-	return (piece.color === 'white' && piece.square[1] === '2') ||
-        (piece.color === 'black' && piece.square[1] === '7');
-}
-
-function _isEnPassant(chess: Chess, piece: ChessPiece, to: Square) {
-	const lastMovePiece = chess.history.at(-1)?.piece;
-
-	return lastMovePiece &&
-        lastMovePiece.type === 'p' &&
-        lastMovePiece.color !== piece.color &&
-        to.piece === lastMovePiece;
+	return (piece.color === 'white' && rank(piece.square) === '2') ||
+        (piece.color === 'black' && rank(piece.square) === '7');
 }
