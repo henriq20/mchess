@@ -96,7 +96,7 @@ export function encode(chess: Chess): string {
 
 	const fullMoves = chess.history.filter(m => m.piece.color === 'black').length + 1;
 
-	return `${ fen } ${ chess.turn.charAt(0) } ${ flags } - 0 ${ fullMoves }`;
+	return `${ fen } ${ chess.turn.charAt(0) } ${ flags } ${ chess.enPassantSquare || '-' } 0 ${ fullMoves }`;
 }
 
 function isDigit(char = '') {
