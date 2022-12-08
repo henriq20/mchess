@@ -1,9 +1,9 @@
 import Chess from './chess';
 import { file, rank } from './utils';
 import generateMoves from './pieces/moves';
+import { ChessMove, MoveType } from './move';
 import { CHESS_POSITIONS, SQUARE_MAP } from './board/board';
 import { ChessPieceType, PawnPromotion } from './pieces/piece';
-import { ChessMove, ChessMoveResult, makeMove, MoveType, undoMove } from './move';
 
 const CASTLING_SQUARES: { [key: string]: { kingside: number, queenside: number } } = {
 	white: {
@@ -37,7 +37,7 @@ export function parse(chess: Chess, san: string): ChessMove | false {
 		};
 	}
 
-	const matches = /([nbqkrNBQKR])?([a-h1-8][1-8]?)?x?([a-h][1-8])([nbqrNBQR])?/g.exec(san);
+	const matches = /([NBQKR])?([a-h1-8][1-8]?)?x?([a-h][1-8])([NBQR])?/g.exec(san);
 
 	if (!matches) {
 		return false;
