@@ -69,6 +69,8 @@ while (!chess.isGameOver()) {
 }
 ```
 
+![Screenshot of a chessboard running in the terminal](media/board.png)
+
 ## API
 
 #### constructor
