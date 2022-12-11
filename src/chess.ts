@@ -1,5 +1,6 @@
 import sanParser from './san.js';
 import fenParser from './fen.js';
+import { occupied } from './utils.js';
 import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves, { PseudoMove } from './pieces/moves.js';
@@ -22,16 +23,22 @@ export type Flags = {
 
 export type MovesOptions = {
 	square?: ChessPosition,
-	legal?: boolean,
 	san?: boolean
 };
+
+export type State = {
+	move: ChessMoveResult,
+	turn: ChessPieceColor
+};
+
+export type ChessHistory = State[];
 
 export default class Chess {
 	board: ChessBoard;
 	turn: ChessPieceColor;
 	kings: { white: ChessPiece | null, black: ChessPiece | null };
 	enPassantSquare: ChessPosition | null;
-	history: ChessMoveResult[];
+	history: ChessHistory;
 	flags: Flags;
 
 	constructor(fen?: string) {
@@ -92,7 +99,7 @@ export default class Chess {
 	takeOut(square: ChessPosition, offset?: number): ChessPiece | null {
 		const squareWithPieceToRemove = offset ? this.board.at(square, offset) : this.square(square);
 
-		if (!squareWithPieceToRemove || squareWithPieceToRemove.empty) {
+		if (!occupied(squareWithPieceToRemove)) {
 			return null;
 		}
 
@@ -122,15 +129,16 @@ export default class Chess {
 			return false;
 		}
 
-		const legalMove = this.moves({ square: piece.square, legal: true }).find(m => m.to === move.to);
+		const legalMove = this.moves({ square: piece.square }).find(m => m.to === move.to);
 
 		if (legalMove) {
 			const result = makeMove(this, { ...legalMove, promoteTo: move.promoteTo });
+			const state = this.history.at(-1);
 
-			if (result) {
+			if (result && state) {
 				this._changeTurn();
-				this._updateFlags(result);
-				this._updateEnPassantSquare(result);
+				this._updateFlags(state);
+				this._updateEnPassantSquare(state);
 			}
 
 			return result;
@@ -154,7 +162,7 @@ export default class Chess {
 	moves(square: ChessPosition): { from: ChessPosition, to: ChessPosition, type: MoveType }[];
 	moves(options?: MovesOptions & { san?: false }): { from: ChessPosition, to: ChessPosition, type: MoveType }[];
 	moves(options?:  MovesOptions & { san?: true }): string[];
-	moves(optionsOrSquare: ChessPosition | MovesOptions = { legal: true }): { from: ChessPosition, to: ChessPosition, type: MoveType }[] | string[] {
+	moves(optionsOrSquare: ChessPosition | MovesOptions = {}): { from: ChessPosition, to: ChessPosition, type: MoveType }[] | string[] {
 		if (typeof optionsOrSquare === 'string') {
 			return this._moves({
 				square: optionsOrSquare,
@@ -162,10 +170,10 @@ export default class Chess {
 			});
 		}
 
-		return this._moves(optionsOrSquare);
+		return this._moves({ ...optionsOrSquare, legal: true });
 	}
 
-	private _moves(options: MovesOptions = { legal: true }): { from: ChessPosition, to: ChessPosition, type: MoveType }[] | string[] {
+	private _moves(options: MovesOptions & { legal?: boolean } = { legal: true }): { from: ChessPosition, to: ChessPosition, type: MoveType }[] | string[] {
 		const wouldNotBeInCheck = (move: PseudoMove) => {
 			return !this._wouldBeInCheck({
 				from: move.from,
@@ -189,11 +197,6 @@ export default class Chess {
 		return moves;
 	}
 
-	moved(piece: ChessPiece | ChessPosition) {
-		piece = typeof piece !== 'string' ? piece.square : piece;
-		return this.history.some(m => m.piece?.square === piece);
-	}
-
 	/**
 	 * Indicates whether a movement can be made.
 	 *
@@ -202,12 +205,12 @@ export default class Chess {
 	 *
 	 * @returns `true` if the movement is legal; `false`, otherwise.
 	 */
-	canMove(options: { from?: ChessPosition, to?: ChessPosition, legal?: boolean } = {}): boolean {
+	canMove(options: { from?: ChessPosition, to?: ChessPosition } = {}): boolean {
 		options = Object.assign({
 			legal: true
 		}, options);
 
-		const moves = this.moves({ square: options.from, legal: options.legal });
+		const moves = this.moves({ square: options.from });
 
 		return options.to ? moves.some(move => move.to === options.to) : !!moves.length;
 	}
@@ -280,24 +283,24 @@ export default class Chess {
 		return false;
 	}
 
-	private _updateFlags(moveResult: ChessMoveResult) {
-		if (moveResult.type === MoveType.KINGSIDE_CASTLE) {
-			this.flags[moveResult.piece.color].kingsideCastling = false;
+	private _updateFlags(state: State) {
+		if (state.move.type === MoveType.KINGSIDE_CASTLE) {
+			this.flags[state.turn].kingsideCastling = false;
 			return;
 		}
 
-		if (moveResult.type === MoveType.QUEENSIDE_CASTLE) {
-			this.flags[moveResult.piece.color].queensideCastling = false;
+		if (state.move.type === MoveType.QUEENSIDE_CASTLE) {
+			this.flags[state.turn].queensideCastling = false;
 		}
 	}
 
-	private _updateEnPassantSquare(move: ChessMoveResult) {
-		if (move.type === MoveType.BIG_PAWN) {
-			const offset = move.piece.color === 'white' ? 10 : -10;
-			this.enPassantSquare = this.board.at(move.piece.square, offset)?.name || null;
+	private _updateEnPassantSquare(state: State) {
+		if (state.move.type !== MoveType.BIG_PAWN) {
+			this.enPassantSquare = null;
 			return;
 		}
 
-		this.enPassantSquare = null;
+		const offset = state.turn === 'white' ? 10 : -10;
+		this.enPassantSquare = this.board.at(state.move.to, offset)?.name || null;
 	}
 }

@@ -9,7 +9,6 @@ describe('place', () => {
 
         const square = chess.board.get('a3');
 
-        expect(square?.empty).toBe(false);
         expect(square?.piece?.type).toBe('p');
     });
 
@@ -81,7 +80,7 @@ describe('move', () => {
         });
 
         expect(chess.piece('a4')?.type).toBe('p');
-        expect(chess.square('a2')?.empty).toBe(true);
+        expect(chess.square('a2')?.piece).toBe(null);
     });
 
     it('should return false when piece cannot move', () => {
@@ -105,7 +104,8 @@ describe('move', () => {
         });
 
         expect(chess.history).toHaveLength(1);
-        expect(chess.history[0]).toBe(result);
+        expect(chess.history[0].move).toBe(result);
+        expect(chess.history[0].turn).toBe('white');
     });
 
     it('should not add the move to the history when the move is invalid', () => {
@@ -395,13 +395,6 @@ describe('canMove', () => {
         expect(chess.canMove({ from: 'e7', to: 'e4' })).toBe(false);
         expect(chess.canMove({ from: 'e2', to: 'e5' })).toBe(false);
         expect(chess.canMove({ from: 'c1', to: 'c2' })).toBe(false);
-    });
-
-    it('should return pseudo-legal moves if the `legal` parameter is false', () => {
-        const chess = new Chess('4k1qr/8/8/8/8/8/8/4K2R w Kk - 0 1');
-
-        expect(chess.canMove({ from: 'e1', to: 'g1' })).toBe(false);
-        expect(chess.canMove({ from: 'e1', to: 'g1', legal: false })).toBe(true);
     });
 });
 

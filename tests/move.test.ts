@@ -1,6 +1,6 @@
 import Chess from '../src/chess';
-import { makeMove, undoMove, MoveType, ChessMoveResult } from '../src/move';
 import { ChessPosition } from '../src/pieces/piece';
+import { makeMove, undoMove, MoveType, ChessMoveResult } from '../src/move';
 
 describe('quiet', () => {
     it('should move a piece', () => {
@@ -31,19 +31,6 @@ describe('quiet', () => {
             from: 'e2',
             to: 'e4'
         });
-    });
-
-    it('should add the move to the history', () => {
-        const chess = new Chess();
-
-        const move = makeMove(chess, {
-            from: 'e2',
-            to: 'e4',
-            type: MoveType.QUIET
-        });
-
-        expect(chess.history).toHaveLength(1);
-        expect(chess.history[0]).toBe(move);
     });
 });
 
@@ -199,7 +186,7 @@ describe('castling', () => {
         }) as ChessMoveResult;
 
         expect(move.type).toBe(MoveType.KINGSIDE_CASTLE);
-        expect(move.piece?.type).toBe('k');
+        expect(move.piece).toBe('k');
         expect(chess.piece('f1')?.type).toBe('r');
         expect(chess.piece('g1')?.type).toBe('k');
     });
@@ -214,7 +201,7 @@ describe('castling', () => {
         }) as ChessMoveResult;
 
         expect(move.type).toBe(MoveType.QUEENSIDE_CASTLE);
-        expect(move.piece?.type).toBe('k');
+        expect(move.piece).toBe('k');
         expect(chess.piece('d1')?.type).toBe('r');
         expect(chess.piece('c1')?.type).toBe('k');
     });

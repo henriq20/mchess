@@ -42,7 +42,6 @@ describe('place', () => {
         const square = board.place(pawn, 'a1') as Square;
 
         expect(square).toBeTruthy();
-        expect(square.empty).toBe(false);
         expect(square.piece?.type).toBe('p');
         expect(square.piece?.square).toBe('a1');
     });
@@ -55,7 +54,7 @@ describe('place', () => {
         expect(board.place(pawn, 'a0' as ChessPosition)).toBe(false);
         expect(board.place(pawn, 'h9' as ChessPosition)).toBe(false);
 
-        expect(board._board.every(s => s.empty)).toBe(true);
+        expect(board._board.every(s => !s.piece)).toBe(true);
     });
 });
 
@@ -132,6 +131,6 @@ describe('clear', () => {
 
         board.clear();
 
-        expect(board._board.every(s => s.empty)).toBe(true);
+        expect(board._board.every(s => !s.piece)).toBe(true);
     });
 });

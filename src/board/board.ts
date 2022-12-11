@@ -43,9 +43,13 @@ export const MAILBOX64 = [
 
 export default class ChessBoard {
 	_board: Square[];
+	white: Map<number, ChessPiece>;
+	black: Map<number, ChessPiece>;
 
 	constructor() {
 		this._board = this.fill();
+		this.white = new Map();
+		this.black = new Map();
 	}
 
 	fill() {
@@ -72,6 +76,8 @@ export default class ChessBoard {
 		const s = this._board[position];
 		s.piece = piece;
 		piece.square = s.name;
+
+		this[piece.color].set(position, piece);
 
 		return s;
 	}
@@ -102,10 +108,22 @@ export default class ChessBoard {
 
 		this._board[SQUARE_MAP[square]].piece = null;
 
+		this[removedPiece.color].delete(position);
+
 		return removedPiece;
+	}
+
+	shift(from: ChessPosition, to: ChessPosition) {
+		const piece = this.remove(from);
+
+		if (piece) {
+			this.place(piece, to);
+		}
 	}
 
 	clear() {
 		this._board = this.fill();
+		this.white.clear();
+		this.black.clear();
 	}
 }
