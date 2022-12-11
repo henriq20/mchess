@@ -4,6 +4,7 @@ import { occupied } from './utils.js';
 import Square from './board/square.js';
 import ChessBoard from './board/board.js';
 import generateMoves, { PseudoMove } from './pieces/moves.js';
+import ChessBoardRenderer, { RenderOptions } from './render.js';
 import { makeMove, undoMove, ChessMove, ChessMoveResult, ChessMoveOptions, MoveType } from './move.js';
 import ChessPiece, { ChessPieceColor, ChessPieceSymbol, ChessPosition, createPiece } from './pieces/piece.js';
 
@@ -40,6 +41,7 @@ export default class Chess {
 	enPassantSquare: ChessPosition | null;
 	history: ChessHistory;
 	flags: Flags;
+	private _renderer: ChessBoardRenderer;
 
 	constructor(fen?: string) {
 		this.board = new ChessBoard();
@@ -47,6 +49,7 @@ export default class Chess {
 		this.enPassantSquare = null;
 		this.history = [];
 		this.turn = 'white';
+		this._renderer = new ChessBoardRenderer(this.board);
 		this.flags = {
 			white: {
 				kingsideCastling: true,
@@ -258,8 +261,12 @@ export default class Chess {
 		this.setup(DEFAULT_POSITION);
 	}
 
-	fen() {
+	fen(): string {
 		return fenParser.encode(this);
+	}
+
+	render(options: Partial<RenderOptions> = {}): string {
+		return this._renderer.render(options);
 	}
 
 	private _changeTurn() {
