@@ -30,11 +30,9 @@ const FILES = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' ];
 
 export default class ChessBoardRenderer {
 	board: ChessBoard;
-	options: RenderOptions;
 
-	constructor(board: ChessBoard, options: Partial<RenderOptions> = {}) {
+	constructor(board: ChessBoard) {
 		this.board = board;
-		this.options = Object.assign({}, DEFAULTS, options);
 	}
 
 	render(options: Partial<RenderOptions> = {}) {
@@ -43,7 +41,7 @@ export default class ChessBoardRenderer {
 			rank: renderRank,
 			square: renderSquare,
 			separator: renderSeparator
-		} = Object.assign(this.options, options);
+		} = Object.assign({}, DEFAULTS, options);
 
 		let board = `  ${ renderSeparator(TOP) }\n`;
 

@@ -9,9 +9,9 @@ beforeAll(() => {
 
 it('should draw an empty board', () => {
     const board = new ChessBoard();
-    const d = new ChessBoardRenderer(board);
+    const renderer = new ChessBoardRenderer(board);
 
-    const str = d.render();
+    const str = renderer.render();
 
     expect(str).toEqual(
         '  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n' +
@@ -37,7 +37,7 @@ it('should draw an empty board', () => {
 
 it('should show where each piece is on the board', () => {
     const board = new ChessBoard();
-    const d = new ChessBoardRenderer(board);
+    const renderer = new ChessBoardRenderer(board);
 
     board.place(createPiece('P'), 'a1');
     board.place(createPiece('N'), 'b2');
@@ -47,7 +47,7 @@ it('should show where each piece is on the board', () => {
     board.place(createPiece('q'), 'g8');
     board.place(createPiece('p'), 'f8');
 
-    const str = d.render();
+    const str = renderer.render();
 
     expect(str).toEqual(
         '  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n' +
@@ -73,15 +73,7 @@ it('should show where each piece is on the board', () => {
 
 it('should modify how each piece is displayed', () => {
     const board = new ChessBoard();
-    const d = new ChessBoardRenderer(board, {
-        square: square => {
-            if (!square.piece) {
-                return '0';
-            }
-
-            return square.piece.symbol;
-        }
-    });
+    const renderer = new ChessBoardRenderer(board);
 
     board.place(createPiece('P'), 'a1');
     board.place(createPiece('N'), 'b2');
@@ -91,7 +83,15 @@ it('should modify how each piece is displayed', () => {
     board.place(createPiece('q'), 'g8');
     board.place(createPiece('p'), 'f8');
 
-    const str = d.render();
+    const str = renderer.render({
+        square: square => {
+            if (!square.piece) {
+                return '0';
+            }
+
+            return square.piece.symbol;
+        }
+    });
 
     expect(str).toEqual(
         '  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n' +
@@ -117,11 +117,11 @@ it('should modify how each piece is displayed', () => {
 
 it('should modify how each rank is displayed', () => {
     const board = new ChessBoard();
-    const d = new ChessBoardRenderer(board, {
+    const renderer = new ChessBoardRenderer(board);
+
+    const str = renderer.render({
         rank: () => '0'
     });
-
-    const str = d.render();
 
     expect(str).toEqual(
         '  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n' +
