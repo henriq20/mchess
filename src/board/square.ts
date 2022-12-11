@@ -4,12 +4,8 @@ export default class Square {
 	readonly name: ChessPosition;
 	piece: ChessPiece | null;
 
-	constructor(name: ChessPosition, piece?: ChessPiece) {
+	constructor(name: ChessPosition, piece: ChessPiece | null = null) {
 		this.name = name;
-		this.piece = piece ?? null;
-	}
-
-	get empty(): boolean {
-		return !this.piece;
+		this.piece = piece;
 	}
 }
