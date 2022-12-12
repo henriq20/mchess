@@ -62,24 +62,27 @@ export default class ChessBoard {
 		return this._board;
 	}
 
-	place(piece: ChessPiece, square: ChessPosition, offset?: number): Square | false {
-		let position = SQUARE_MAP[square];
-
-		if (offset) {
-			position += offset;
+	place(piece: ChessPiece, square: ChessPosition | Square, offset: number = 0): Square | false {
+		if (typeof square !== 'string') {
+			return this._place(piece, square);
 		}
+
+		const position = SQUARE_MAP[square] + offset;
 
 		if (isNaN(position)) {
 			return false;
 		}
 
-		const s = this._board[position];
-		s.piece = piece;
-		piece.square = s.name;
+		return this._place(piece, this._board[position]);
+	}
 
-		this[piece.color].set(position, piece);
+	_place(piece: ChessPiece, square: Square): Square {
+		square.piece = piece;
+		piece.square = square.name;
 
-		return s;
+		this[piece.color].set(SQUARE_MAP[square.name], piece);
+
+		return square;
 	}
 
 	get(square: ChessPosition): Square | null {
@@ -93,27 +96,35 @@ export default class ChessBoard {
 		return index === -1 ? null : this._board[index];
 	}
 
-	remove(square: ChessPosition): ChessPiece | null {
+	remove(square: ChessPosition | Square): ChessPiece | null {
+		if (typeof square !== 'string') {
+			return this._remove(square);
+		}
+
 		const position = SQUARE_MAP[square];
 
 		if (isNaN(position)) {
 			return null;
 		}
 
-		const removedPiece = this.get(square)?.piece;
+		return this._remove(this._board[position]);
+	}
 
-		if (!removedPiece) {
+	_remove(square: Square): ChessPiece | null {
+		if (!square || !square.piece) {
 			return null;
 		}
 
-		this._board[SQUARE_MAP[square]].piece = null;
+		const piece = square.piece;
 
-		this[removedPiece.color].delete(position);
+		this[piece.color].delete(SQUARE_MAP[square.name]);
 
-		return removedPiece;
+		square.piece = null;
+
+		return piece;
 	}
 
-	shift(from: ChessPosition, to: ChessPosition) {
+	shift(from: ChessPosition | Square, to: ChessPosition | Square) {
 		const piece = this.remove(from);
 
 		if (piece) {

@@ -35,79 +35,72 @@ export type ChessMoveResult = {
 };
 
 export function makeMove(chess: Chess, options: ChessMoveOptions): ChessMoveResult | false {
-	const from = chess.square(options.from);
-	const to = chess.square(options.to);
-	let piece = from?.piece;
+	const from = chess.board.get(options.from);
+	const to = chess.board.get(options.to);
 
-	if (!from || !piece || !to || piece.square === '-') {
+	if (!from || !to || !from.piece) {
 		return false;
 	}
 
-	const result: ChessMoveResult = {
-		type: options.type,
-		from: from.name,
-		to: to.name,
-		piece: piece.type,
-		captured: null,
-	};
+	const piece = from.piece;
+	const pieceType = piece.type;
+	let captured = chess.board.remove(to);
 
-	switch (result.type) {
-		case MoveType.EN_PASSANT: {
-			const capturedPiece = chess.takeOut(chess.history.at(-1)?.move.to as ChessPosition);
+	chess.board.remove(from);
+	chess.board.place(piece, to);
 
-			if (capturedPiece) {
-				result.captured = capturedPiece;
+	switch (options.type) {
+		case MoveType.PAWN_PROMOTION:
+			piece.type = options.promoteTo || 'q';
+			break;
+
+		case MoveType.EN_PASSANT:
+			const lastState = chess.history.at(-1);
+
+			if (lastState) {
+				captured = chess.takeOut(lastState.move.to);
 			}
 			break;
-		}
 
-		case MoveType.CAPTURE:
-		case MoveType.PAWN_PROMOTION: {
-			if (result.type === MoveType.PAWN_PROMOTION) {
-				result.promotedTo = options.promoteTo || 'q';
-				piece = new ChessPiece(result.promotedTo, piece.color);
-			}
 
-			const capturedPiece = chess.takeOut(options.to);
+		case MoveType.KINGSIDE_CASTLE:
+			const rightRook = chess.takeOut(from.name, 3);
 
-			if (capturedPiece) {
-				result.captured = capturedPiece;
-			}
-			break;
-		}
-
-		case MoveType.KINGSIDE_CASTLE: {
-			const rook = chess.takeOut(from.name, 3);
-
-			if (rook && rook.type === 'r') {
-				const toSquare = chess.board.at(from.name, 1)?.name;
+			if (rightRook?.type === 'r') {
+				const toSquare = chess.board.at(from.name, 1);
 
 				if (toSquare) {
-					chess.place(rook, toSquare);
+					chess.board.place(rightRook, toSquare);
 				}
 			}
 			break;
-		}
 
-		case MoveType.QUEENSIDE_CASTLE: {
-			const rook = chess.takeOut(from.name, -4);
 
-			if (rook && rook.type === 'r') {
-				const toSquare = chess.board.at(from.name, -1)?.name;
+		case MoveType.QUEENSIDE_CASTLE:
+			const leftRook = chess.takeOut(from.name, -4);
+
+			if (leftRook?.type === 'r') {
+				const toSquare = chess.board.at(from.name, -1);
 
 				if (toSquare) {
-					chess.place(rook, toSquare);
+					chess.board.place(leftRook, toSquare);
 				}
 			}
 			break;
-		}
 
 		default:
 			break;
 	}
 
-	chess.takeOut(options.from);
-	chess.place(piece, options.to);
+	const result = {
+		type: options.type,
+		from: options.from,
+		to: options.to,
+		piece: pieceType,
+		captured: captured,
+		promotedTo: piece.type as PawnPromotion
+	};
+
 	chess.history.push({
 		move: result,
 		turn: chess.turn
