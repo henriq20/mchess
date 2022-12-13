@@ -50,20 +50,22 @@ export function makeMove(chess: Chess, options: ChessMoveOptions): ChessMoveResu
 	chess.board.place(piece, to);
 
 	switch (options.type) {
-		case MoveType.PAWN_PROMOTION:
+		case MoveType.PAWN_PROMOTION: {
 			piece.type = options.promoteTo || 'q';
 			break;
+		}
 
-		case MoveType.EN_PASSANT:
+		case MoveType.EN_PASSANT: {
 			const lastState = chess.history.at(-1);
 
 			if (lastState) {
 				captured = chess.takeOut(lastState.move.to);
 			}
 			break;
+		}
 
 
-		case MoveType.KINGSIDE_CASTLE:
+		case MoveType.KINGSIDE_CASTLE: {
 			const rightRook = chess.takeOut(from.name, 3);
 
 			if (rightRook?.type === 'r') {
@@ -74,9 +76,9 @@ export function makeMove(chess: Chess, options: ChessMoveOptions): ChessMoveResu
 				}
 			}
 			break;
+		}
 
-
-		case MoveType.QUEENSIDE_CASTLE:
+		case MoveType.QUEENSIDE_CASTLE: {
 			const leftRook = chess.takeOut(from.name, -4);
 
 			if (leftRook?.type === 'r') {
@@ -87,6 +89,7 @@ export function makeMove(chess: Chess, options: ChessMoveOptions): ChessMoveResu
 				}
 			}
 			break;
+		}
 
 		default:
 			break;

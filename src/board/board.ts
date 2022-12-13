@@ -62,7 +62,7 @@ export default class ChessBoard {
 		return this._board;
 	}
 
-	place(piece: ChessPiece, square: ChessPosition | Square, offset: number = 0): Square | false {
+	place(piece: ChessPiece, square: ChessPosition | Square, offset = 0): Square | false {
 		if (typeof square !== 'string') {
 			return this._place(piece, square);
 		}
