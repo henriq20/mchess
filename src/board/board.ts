@@ -47,19 +47,19 @@ export default class ChessBoard {
 	black: Map<number, ChessPiece>;
 
 	constructor() {
-		this._board = this.fill();
+		this._board = this.create();
 		this.white = new Map();
 		this.black = new Map();
 	}
 
-	fill() {
-		this._board = [];
+	create() {
+		const board = new Array(64);
 
 		for (let i = 0; i < 64; i++) {
-			this._board.push(new Square(CHESS_POSITIONS[i]));
+			board[i] = new Square(CHESS_POSITIONS[i]);
 		}
 
-		return this._board;
+		return board;
 	}
 
 	place(piece: ChessPiece, square: ChessPosition | Square, offset = 0): Square | false {
@@ -133,7 +133,7 @@ export default class ChessBoard {
 	}
 
 	clear() {
-		this._board = this.fill();
+		this._board = this.create();
 		this.white.clear();
 		this.black.clear();
 	}
