@@ -1,31 +1,33 @@
 # :chess_pawn: mchess
 
+[![CI](https://github.com/henriq20/mchess/actions/workflows/tests.yml/badge.svg)](https://github.com/henriq20/mchess/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A complete Chess library.
 
 ## Table of contents
-- [mchess](#chess_pawn-mchess)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [API](#api)
-    - [constructor](#constructor)
-    - [place](#place)
-    - [takeOut](#takeOut)
-    - [piece](#piece)
-    - [square](#square)
-    - [move](#move)
-    - [undo](#undo)
-    - [moves](#moves)
-    - [canMove](#canMove)
-    - [isCheck](#is_check)
-    - [isCheckmate](#ischeckmate)
-    - [isStalemate](#isstalemate)
-    - [isGameOver](#isgameover)
-    - [isDraw](#isdraw)
-    - [isAttacked](#isattacked)
-    - [clear](#clear)
-    - [reset](#reset)
-    - [fen](#fen)
-  - [Contributing](#contributing)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API](#api)
+  - [constructor](#constructor)
+  - [place](#place)
+  - [takeOut](#takeOut)
+  - [piece](#piece)
+  - [square](#square)
+  - [move](#move)
+  - [undo](#undo)
+  - [moves](#moves)
+  - [canMove](#canMove)
+  - [isCheck](#is_check)
+  - [isCheckmate](#ischeckmate)
+  - [isStalemate](#isstalemate)
+  - [isGameOver](#isgameover)
+  - [isDraw](#isdraw)
+  - [isAttacked](#isattacked)
+  - [clear](#clear)
+  - [reset](#reset)
+  - [fen](#fen)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -46,15 +48,14 @@ yarn add mchess
 ES6 imports or CommonJS requires are supported.
 
 ```JavaScript
-import { Chess, ChessBoardRenderer } from 'mchess';
+import Chess from 'mchess';
 import inquirer from 'inquirer';
 
 const chess = new Chess();
-const renderer = new ChessBoardRenderer(chess.board);
 
 while (!chess.isGameOver()) {
     console.clear();
-    console.log(renderer.render());
+    console.log(chess.render());
 
     const answers = await inquirer.prompt([
         {
@@ -69,7 +70,7 @@ while (!chess.isGameOver()) {
 }
 ```
 
-![Screenshot of a chessboard running in the terminal](media/board.png)
+![Screenshot of a game of chess running in the terminal](media/demo.png)
 
 ## API
 
@@ -79,6 +80,18 @@ You can use [FEN](https://www.chess.com/terms/fen-chess) to easily denote a posi
 ```JavaScript
 const chess = new Chess('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
 ```
+
+### render
+Gets the board representation as a string.
+
+```JavaScript
+
+console.log(chess.render());
+```
+
+![Screenshot of a chessboard in the terminal](media/board.png)
+
+You can customize how each square, file, rank and separator is displayed.
 
 #### place
 Places a piece on the board.
@@ -140,7 +153,7 @@ You can use [SAN](https://www.chess.com/article/view/chess-notation#algebraic-no
 // SAN notation
 chess.move('e4'); // White pawn moves to e4
 chess.move('d5'); // Black pawn moves to d5
-chess.move('exd5'); // White pawn on captures the pawn on d5
+chess.move('exd5'); // White pawn captures the pawn on d5
 
 // Same moves as above but with a simpler notation
 chess.move({ from: 'e2', to: 'e4' });
