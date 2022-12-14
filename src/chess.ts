@@ -169,7 +169,8 @@ export default class Chess {
 		if (typeof optionsOrSquare === 'string') {
 			return this._moves({
 				square: optionsOrSquare,
-				legal: true
+				legal: true,
+				san: true
 			});
 		}
 

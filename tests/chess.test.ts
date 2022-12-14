@@ -322,7 +322,7 @@ describe('moves', () => {
     it('should get the possible moves of a piece', () => {
         const chess = new Chess();
 
-        expect(chess.moves('e2').map(m => m.to)).toStrictEqual(['e3', 'e4']);
+        expect(chess.moves('e2')).toStrictEqual(['e3', 'e4']);
     });
 
     it('should return an empty array when the square does not have a piece', () => {
@@ -357,11 +357,11 @@ describe('moves', () => {
     it('should not be a possible move if it would put the king in check', () => {
         const chess = new Chess('3q3k/8/8/8/8/8/3R4/3K4 w - - 0 1');
 
-        const moves = chess.moves('d2').map(m => m.to);
+        const moves = chess.moves('d2');
 
         expect(moves).toHaveLength(6);
         expect(moves).toEqual(expect.arrayContaining([
-            'd3', 'd4', 'd5', 'd6', 'd7', 'd8'
+            'Rd3', 'Rd4', 'Rd5', 'Rd6', 'Rd7', 'Rxd8'
         ]));
     });
 });
