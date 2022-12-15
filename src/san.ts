@@ -118,6 +118,14 @@ export function encode(move: ChessMove & { type: MoveType }, chess: Chess): stri
 				san += move.promoteTo.toUpperCase();
 			}
 
+			chess.move(san);
+
+			if (chess.isCheck()) {
+				san += chess.isCheckmate() ? '#' : '+';
+			}
+
+			chess.undo();
+
 			return san;
 		}
 	}

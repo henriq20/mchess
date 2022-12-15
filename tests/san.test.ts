@@ -383,6 +383,44 @@ describe('encode', () => {
             },
             expected: 'Qe4xe1'
         },
+
+        // Move decorations
+        {
+            fen: 'k7/4R3/8/8/8/8/4r3/K7 w - - 0 1',
+            move: {
+                from: 'e7',
+                to: 'e8',
+                type: MoveType.QUIET
+            },
+            expected: 'Re8+'
+        },
+        {
+            fen: 'k7/4R3/8/8/8/8/4r3/K7 b - - 0 1',
+            move: {
+                from: 'e2',
+                to: 'e1',
+                type: MoveType.QUIET
+            },
+            expected: 'Re1+'
+        },
+        {
+            fen: 'r2q1r1k/ppp5/3b1pQ1/3n2N1/8/N1PPPP2/PP2K2P/R1R5 w - - 1 21',
+            move: {
+                from: 'g6',
+                to: 'h7',
+                type: MoveType.QUIET
+            },
+            expected: 'Qh7#'
+        },
+        {
+            fen: 'r1bqk2r/ppp2ppp/2n5/P3P2n/8/PQp4P/4PPPB/R3KBNR b KQkq - 1 12',
+            move: {
+                from: 'd8',
+                to: 'd2',
+                type: MoveType.QUIET
+            },
+            expected: 'Qd2#'
+        }
     ];
 
     it.each(cases)('should convert the move $move.from-$move.to to $expected', ({ fen, move, expected }) => {

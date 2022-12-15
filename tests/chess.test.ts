@@ -361,7 +361,7 @@ describe('moves', () => {
 
         expect(moves).toHaveLength(6);
         expect(moves).toEqual(expect.arrayContaining([
-            'Rd3', 'Rd4', 'Rd5', 'Rd6', 'Rd7', 'Rxd8'
+            'Rd3', 'Rd4', 'Rd5', 'Rd6', 'Rd7', 'Rxd8+'
         ]));
     });
 });
