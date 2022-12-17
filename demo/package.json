@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.1.2",
-    "inquirer": "^9.1.4"
+    "inquirer": "^9.1.4",
+    "mchess": "^1.0.0"
   }
 }
