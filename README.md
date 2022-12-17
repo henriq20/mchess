@@ -70,7 +70,7 @@ while (!chess.isGameOver()) {
 }
 ```
 
-![Screenshot of a game of chess running in the terminal](media/demo.png)
+![GIF of a game of chess running in a terminal](https://media.giphy.com/media/3R7pFKDuzV93x7sbmh/giphy.gif)
 
 ## API
 
