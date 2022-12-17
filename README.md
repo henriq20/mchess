@@ -75,11 +75,11 @@ while (!chess.isGameOver()) {
 ![GIF of a game of chess running in a terminal](https://media.giphy.com/media/3R7pFKDuzV93x7sbmh/giphy.gif)
 
 ## Playing the Demo
-To play the demo above, you just need to run the following commands:
-``` sh
-    git clone git@github.com:henriq20/mchess.git
-    cd mchess/demo
-    npm install && node .
+To play the demo above, you just need to run the following commands in your terminal:
+```shell
+git clone git@github.com:henriq20/mchess.git
+cd mchess/demo
+npm install && node .
 ```
 
 ## API
@@ -95,13 +95,23 @@ const chess = new Chess('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 
 Gets the board as a string.
 
 ```JavaScript
-
 console.log(chess.render());
 ```
 
 ![Screenshot of a chessboard in the terminal](media/board.png)
 
 You can customize how each square, file, rank and separator is displayed.
+
+**Example:**
+
+```JavaScript
+chess.render({
+    square: (square) => square.piece ? square.piece.symbol : ' ',
+    rank: (rank) => chalk.green(rank),
+    file: (file) => chalk.red(file),
+    separator: (separator) => chalk.gray(separator)
+});
+```
 
 #### place
 Places a piece on the board.
