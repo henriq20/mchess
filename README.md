@@ -8,17 +8,20 @@ A complete Chess library.
 ## Table of contents
 - [Installation](#installation)
 - [Usage](#usage)
+- [Playing the Demo](#playing-the-demo)
 - [API](#api)
   - [constructor](#constructor)
+  - [render](#render)
   - [place](#place)
-  - [takeOut](#takeOut)
+  - [takeOut](#takeout)
+  - [fen](#fen)
   - [piece](#piece)
   - [square](#square)
   - [move](#move)
   - [undo](#undo)
   - [moves](#moves)
-  - [canMove](#canMove)
-  - [isCheck](#is_check)
+  - [canMove](#canmove)
+  - [isCheck](#ischeck)
   - [isCheckmate](#ischeckmate)
   - [isStalemate](#isstalemate)
   - [isGameOver](#isgameover)
@@ -26,7 +29,6 @@ A complete Chess library.
   - [isAttacked](#isattacked)
   - [clear](#clear)
   - [reset](#reset)
-  - [fen](#fen)
 - [Contributing](#contributing)
 
 ## Installation
@@ -72,6 +74,14 @@ while (!chess.isGameOver()) {
 
 ![GIF of a game of chess running in a terminal](https://media.giphy.com/media/3R7pFKDuzV93x7sbmh/giphy.gif)
 
+## Playing the Demo
+To play the demo above, you just need to run the following commands:
+``` sh
+    git clone git@github.com:henriq20/mchess.git
+    cd mchess/demo
+    npm install && node .
+```
+
 ## API
 
 #### constructor
@@ -82,7 +92,7 @@ const chess = new Chess('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 
 ```
 
 ### render
-Gets the board representation as a string.
+Gets the board as a string.
 
 ```JavaScript
 
@@ -124,6 +134,19 @@ Removes a piece from the board.
 const removedPiece = chess.takeOut('a3');
 
 console.log(removedPiece); // { type: 'p', color: 'white', square: 'a3' }
+```
+
+### fen
+Converts the current state of the board to FEN.
+
+```JavaScript
+chess.clear();
+
+console.log(chess.fen()); // 8/8/8/8/8/8/8/8 w - - 0 1
+
+chess.place('P', 'a2');
+
+console.log(chess.fen()); // 8/8/8/8/8/8/P7/8 w - - 0 1
 ```
 
 #### piece
@@ -273,19 +296,6 @@ chess.reset();
 
 console.log(chess.history); // []
 console.log(chess.piece('a1')); // { type: 'r', color: 'white', square: 'a1' }
-```
-
-### fen
-Converts the current state of the board to FEN.
-
-```JavaScript
-chess.clear();
-
-console.log(chess.fen()); // 8/8/8/8/8/8/8/8 w - - 0 1
-
-chess.place('P', 'a2');
-
-console.log(chess.fen()); // 8/8/8/8/8/8/P7/8 w - - 0 1
 ```
 
 ## Contributing
