@@ -1,6 +1,7 @@
 # :chess_pawn: mchess
 
 [![CI](https://github.com/henriq20/mchess/actions/workflows/tests.yml/badge.svg)](https://github.com/henriq20/mchess/actions/workflows/tests.yml)
+[![NPM Downloads](https://img.shields.io/npm/dw/mchess)](https://www.npmjs.com/package/mchess)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A complete Chess library.
