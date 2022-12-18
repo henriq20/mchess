@@ -172,6 +172,12 @@ function _getPawnMoves(chess: Chess, piece: ChessPiece, index: number, moves: Ps
 		}
 
 		if (square.name === chess.enPassantSquare) {
+			const lastState = chess.history.at(-1);
+
+			if (!lastState || chess.piece(lastState.move.to)?.color === piece.color) {
+				continue;
+			}
+
 			moves.push({ from: piece.square, to: square.name, type: MoveType.EN_PASSANT });
 		}
 	}
