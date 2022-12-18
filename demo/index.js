@@ -21,7 +21,7 @@ while (!chess.isGameOver()) {
     if (answers.move[0] === 'm') {
         const args = answers.move.split(' ').slice(1);
 
-        possibleMoves = chess.moves(args[0]).map(m => m.to);
+        possibleMoves = chess.moves({ square: args[0], san: false }).map(m => m.to);
         continue;
     }
 
