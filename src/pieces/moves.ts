@@ -1,8 +1,8 @@
-import Chess from '../chess';
-import { MoveType } from '../move';
-import { empty, rank } from '../utils';
-import { MAILBOX, MAILBOX64, SQUARE_MAP } from '../board/board';
-import ChessPiece, { ChessPieceColor, ChessPieceType, ChessPosition } from './piece';
+import Chess from '../chess.js';
+import { MoveType } from '../move.js';
+import { empty, rank } from '../utils.js';
+import { MAILBOX, MAILBOX64, SQUARE_MAP } from '../board/board.js';
+import ChessPiece, { ChessPieceColor, ChessPieceType, ChessPosition } from './piece.js';
 
 export type PseudoMove = {
 	from: ChessPosition,

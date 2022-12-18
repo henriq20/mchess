@@ -1,9 +1,9 @@
-import Chess from './chess';
-import { file, rank } from './utils';
-import generateMoves from './pieces/moves';
-import { ChessMove, MoveType } from './move';
-import { CHESS_POSITIONS, SQUARE_MAP } from './board/board';
-import { ChessPieceType, PawnPromotion } from './pieces/piece';
+import Chess from './chess.js';
+import { file, rank } from './utils.js';
+import generateMoves from './pieces/moves.js';
+import { ChessMove, MoveType } from './move.js';
+import { CHESS_POSITIONS, SQUARE_MAP } from './board/board.js';
+import { ChessPieceType, PawnPromotion } from './pieces/piece.js';
 
 const CASTLING_SQUARES: { [key: string]: { kingside: number, queenside: number } } = {
 	white: {

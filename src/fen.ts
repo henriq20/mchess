@@ -1,6 +1,6 @@
-import Chess, { Flags } from './chess';
-import { CHESS_POSITIONS, SQUARE_MAP } from './board/board';
-import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece';
+import Chess, { Flags } from './chess.js';
+import { CHESS_POSITIONS, SQUARE_MAP } from './board/board.js';
+import { ChessPieceColor, ChessPieceSymbol, ChessPosition } from './pieces/piece.js';
 
 export type FENResult = {
 	pieces: Array<[ChessPieceSymbol, ChessPosition]>

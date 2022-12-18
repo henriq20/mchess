@@ -1,5 +1,5 @@
-import Square from './board/square';
-import ChessPiece, { ChessPosition } from './pieces/piece';
+import Square from './board/square.js';
+import ChessPiece, { ChessPosition } from './pieces/piece.js';
 
 export function rank(square: ChessPosition): string {
 	return square[1];

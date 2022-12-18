@@ -1,3 +1,3 @@
-import Chess from './chess';
+import Chess from './chess.js';
 
 export default Chess;
