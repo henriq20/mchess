@@ -13,6 +13,6 @@
   "dependencies": {
     "chalk": "^5.1.2",
     "inquirer": "^9.1.4",
-    "mchess": "^1.0.1"
+    "mchess": "^1.0.2"
   }
 }
