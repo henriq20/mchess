@@ -136,7 +136,7 @@ export default class Chess {
 
 		if (legalMove) {
 			const result = makeMove(this, { ...legalMove, promoteTo: move.promoteTo });
-			const state = this.history.at(-1);
+			const state = this.history[this.history.length - 1];
 
 			if (result && state) {
 				this._changeTurn();

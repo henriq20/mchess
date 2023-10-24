@@ -56,7 +56,7 @@ export function makeMove(chess: Chess, options: ChessMoveOptions): ChessMoveResu
 		}
 
 		case MoveType.EN_PASSANT: {
-			const lastState = chess.history.at(-1);
+			const lastState = chess.history[chess.history.length - 1];
 
 			if (lastState) {
 				captured = chess.takeOut(lastState.move.to);

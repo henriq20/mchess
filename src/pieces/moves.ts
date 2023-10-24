@@ -172,7 +172,7 @@ function _getPawnMoves(chess: Chess, piece: ChessPiece, index: number, moves: Ps
 		}
 
 		if (square.name === chess.enPassantSquare) {
-			const lastState = chess.history.at(-1);
+			const lastState = chess.history[chess.history.length - 1];
 
 			if (!lastState || chess.piece(lastState.move.to)?.color === piece.color) {
 				continue;
