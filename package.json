@@ -26,6 +26,9 @@
 	},
 	"author": "Henrique Ferreira",
 	"license": "MIT",
+	"engines": {
+		"node": ">=14"
+	},
 	"devDependencies": {
 		"@rollup/plugin-terser": "^0.4.4",
 		"@rollup/plugin-typescript": "^9.0.2",
